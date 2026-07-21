@@ -85,6 +85,8 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 | POST | `/post-ratings` | PostRatingController | ✅ (public submit, rate-limited) |
 | GET | `/logic-type` | LogicController | ✅ (post types + roles) |
 | GET | `/addons` | AddonsController | ✅ (Pro add-on registry + upgrade links) |
+| GET/POST/PUT/DELETE | `/heatmaps` | HeatmapController | ✅ (CRUD + click recording) |
+| POST | `/heatmaps/record` | HeatmapController | ✅ (public click tracking) |
 
 ### Admin SPA (Vue 3 + Vite)
 - [x] `SurveysList.vue` — CRUD list, status tabs (All/Published/Draft/Trash), bulk actions, impressions counter, Lucide icons, status ping dots
@@ -162,7 +164,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - [x] **Addons.vue** — Hook up real addon data (at minimum show 2–3 "Pro" addon cards with lock icons and a Stripe/pricing link)
 - [x] **Survey Templates** — `TemplateController` exists but templates aren't selectable in the "New Survey" flow. Add a template picker modal to `SurveysList.vue` / onboarding.
 - [x] **Post Ratings Widget** — `ipulse_post_ratings` table exists. Build a "thumbs up/down" or "star" per-post rating widget that can be embedded via shortcode `[wpask_rating]`
-- [ ] **Heatmap module** — `ipulse_heatmaps` table exists. This is a larger feature — defer to last.
+- [x] **Heatmap module** — `ipulse_heatmaps` table exists. This is a larger feature — defer to last.
 
 ---
 

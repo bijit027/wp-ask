@@ -78,7 +78,7 @@ class Registry {
 				'name'        => __( 'Heatmaps', 'wpask' ),
 				'description' => __( 'Visualize where visitors click and how they interact with your pages.', 'wpask' ),
 				'icon'        => 'mouse-pointer-click',
-				'tier'        => 'pro',
+				'tier'        => 'included',
 				'feature'     => 'heatmaps',
 			],
 			[
@@ -124,7 +124,7 @@ class Registry {
 	 * @return array<string, mixed>
 	 */
 	private static function resolve_state( array $addon, bool $is_pro ): array {
-		$included_features = [ 'email_notifications', 'conditional_logic', 'csv_export', 'post_ratings' ];
+		$included_features = [ 'email_notifications', 'conditional_logic', 'csv_export', 'post_ratings', 'heatmaps' ];
 		$feature           = $addon['feature'] ?? '';
 		$is_included       = 'included' === ( $addon['tier'] ?? '' );
 

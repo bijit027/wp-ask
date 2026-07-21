@@ -13,6 +13,7 @@ use InsightPulse\Handlers\FrontendHandler;
 use InsightPulse\Handlers\MetaboxHandler;
 use InsightPulse\Handlers\ShortcodeHandler;
 use InsightPulse\Handlers\ReviewNoticeHandler;
+use InsightPulse\Handlers\HeatmapHandler;
 use InsightPulse\Controllers\SurveyController;
 use InsightPulse\Controllers\ResponseController;
 use InsightPulse\Controllers\ResultsController;
@@ -22,6 +23,7 @@ use InsightPulse\Controllers\FrontendController;
 use InsightPulse\Controllers\LogicController;
 use InsightPulse\Controllers\AddonsController;
 use InsightPulse\Controllers\PostRatingController;
+use InsightPulse\Controllers\HeatmapController;
 use InsightPulse\Database\Migrator;
 
 /**
@@ -82,6 +84,9 @@ final class Plugin {
 		// Shortcode support.
 		( new ShortcodeHandler() )->register();
 
+		// Heatmap click tracking.
+		( new HeatmapHandler() )->register();
+
 		// Post metabox and admin notices.
 		if ( is_admin() ) {
 			( new MetaboxHandler() )->register();
@@ -140,6 +145,7 @@ final class Plugin {
 		( new LogicController() )->register_routes();
 		( new AddonsController() )->register_routes();
 		( new PostRatingController() )->register_routes();
+		( new HeatmapController() )->register_routes();
 	}
 
 	/**

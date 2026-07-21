@@ -22,6 +22,9 @@
           <router-link to="/results" class="wpask-nav-tab" active-class="active">
             <BarChart3 /> Results
           </router-link>
+          <router-link to="/heatmaps" class="wpask-nav-tab" active-class="active">
+            <MousePointerClick /> Heatmaps
+          </router-link>
           <router-link to="/settings" class="wpask-nav-tab" active-class="active">
             <SettingsIcon /> Settings
           </router-link>
@@ -61,6 +64,7 @@ import {
   BarChart3,
   Settings as SettingsIcon,
   Puzzle,
+  MousePointerClick,
   BookOpen,
   Plus,
 } from 'lucide-vue-next';

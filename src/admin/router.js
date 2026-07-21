@@ -37,6 +37,16 @@ const routes = [
     component: () => import('./views/Addons.vue')
   },
   {
+    path: '/heatmaps',
+    name: 'HeatmapsList',
+    component: () => import('./views/HeatmapsList.vue')
+  },
+  {
+    path: '/heatmaps/:id',
+    name: 'HeatmapView',
+    component: () => import('./views/HeatmapView.vue')
+  },
+  {
     path: '/onboarding',
     name: 'Onboarding',
     component: () => import('./views/Onboarding.vue')
