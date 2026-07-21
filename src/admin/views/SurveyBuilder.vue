@@ -179,7 +179,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { Edit, Check, Delete, Rank, Close } from '@element-plus/icons-vue';
 import draggable from 'vuedraggable';

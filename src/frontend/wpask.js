@@ -325,7 +325,7 @@ class SurveyController {
     };
     
     try {
-      const res = await fetch(`${this.apiUrl}/responses`, {
+      const res = await fetch(`${this.apiUrl}/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

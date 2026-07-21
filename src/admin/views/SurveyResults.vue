@@ -172,7 +172,7 @@ onMounted(async () => {
     if (res.ok) survey.value = await res.json();
     
     // Fetch Responses for this survey
-    res = await fetch(`${config.api_url}/responses?survey_id=${id}`, { headers: { 'X-WP-Nonce': config.nonce } });
+    res = await fetch(`${config.api_url}/surveys/${id}/responses`, { headers: { 'X-WP-Nonce': config.nonce } });
     if (res.ok) {
       const data = await res.json();
       // Ensure answers are parsed

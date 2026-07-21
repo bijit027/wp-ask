@@ -26,6 +26,11 @@ class FrontendHandler {
 	 */
 	private $session_service;
 
+	/**
+	 * @var array
+	 */
+	private $current_config;
+
 	public function __construct() {
 		$this->targeting_service = new TargetingService();
 		$this->session_service   = new SessionService();
@@ -93,9 +98,11 @@ class FrontendHandler {
 		if ( $is_dev ) {
 			$script_url = 'http://localhost:5173/src/frontend/wpask.js';
 			
-			// Add type="module" to the frontend script
+			wp_enqueue_script( 'vite-client-frontend', 'http://localhost:5173/@vite/client', [], null );
+			
+			// Add type="module" to the scripts
 			add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
-				if ( $handle === 'wpask-frontend' ) {
+				if ( in_array( $handle, [ 'wpask-frontend', 'vite-client-frontend' ], true ) ) {
 					return '<script type="module" src="' . esc_url( $src ) . '"></script>';
 				}
 				return $tag;
@@ -112,7 +119,7 @@ class FrontendHandler {
 			wp_enqueue_script( 'wpask-frontend', $script_url, [], INSIGHTPULSE_VERSION, true );
 			
 			// Inline config avoids page cache issues better than wp_localize_script
-			$config = [
+			$this->current_config = [
 				'api_url'   => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
 				'survey'    => [
 					'id'        => $matched_survey->id,
@@ -124,12 +131,6 @@ class FrontendHandler {
 				],
 				'session'   => $session ? [ 'uid' => $session->uid ] : null,
 			];
-
-			wp_add_inline_script(
-				'wpask-frontend',
-				'window.WPAskConfig = ' . wp_json_encode( $config ) . ';',
-				'before'
-			);
 		}
 	}
 
@@ -139,6 +140,11 @@ class FrontendHandler {
 	public function inject_widget_container(): void {
 		// Only inject if script was enqueued (meaning a survey matched)
 		if ( wp_script_is( 'wpask-frontend', 'enqueued' ) ) {
+			// Get matched survey from class property if we stored it, or just refetch it (simplified)
+			// Wait, we need the config. Let's build it here by storing it in a class property.
+			if ( ! empty( $this->current_config ) ) {
+				echo '<script>window.WPAskConfig = ' . wp_json_encode( $this->current_config ) . ';</script>';
+			}
 			echo '<!-- WPAsk Widget Container -->';
 			echo '<div id="wpask-widget-root"></div>';
 		}
