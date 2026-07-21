@@ -35,6 +35,18 @@ class LogicController {
 				],
 			]
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/pages',
+			[
+				[
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_pages' ],
+					'permission_callback' => [ $this, 'permissions_check' ],
+				],
+			]
+		);
 	}
 
 	/**
@@ -80,6 +92,45 @@ class LogicController {
 		return rest_ensure_response( [
 			'post_types'   => $post_type_options,
 			'user_status'  => $user_status_options,
+		] );
+	}
+
+	/**
+	 * Get paginated list of pages/posts for specific page targeting.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response
+	 */
+	public function get_pages( $request ) {
+		$post_type = $request->get_param( 'post_type' ) ?: 'page';
+		$search = $request->get_param( 'search' ) ?: '';
+		$page = (int) $request->get_param( 'page' ) ?: 1;
+		$per_page = (int) $request->get_param( 'per_page' ) ?: 50;
+
+		$args = [
+			'post_type' => $post_type,
+			'post_status' => 'publish',
+			'posts_per_page' => $per_page,
+			'paged' => $page,
+			's' => $search,
+		];
+
+		$query = new \WP_Query( $args );
+		$pages = [];
+
+		foreach ( $query->posts as $post ) {
+			$pages[] = [
+				'id' => $post->ID,
+				'title' => $post->post_title,
+				'type' => $post->post_type,
+				'url' => get_permalink( $post->ID ),
+			];
+		}
+
+		return rest_ensure_response( [
+			'pages' => $pages,
+			'total' => $query->found_posts,
+			'total_pages' => $query->max_num_pages,
 		] );
 	}
 }

@@ -79,6 +79,18 @@ class TargetingService {
 				return $this->evaluate_user_status( $operator, $value );
 			case 'post_type':
 				return $this->evaluate_post_type( $operator, $value );
+			case 'page':
+				return $this->evaluate_page( $operator, $value );
+			case 'referrer':
+				return $this->evaluate_referrer( $operator, $value );
+			case 'time_on_page':
+				return $this->evaluate_time_on_page( $operator, $value );
+			case 'scroll_depth':
+				return $this->evaluate_scroll_depth( $operator, $value );
+			case 'device':
+				return $this->evaluate_device( $operator, $value );
+			case 'exit_intent':
+				return $this->evaluate_exit_intent( $operator, $value );
 			default:
 				// If we don't know the rule type, fail safe (don't show).
 				return false;
@@ -130,5 +142,74 @@ class TargetingService {
 		}
 
 		return false;
+	}
+
+	private function evaluate_page( string $operator, string $value ): bool {
+		$current_id = get_the_ID();
+
+		if ( 'is' === $operator ) {
+			return $current_id == $value;
+		}
+
+		if ( 'is_not' === $operator ) {
+			return $current_id != $value;
+		}
+
+		return false;
+	}
+
+	private function evaluate_referrer( string $operator, string $value ): bool {
+		$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
+
+		if ( 'is' === $operator ) {
+			return trim( $referrer, '/' ) === trim( $value, '/' );
+		}
+
+		if ( 'contains' === $operator ) {
+			return false !== strpos( $referrer, $value );
+		}
+
+		return false;
+	}
+
+	private function evaluate_time_on_page( string $operator, string $value ): bool {
+		// This rule type requires frontend JavaScript implementation
+		// For now, return true to not block surveys
+		return true;
+	}
+
+	private function evaluate_scroll_depth( string $operator, string $value ): bool {
+		// This rule type requires frontend JavaScript implementation
+		// For now, return true to not block surveys
+		return true;
+	}
+
+	private function evaluate_device( string $operator, string $value ): bool {
+		$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+		$is_mobile = preg_match( '/(android|iphone|ipad|ipod)/i', $user_agent );
+		$is_tablet = preg_match( '/(ipad|tablet)/i', $user_agent );
+		
+		$current_device = 'desktop';
+		if ( $is_mobile && ! $is_tablet ) {
+			$current_device = 'mobile';
+		} elseif ( $is_tablet ) {
+			$current_device = 'tablet';
+		}
+
+		if ( 'is' === $operator ) {
+			return $current_device === $value;
+		}
+
+		if ( 'is_not' === $operator ) {
+			return $current_device !== $value;
+		}
+
+		return false;
+	}
+
+	private function evaluate_exit_intent( string $operator, string $value ): bool {
+		// This rule type requires frontend JavaScript implementation
+		// For now, return true to not block surveys
+		return true;
 	}
 }

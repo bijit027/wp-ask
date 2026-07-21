@@ -18,6 +18,16 @@ class SurveyController {
 
   init() {
     console.log('WPAsk Widget initialized');
+    
+    // Check frontend targeting rules before rendering
+    if (!this.checkFrontendTargeting()) {
+      console.log('Frontend targeting rules not met, widget will not show');
+      return;
+    }
+    
+    // Set up scroll and exit intent listeners for dynamic targeting
+    this.setupDynamicTargeting();
+    
     this.createShadowDom();
     this.renderWidget();
     this.bindEvents();
@@ -26,6 +36,162 @@ class SurveyController {
     setTimeout(() => {
       this.widget.classList.add('visible');
     }, 500);
+  }
+
+  setupDynamicTargeting() {
+    const targeting = this.survey.targeting;
+    if (!targeting || !targeting.rules) return;
+
+    const hasScrollDepth = targeting.rules.some(r => r.type === 'scroll_depth');
+    const hasExitIntent = targeting.rules.some(r => r.type === 'exit_intent');
+    const hasTimeOnPage = targeting.rules.some(r => r.type === 'time_on_page');
+
+    if (hasScrollDepth) {
+      this.setupScrollDepthListener();
+    }
+
+    if (hasExitIntent) {
+      this.setupExitIntentListener();
+    }
+
+    if (hasTimeOnPage) {
+      this.setupTimeOnPageListener();
+    }
+  }
+
+  setupScrollDepthListener() {
+    const checkScroll = () => {
+      if (!this.widget || this.widget.classList.contains('visible')) return;
+      
+      if (this.checkFrontendTargeting()) {
+        this.createShadowDom();
+        this.renderWidget();
+        this.bindEvents();
+        setTimeout(() => {
+          this.widget.classList.add('visible');
+        }, 500);
+        window.removeEventListener('scroll', checkScroll);
+      }
+    };
+    
+    window.addEventListener('scroll', checkScroll);
+  }
+
+  setupExitIntentListener() {
+    const checkExitIntent = (e) => {
+      if (!this.widget || this.widget.classList.contains('visible')) return;
+      
+      if (e.clientY <= 0) {
+        if (this.checkFrontendTargeting()) {
+          this.createShadowDom();
+          this.renderWidget();
+          this.bindEvents();
+          setTimeout(() => {
+            this.widget.classList.add('visible');
+          }, 500);
+          document.removeEventListener('mouseleave', checkExitIntent);
+        }
+      }
+    };
+    
+    document.addEventListener('mouseleave', checkExitIntent);
+  }
+
+  setupTimeOnPageListener() {
+    const checkTime = () => {
+      if (!this.widget || this.widget.classList.contains('visible')) return;
+      
+      if (this.checkFrontendTargeting()) {
+        this.createShadowDom();
+        this.renderWidget();
+        this.bindEvents();
+        setTimeout(() => {
+          this.widget.classList.add('visible');
+        }, 500);
+      }
+    };
+    
+    // Check every second
+    setInterval(checkTime, 1000);
+  }
+
+  checkFrontendTargeting() {
+    const targeting = this.survey.targeting;
+    if (!targeting || !targeting.rules) return true;
+
+    const rules = targeting.rules;
+    const ruleMatch = targeting.rule_match || 'all';
+    let isMatch = ruleMatch === 'all';
+
+    for (const rule of rules) {
+      const ruleResult = this.evaluateFrontendRule(rule);
+
+      if (ruleMatch === 'all' && !ruleResult) {
+        return false;
+      }
+
+      if (ruleMatch === 'any' && ruleResult) {
+        return true;
+      }
+    }
+
+    if (ruleMatch === 'any') return false;
+    return true;
+  }
+
+  evaluateFrontendRule(rule) {
+    const type = rule.type;
+    const operator = rule.operator;
+    const value = rule.value;
+
+    // Server-side rules are already evaluated, skip them
+    if (['url', 'post_type', 'page', 'user_status', 'referrer', 'device'].includes(type)) {
+      return true;
+    }
+
+    switch (type) {
+      case 'time_on_page':
+        return this.evaluateTimeOnPage(operator, value);
+      case 'scroll_depth':
+        return this.evaluateScrollDepth(operator, value);
+      case 'exit_intent':
+        return this.evaluateExitIntent(operator, value);
+      default:
+        return true;
+    }
+  }
+
+  evaluateTimeOnPage(operator, value) {
+    const timeOnPage = (Date.now() - window.performance.timing.navigationStart) / 1000;
+    const targetTime = parseInt(value, 10);
+
+    if (operator === 'greater_than') {
+      return timeOnPage >= targetTime;
+    }
+    if (operator === 'less_than') {
+      return timeOnPage <= targetTime;
+    }
+    return true;
+  }
+
+  evaluateScrollDepth(operator, value) {
+    const scrollPercent = Math.round(
+      (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100
+    );
+    const targetDepth = parseInt(value, 10);
+
+    if (operator === 'greater_than') {
+      return scrollPercent >= targetDepth;
+    }
+    if (operator === 'less_than') {
+      return scrollPercent <= targetDepth;
+    }
+    return true;
+  }
+
+  evaluateExitIntent(operator, value) {
+    // Exit intent is handled via event listener, return true to allow initial check
+    return true;
   }
 
   createShadowDom() {

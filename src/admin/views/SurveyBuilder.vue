@@ -436,12 +436,20 @@
               <select v-model="rule.type" style="width:150px;" @change="rule.value = ''">
                 <option value="url">URL</option>
                 <option value="post_type">Post Type</option>
+                <option value="page">Specific Page</option>
                 <option value="user_status">User Status</option>
+                <option value="referrer">Referrer</option>
+                <option value="time_on_page">Time on Page</option>
+                <option value="scroll_depth">Scroll Depth</option>
+                <option value="device">Device</option>
+                <option value="exit_intent">Exit Intent</option>
               </select>
               <select v-model="rule.operator" style="width:120px;">
                 <option value="is">Is</option>
                 <option value="is_not">Is Not</option>
-                <option value="contains" v-if="rule.type === 'url'">Contains</option>
+                <option value="contains" v-if="rule.type === 'url' || rule.type === 'referrer'">Contains</option>
+                <option value="greater_than" v-if="rule.type === 'time_on_page' || rule.type === 'scroll_depth'">Greater Than</option>
+                <option value="less_than" v-if="rule.type === 'time_on_page' || rule.type === 'scroll_depth'">Less Than</option>
               </select>
 
               <select v-if="rule.type === 'post_type'" v-model="rule.value" style="flex:1;">
@@ -449,9 +457,19 @@
                 <option v-for="pt in logicOptions.post_types" :key="pt.value" :value="pt.value">{{ pt.label }}</option>
               </select>
 
+              <select v-else-if="rule.type === 'page'" v-model="rule.value" style="flex:1;" @focus="loadPages(rule)">
+                <option value="" disabled>Select page...</option>
+                <option v-for="p in pageOptions" :key="p.id" :value="p.id">{{ p.title }}</option>
+              </select>
+
               <select v-else-if="rule.type === 'user_status'" v-model="rule.value" style="flex:1;">
                 <option value="" disabled>Select status...</option>
                 <option v-for="st in logicOptions.user_status" :key="st.value" :value="st.value">{{ st.label }}</option>
+              </select>
+
+              <select v-else-if="rule.type === 'device'" v-model="rule.value" style="flex:1;">
+                <option value="" disabled>Select device...</option>
+                <option v-for="d in deviceOptions" :key="d.value" :value="d.value">{{ d.label }}</option>
               </select>
 
               <input v-else v-model="rule.value" placeholder="Value..." style="flex:1;" />
@@ -521,6 +539,12 @@ const activeQuestionId = ref(null);
 const editorTabs = ['design', 'settings', 'targeting', 'notifications'];
 
 const logicOptions = ref({ post_types: [], user_status: [] });
+const pageOptions = ref([]);
+const deviceOptions = ref([
+  { value: 'desktop', label: 'Desktop' },
+  { value: 'mobile', label: 'Mobile' },
+  { value: 'tablet', label: 'Tablet' },
+]);
 
 const questionTypes = [
   { type: 'rating', label: 'Rating', icon: Star },
@@ -681,6 +705,19 @@ const addRule = () => {
 
 const removeRule = (index) => {
   survey.targeting.rules.splice(index, 1);
+};
+
+const loadPages = async (rule) => {
+  const config = window.WPAskAdminConfig || {};
+  try {
+    const res = await fetch(`${config.api_url}/pages`, { headers: { 'X-WP-Nonce': config.nonce } });
+    if (res.ok) {
+      const data = await res.json();
+      pageOptions.value = data.pages;
+    }
+  } catch (e) {
+    console.error('Failed to load pages', e);
+  }
 };
 
 const previewSurvey = () => {

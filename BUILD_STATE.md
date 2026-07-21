@@ -146,14 +146,14 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - [x] **Date range filtering on responses** — Pass `?from=&to=` params to `/surveys/{id}/responses`
 
 ### Priority 3 — Advanced Targeting
-- [ ] **More targeting rule types:**
-  - [ ] `page` — Specific page (fetch from `/logic-type` — currently only post types, add pages query)
-  - [ ] `referrer` — HTTP referrer URL contains/equals
-  - [ ] `time_on_page` — Show after X seconds on page (JS timer in widget)
-  - [ ] `scroll_depth` — Show after user scrolls X% (JS scroll listener)
-  - [ ] `device` — Desktop / Mobile / Tablet (user agent detection)
-  - [ ] `exit_intent` — Show on mouse-leave (JS mouseleave detection)
-- [ ] **LogicController** — Update `/logic-type` to also return a paginated list of individual pages/posts for the "specific page" targeting option
+- [x] **More targeting rule types:**
+  - [x] `page` — Specific page (fetch from `/logic-type` — currently only post types, add pages query)
+  - [x] `referrer` — HTTP referrer URL contains/equals
+  - [x] `time_on_page` — Show after X seconds on page (JS timer in widget)
+  - [x] `scroll_depth` — Show after user scrolls X% (JS scroll listener)
+  - [x] `device` — Desktop / Mobile / Tablet (user agent detection)
+  - [x] `exit_intent` — Show on mouse-leave (JS mouseleave detection)
+- [x] **LogicController** — Update `/logic-type` to also return a paginated list of individual pages/posts for the "specific page" targeting option
 
 ### Priority 4 — Polish & Monetisation
 - [ ] **Git push to `https://github.com/bijit027/wpask.git`** — Not yet pushed. Run: `git push origin main`
