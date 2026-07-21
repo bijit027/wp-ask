@@ -24,7 +24,7 @@ const routes = [
   {
     path: '/results',
     name: 'AllResults',
-    component: () => import('./views/SurveyResults.vue')
+    component: () => import('./views/AllResults.vue')
   },
   {
     path: '/settings',
