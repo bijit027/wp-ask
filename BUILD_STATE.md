@@ -138,7 +138,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
   - [x] `date` — Date picker input
   - [x] `email` — Email address input with validation
   - [x] `number` — Numeric input with optional min/max
-  - [ ] `file_upload` — File attachment (complex — do last)
+  - [x] `file_upload` — File attachment with WordPress media library storage
   - Add each type to: `SurveyBuilder.vue` inspector, `frontend/` widget renderer, and `AnalyticsService.php` aggregation
 - [x] **Conditional Logic (Skip Logic)** — Per-question branching: "If answer to Q1 is X, skip to Q3". UF Lite has this. Requires:
   - [x] JSON schema in `questions[]` for `logic` conditions

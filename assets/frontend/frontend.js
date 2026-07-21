@@ -1,4 +1,4 @@
-class w{constructor(e){this.config=e,this.survey=e.survey,this.apiUrl=e.api_url,this.sessionUid=e.session?e.session.uid:null,this.currentStep=0,this.answers={},this.init()}init(){if(console.log("WPAsk Widget initialized"),!this.checkFrontendTargeting()){console.log("Frontend targeting rules not met, widget will not show");return}this.setupDynamicTargeting(),this.createShadowDom(),this.renderWidget(),this.bindEvents(),setTimeout(()=>{this.widget.classList.add("visible")},500)}setupDynamicTargeting(){const e=this.survey.targeting;if(!e||!e.rules)return;const s=e.rules.some(n=>n.type==="scroll_depth"),t=e.rules.some(n=>n.type==="exit_intent"),i=e.rules.some(n=>n.type==="time_on_page");s&&this.setupScrollDepthListener(),t&&this.setupExitIntentListener(),i&&this.setupTimeOnPageListener()}setupScrollDepthListener(){const e=()=>{!this.widget||this.widget.classList.contains("visible")||this.checkFrontendTargeting()&&(this.createShadowDom(),this.renderWidget(),this.bindEvents(),setTimeout(()=>{this.widget.classList.add("visible")},500),window.removeEventListener("scroll",e))};window.addEventListener("scroll",e)}setupExitIntentListener(){const e=s=>{!this.widget||this.widget.classList.contains("visible")||s.clientY<=0&&this.checkFrontendTargeting()&&(this.createShadowDom(),this.renderWidget(),this.bindEvents(),setTimeout(()=>{this.widget.classList.add("visible")},500),document.removeEventListener("mouseleave",e))};document.addEventListener("mouseleave",e)}setupTimeOnPageListener(){setInterval(()=>{!this.widget||this.widget.classList.contains("visible")||this.checkFrontendTargeting()&&(this.createShadowDom(),this.renderWidget(),this.bindEvents(),setTimeout(()=>{this.widget.classList.add("visible")},500))},1e3)}checkFrontendTargeting(){const e=this.survey.targeting;if(!e||!e.rules)return!0;const s=e.rules,t=e.rule_match||"all";for(const i of s){const n=this.evaluateFrontendRule(i);if(t==="all"&&!n)return!1;if(t==="any"&&n)return!0}return t!=="any"}evaluateFrontendRule(e){const s=e.type,t=e.operator,i=e.value;if(["url","post_type","page","user_status","referrer","device"].includes(s))return!0;switch(s){case"time_on_page":return this.evaluateTimeOnPage(t,i);case"scroll_depth":return this.evaluateScrollDepth(t,i);case"exit_intent":return this.evaluateExitIntent(t,i);default:return!0}}evaluateTimeOnPage(e,s){const t=(Date.now()-window.performance.timing.navigationStart)/1e3,i=parseInt(s,10);return e==="greater_than"?t>=i:e==="less_than"?t<=i:!0}evaluateScrollDepth(e,s){const t=Math.round(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100),i=parseInt(s,10);return e==="greater_than"?t>=i:e==="less_than"?t<=i:!0}evaluateExitIntent(e,s){return!0}createShadowDom(){this.host=document.getElementById("wpask-widget-root"),this.host||(this.host=document.createElement("div"),this.host.id="wpask-widget-root",document.body.appendChild(this.host)),this.shadow=this.host.attachShadow({mode:"open"});const e=document.createElement("style");e.textContent=this.getStyles(),this.shadow.appendChild(e),this.widget=document.createElement("div"),this.widget.className=`wpask-widget ${this.survey.settings.position||"bottom-right"}`,this.shadow.appendChild(this.widget)}getStyles(){const e=this.survey.settings.color||"#4F46E5";return`
+class g{constructor(e){this.config=e,this.survey=e.survey,this.apiUrl=e.api_url,this.sessionUid=e.session?e.session.uid:null,this.currentStep=0,this.answers={},this.init()}init(){if(console.log("WPAsk Widget initialized"),!this.checkFrontendTargeting()){console.log("Frontend targeting rules not met, widget will not show");return}this.setupDynamicTargeting(),this.createShadowDom(),this.renderWidget(),this.bindEvents(),setTimeout(()=>{this.widget.classList.add("visible")},500)}setupDynamicTargeting(){const e=this.survey.targeting;if(!e||!e.rules)return;const s=e.rules.some(r=>r.type==="scroll_depth"),t=e.rules.some(r=>r.type==="exit_intent"),i=e.rules.some(r=>r.type==="time_on_page");s&&this.setupScrollDepthListener(),t&&this.setupExitIntentListener(),i&&this.setupTimeOnPageListener()}setupScrollDepthListener(){const e=()=>{!this.widget||this.widget.classList.contains("visible")||this.checkFrontendTargeting()&&(this.createShadowDom(),this.renderWidget(),this.bindEvents(),setTimeout(()=>{this.widget.classList.add("visible")},500),window.removeEventListener("scroll",e))};window.addEventListener("scroll",e)}setupExitIntentListener(){const e=s=>{!this.widget||this.widget.classList.contains("visible")||s.clientY<=0&&this.checkFrontendTargeting()&&(this.createShadowDom(),this.renderWidget(),this.bindEvents(),setTimeout(()=>{this.widget.classList.add("visible")},500),document.removeEventListener("mouseleave",e))};document.addEventListener("mouseleave",e)}setupTimeOnPageListener(){setInterval(()=>{!this.widget||this.widget.classList.contains("visible")||this.checkFrontendTargeting()&&(this.createShadowDom(),this.renderWidget(),this.bindEvents(),setTimeout(()=>{this.widget.classList.add("visible")},500))},1e3)}checkFrontendTargeting(){const e=this.survey.targeting;if(!e||!e.rules)return!0;const s=e.rules,t=e.rule_match||"all";for(const i of s){const r=this.evaluateFrontendRule(i);if(t==="all"&&!r)return!1;if(t==="any"&&r)return!0}return t!=="any"}evaluateFrontendRule(e){const s=e.type,t=e.operator,i=e.value;if(["url","post_type","page","user_status","referrer","device"].includes(s))return!0;switch(s){case"time_on_page":return this.evaluateTimeOnPage(t,i);case"scroll_depth":return this.evaluateScrollDepth(t,i);case"exit_intent":return this.evaluateExitIntent(t,i);default:return!0}}evaluateTimeOnPage(e,s){const t=(Date.now()-window.performance.timing.navigationStart)/1e3,i=parseInt(s,10);return e==="greater_than"?t>=i:e==="less_than"?t<=i:!0}evaluateScrollDepth(e,s){const t=Math.round(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100),i=parseInt(s,10);return e==="greater_than"?t>=i:e==="less_than"?t<=i:!0}evaluateExitIntent(e,s){return!0}createShadowDom(){this.host=document.getElementById("wpask-widget-root"),this.host||(this.host=document.createElement("div"),this.host.id="wpask-widget-root",document.body.appendChild(this.host)),this.shadow=this.host.attachShadow({mode:"open"});const e=document.createElement("style");e.textContent=this.getStyles(),this.shadow.appendChild(e),this.widget=document.createElement("div"),this.widget.className=`wpask-widget ${this.survey.settings.position||"bottom-right"}`,this.shadow.appendChild(this.widget)}getStyles(){const e=this.survey.settings.color||"#4F46E5";return`
       .wpask-widget {
         position: fixed;
         width: 340px;
@@ -172,6 +172,65 @@ class w{constructor(e){this.config=e,this.survey=e.survey,this.apiUrl=e.api_url,
         box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
       }
       
+      .wpask-file-upload {
+        margin-bottom: 15px;
+      }
+      .wpask-file-input {
+        display: none;
+      }
+      .wpask-file-dropzone {
+        padding: 20px;
+        border: 2px dashed #d1d5db;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s;
+      }
+      .wpask-file-dropzone:hover {
+        border-color: ${e};
+      }
+      .wpask-file-icon {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      .wpask-file-text {
+        font-size: 14px;
+        color: #374151;
+        margin-bottom: 4px;
+      }
+      .wpask-file-hint {
+        font-size: 12px;
+        color: #6b7280;
+      }
+      .wpask-file-preview {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        margin-top: 10px;
+      }
+      .wpask-file-name {
+        font-size: 13px;
+        color: #374151;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 200px;
+      }
+      .wpask-file-remove {
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 0 5px;
+      }
+      .wpask-file-remove:hover {
+        color: #ef4444;
+      }
+      
       .wpask-btn {
         width: 100%;
         background: ${e};
@@ -228,22 +287,37 @@ class w{constructor(e){this.config=e,this.survey=e.survey,this.apiUrl=e.api_url,
       <div class="wpask-footer">
         Powered by <a href="https://wpask.io" target="_blank">WPAsk</a>
       </div>
-    `,this.renderStep()}renderStep(){var o,d;const e=this.widget.querySelector("#wpask-body");if(this.shouldSkipQuestion(this.currentStep)){this.currentStep++,this.currentStep>=this.survey.questions.length?this.submitSurvey():this.renderStep();return}if(this.currentStep>=this.survey.questions.length){e.innerHTML=`
+    `,this.renderStep()}renderStep(){var l,u;const e=this.widget.querySelector("#wpask-body");if(this.shouldSkipQuestion(this.currentStep)){this.currentStep++,this.currentStep>=this.survey.questions.length?this.submitSurvey():this.renderStep();return}if(this.currentStep>=this.survey.questions.length){e.innerHTML=`
         <div class="wpask-success">
           <div class="wpask-success-icon">✓</div>
-          <h3>${((d=(o=this.survey.settings)==null?void 0:o.confirmation)==null?void 0:d.message)||"Thank you!"}</h3>
+          <h3>${((u=(l=this.survey.settings)==null?void 0:l.confirmation)==null?void 0:u.message)||"Thank you!"}</h3>
         </div>
-      `,setTimeout(()=>this.closeWidget(),3e3);return}const s=this.survey.questions[this.currentStep];let t=`<p class="wpask-question-label">${s.label}</p>`;if(s.type==="textarea")t+='<textarea class="wpask-input-text wpask-answer-input" rows="3" placeholder="Your answer..."></textarea>';else if(s.type==="radio"){const a=s.options||["Yes","No"];t+='<div class="wpask-radio-group">',a.forEach(r=>{t+=`
+      `,setTimeout(()=>this.closeWidget(),3e3);return}const s=this.survey.questions[this.currentStep];let t=`<p class="wpask-question-label">${s.label}</p>`;if(s.type==="textarea")t+='<textarea class="wpask-input-text wpask-answer-input" rows="3" placeholder="Your answer..."></textarea>';else if(s.type==="radio"){const a=s.options||["Yes","No"];t+='<div class="wpask-radio-group">',a.forEach(n=>{t+=`
           <label class="wpask-radio-label">
-            <input type="radio" name="wpask_q_${s.id}" value="${r}" class="wpask-answer-input">
-            ${r}
+            <input type="radio" name="wpask_q_${s.id}" value="${n}" class="wpask-answer-input">
+            ${n}
           </label>
-        `}),t+="</div>"}else if(s.type==="checkbox"){const a=s.options||["Option 1","Option 2"];t+='<div class="wpask-checkbox-group">',a.forEach(r=>{t+=`
+        `}),t+="</div>"}else if(s.type==="checkbox"){const a=s.options||["Option 1","Option 2"];t+='<div class="wpask-checkbox-group">',a.forEach(n=>{t+=`
           <label class="wpask-checkbox-label">
-            <input type="checkbox" name="wpask_q_${s.id}" value="${r}" class="wpask-answer-input">
-            ${r}
+            <input type="checkbox" name="wpask_q_${s.id}" value="${n}" class="wpask-answer-input">
+            ${n}
           </label>
-        `}),t+="</div>"}else if(s.type==="dropdown"){const a=s.options||["Option 1","Option 2"];t+='<select class="wpask-select wpask-answer-input">',t+='<option value="">Select an option...</option>',a.forEach(r=>{t+=`<option value="${r}">${r}</option>`}),t+="</select>"}else s.type==="date"?t+='<input type="date" class="wpask-date wpask-answer-input">':s.type==="email"?t+='<input type="email" class="wpask-email wpask-answer-input" placeholder="user@example.com">':s.type==="number"?t+='<input type="number" class="wpask-number wpask-answer-input" placeholder="0">':s.type==="rating"&&(t+=`
+        `}),t+="</div>"}else if(s.type==="dropdown"){const a=s.options||["Option 1","Option 2"];t+='<select class="wpask-select wpask-answer-input">',t+='<option value="">Select an option...</option>',a.forEach(n=>{t+=`<option value="${n}">${n}</option>`}),t+="</select>"}else if(s.type==="date")t+='<input type="date" class="wpask-date wpask-answer-input">';else if(s.type==="email")t+='<input type="email" class="wpask-email wpask-answer-input" placeholder="user@example.com">';else if(s.type==="number")t+='<input type="number" class="wpask-number wpask-answer-input" placeholder="0">';else if(s.type==="file_upload"){const a=s.allowed_types||"",n=s.max_file_size||5;t+=`
+        <div class="wpask-file-upload" id="wpask-file-upload-container">
+          <input type="file" class="wpask-answer-input wpask-file-input" 
+                 ${a?`accept=".${a.split(",").join(",.")}"`:""} 
+                 data-max-size="${n}">
+          <div class="wpask-file-dropzone">
+            <div class="wpask-file-icon">📁</div>
+            <div class="wpask-file-text">Click or drag file to upload</div>
+            <div class="wpask-file-hint">Max ${n}MB${a?` (${a})`:""}</div>
+          </div>
+          <div class="wpask-file-preview" style="display:none;">
+            <div class="wpask-file-name"></div>
+            <button type="button" class="wpask-file-remove">×</button>
+          </div>
+        </div>
+      `}else s.type==="rating"&&(t+=`
         <div class="wpask-rating" id="wpask-rating-container">
           <span class="wpask-star" data-val="1">★</span>
           <span class="wpask-star" data-val="2">★</span>
@@ -252,4 +326,4 @@ class w{constructor(e){this.config=e,this.survey=e.survey,this.apiUrl=e.api_url,
           <span class="wpask-star" data-val="5">★</span>
         </div>
         <input type="hidden" class="wpask-answer-input" id="wpask-rating-input">
-      `);const i=this.currentStep===this.survey.questions.length-1?"Submit":"Next";if(t+=`<button class="wpask-btn" id="wpask-next-btn">${i}</button>`,e.innerHTML=t,e.querySelector("#wpask-next-btn").addEventListener("click",()=>this.handleNext(s)),s.type==="rating"){const a=e.querySelectorAll(".wpask-star"),r=e.querySelector("#wpask-rating-input");a.forEach(u=>{u.addEventListener("click",h=>{const c=parseInt(h.target.dataset.val,10);r.value=c,a.forEach(l=>{parseInt(l.dataset.val,10)<=c?l.classList.add("active"):l.classList.remove("active")})})})}}handleNext(e){const s=this.widget.querySelector("#wpask-body");let t=null;if(e.type==="textarea")t=s.querySelector(".wpask-answer-input").value;else if(e.type==="radio"){const i=s.querySelector(".wpask-answer-input:checked");i&&(t=i.value)}else if(e.type==="checkbox"){const i=s.querySelectorAll(".wpask-answer-input:checked");t=Array.from(i).map(n=>n.value)}else if(e.type==="dropdown"){const i=s.querySelector(".wpask-answer-input");i&&(t=i.value)}else if(e.type==="date"){const i=s.querySelector(".wpask-answer-input");i&&(t=i.value)}else if(e.type==="email"){const i=s.querySelector(".wpask-answer-input");i&&(t=i.value)}else if(e.type==="number"){const i=s.querySelector(".wpask-answer-input");i&&(t=i.value)}else e.type==="rating"&&(t=s.querySelector("#wpask-rating-input").value);if(e.required){if(e.type==="checkbox"){if(!t||t.length===0){alert("Please select at least one option before continuing.");return}}else if(e.type==="email"){if(!t||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t)){alert("Please enter a valid email address.");return}}else if(!t||t.trim()===""){alert("Please answer the question before continuing.");return}}this.answers[e.id]={type:e.type,label:e.label,value:t},this.moveToNextStep()}moveToNextStep(){for(this.currentStep++;this.currentStep<this.survey.questions.length&&this.shouldSkipQuestion(this.currentStep);)this.currentStep++;this.currentStep>=this.survey.questions.length?this.submitSurvey():this.renderStep()}shouldSkipQuestion(e){const s=this.survey.questions[e];if(!s.logic||!s.logic.enabled||!s.logic.conditions||s.logic.conditions.length===0)return!1;const t=this.evaluateConditions(s.logic.conditions);return s.logic.action==="show"?!t:s.logic.action==="hide"||s.logic.action==="skip"?t:!1}evaluateConditions(e){return e.every(s=>this.evaluateCondition(s))}evaluateCondition(e){const{questionId:s,operator:t,value:i}=e,n=this.answers[s];if(!n)return!1;const o=n.value;switch(t){case"=":return String(o)===String(i);case"!=":return String(o)!==String(i);case"in":return Array.isArray(o)&&o.includes(i);default:return!1}}async submitSurvey(){const e={survey_id:this.survey.id,answers:this.answers,uid:this.sessionUid||""};try{const t=await(await fetch(`${this.apiUrl}/submit`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)})).json();console.log("Survey submitted successfully:",t)}catch(s){console.error("Error submitting survey:",s)}}bindEvents(){const e=this.widget.querySelector(".wpask-close"),s=this.widget.querySelector(".wpask-header");e.addEventListener("click",t=>{t.stopPropagation(),this.closeWidget()}),s.addEventListener("click",()=>{const t=this.widget.querySelector(".wpask-body"),i=this.widget.querySelector(".wpask-footer");t.style.display==="none"?(t.style.display="block",i.style.display="block"):(t.style.display="none",i.style.display="none")})}closeWidget(){this.widget.classList.remove("visible"),setTimeout(()=>{this.host.remove()},400)}}window.WPAskConfig&&window.WPAskConfig.survey&&(window.WPAskConfig.api_url&&fetch(`${window.WPAskConfig.api_url}/surveys/${window.WPAskConfig.survey.id}/impression`,{method:"POST",headers:{"Content-Type":"application/json"}}).catch(p=>console.error(p)),new w(window.WPAskConfig));
+      `);const i=this.currentStep===this.survey.questions.length-1?"Submit":"Next";if(t+=`<button class="wpask-btn" id="wpask-next-btn">${i}</button>`,e.innerHTML=t,e.querySelector("#wpask-next-btn").addEventListener("click",()=>this.handleNext(s)),s.type==="rating"){const a=e.querySelectorAll(".wpask-star"),n=e.querySelector("#wpask-rating-input");a.forEach(c=>{c.addEventListener("click",f=>{const h=parseInt(f.target.dataset.val,10);n.value=h,a.forEach(p=>{parseInt(p.dataset.val,10)<=h?p.classList.add("active"):p.classList.remove("active")})})})}if(s.type==="file_upload"){const a=e.querySelector(".wpask-file-input"),n=e.querySelector(".wpask-file-dropzone"),c=e.querySelector(".wpask-file-preview"),f=e.querySelector(".wpask-file-name"),h=e.querySelector(".wpask-file-remove"),p=parseInt(a.dataset.maxSize,10)||5;n.addEventListener("click",()=>a.click()),a.addEventListener("change",o=>{const d=o.target.files[0];if(d){if(d.size>p*1024*1024){alert(`File size exceeds ${p}MB limit`),a.value="";return}f.textContent=d.name,n.style.display="none",c.style.display="flex"}}),h.addEventListener("click",o=>{o.stopPropagation(),a.value="",n.style.display="block",c.style.display="none"}),n.addEventListener("dragover",o=>{o.preventDefault(),n.style.borderColor=this.survey.settings.color||"#4F46E5"}),n.addEventListener("dragleave",o=>{o.preventDefault(),n.style.borderColor="#d1d5db"}),n.addEventListener("drop",o=>{o.preventDefault(),n.style.borderColor="#d1d5db";const d=o.dataTransfer.files[0];if(d){if(d.size>p*1024*1024){alert(`File size exceeds ${p}MB limit`);return}a.files=o.dataTransfer.files,f.textContent=d.name,n.style.display="none",c.style.display="flex"}})}}handleNext(e){const s=this.widget.querySelector("#wpask-body");let t=null;if(e.type==="textarea")t=s.querySelector(".wpask-answer-input").value;else if(e.type==="radio"){const i=s.querySelector(".wpask-answer-input:checked");i&&(t=i.value)}else if(e.type==="checkbox"){const i=s.querySelectorAll(".wpask-answer-input:checked");t=Array.from(i).map(r=>r.value)}else if(e.type==="dropdown"){const i=s.querySelector(".wpask-answer-input");i&&(t=i.value)}else if(e.type==="date"){const i=s.querySelector(".wpask-answer-input");i&&(t=i.value)}else if(e.type==="email"){const i=s.querySelector(".wpask-answer-input");i&&(t=i.value)}else if(e.type==="number"){const i=s.querySelector(".wpask-answer-input");i&&(t=i.value)}else if(e.type==="rating")t=s.querySelector("#wpask-rating-input").value;else if(e.type==="file_upload"){const i=s.querySelector(".wpask-answer-input");if(i.files.length>0){const r=i.files[0],l=new FileReader;l.onload=u=>{t={name:r.name,size:r.size,type:r.type,data:u.target.result},this.answers[e.id]={type:e.type,label:e.label,value:t},this.moveToNextStep(e)},l.readAsDataURL(r);return}}if(e.required){if(e.type==="checkbox"){if(!t||t.length===0){alert("Please select at least one option before continuing.");return}}else if(e.type==="email"){if(!t||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t)){alert("Please enter a valid email address.");return}}else if(e.type==="file_upload"){if(s.querySelector(".wpask-answer-input").files.length===0){alert("Please upload a file before continuing.");return}}else if(!t||t.trim()===""){alert("Please answer the question before continuing.");return}}this.answers[e.id]={type:e.type,label:e.label,value:t},this.moveToNextStep()}moveToNextStep(){for(this.currentStep++;this.currentStep<this.survey.questions.length&&this.shouldSkipQuestion(this.currentStep);)this.currentStep++;this.currentStep>=this.survey.questions.length?this.submitSurvey():this.renderStep()}shouldSkipQuestion(e){const s=this.survey.questions[e];if(!s.logic||!s.logic.enabled||!s.logic.conditions||s.logic.conditions.length===0)return!1;const t=this.evaluateConditions(s.logic.conditions);return s.logic.action==="show"?!t:s.logic.action==="hide"||s.logic.action==="skip"?t:!1}evaluateConditions(e){return e.every(s=>this.evaluateCondition(s))}evaluateCondition(e){const{questionId:s,operator:t,value:i}=e,r=this.answers[s];if(!r)return!1;const l=r.value;switch(t){case"=":return String(l)===String(i);case"!=":return String(l)!==String(i);case"in":return Array.isArray(l)&&l.includes(i);default:return!1}}async submitSurvey(){const e={survey_id:this.survey.id,answers:this.answers,uid:this.sessionUid||""};try{const t=await(await fetch(`${this.apiUrl}/submit`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)})).json();console.log("Survey submitted successfully:",t)}catch(s){console.error("Error submitting survey:",s)}}bindEvents(){const e=this.widget.querySelector(".wpask-close"),s=this.widget.querySelector(".wpask-header");e.addEventListener("click",t=>{t.stopPropagation(),this.closeWidget()}),s.addEventListener("click",()=>{const t=this.widget.querySelector(".wpask-body"),i=this.widget.querySelector(".wpask-footer");t.style.display==="none"?(t.style.display="block",i.style.display="block"):(t.style.display="none",i.style.display="none")})}closeWidget(){this.widget.classList.remove("visible"),setTimeout(()=>{this.host.remove()},400)}}window.WPAskConfig&&window.WPAskConfig.survey&&(window.WPAskConfig.api_url&&fetch(`${window.WPAskConfig.api_url}/surveys/${window.WPAskConfig.survey.id}/impression`,{method:"POST",headers:{"Content-Type":"application/json"}}).catch(w=>console.error(w)),new g(window.WPAskConfig));

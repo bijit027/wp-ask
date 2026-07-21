@@ -39,7 +39,24 @@ class AnalyticsService {
 		$meta_key        = 'reportable_data';
 		$existing_values = $this->meta_repo->get_meta( 'survey', $survey_id, $meta_key ) ?: [];
 
-		foreach ( $answers as $question_id => $value ) {
+		foreach ( $answers as $question_id => $answer_data ) {
+			// Handle file upload type - count uploads
+			if ( isset( $answer_data['type'] ) && 'file_upload' === $answer_data['type'] ) {
+				if ( ! isset( $existing_values[ $question_id ] ) ) {
+					$existing_values[ $question_id ] = [];
+				}
+				// Count file uploads
+				if ( isset( $existing_values[ $question_id ]['upload_count'] ) ) {
+					$existing_values[ $question_id ]['upload_count']++;
+				} else {
+					$existing_values[ $question_id ]['upload_count'] = 1;
+				}
+				continue;
+			}
+
+			// Handle other question types
+			$value = is_array( $answer_data ) ? ( $answer_data['value'] ?? null ) : $answer_data;
+
 			if ( ! isset( $existing_values[ $question_id ] ) ) {
 				$existing_values[ $question_id ] = [];
 			}

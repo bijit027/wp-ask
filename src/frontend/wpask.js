@@ -390,6 +390,65 @@ class SurveyController {
         box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
       }
       
+      .wpask-file-upload {
+        margin-bottom: 15px;
+      }
+      .wpask-file-input {
+        display: none;
+      }
+      .wpask-file-dropzone {
+        padding: 20px;
+        border: 2px dashed #d1d5db;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s;
+      }
+      .wpask-file-dropzone:hover {
+        border-color: ${color};
+      }
+      .wpask-file-icon {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      .wpask-file-text {
+        font-size: 14px;
+        color: #374151;
+        margin-bottom: 4px;
+      }
+      .wpask-file-hint {
+        font-size: 12px;
+        color: #6b7280;
+      }
+      .wpask-file-preview {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        margin-top: 10px;
+      }
+      .wpask-file-name {
+        font-size: 13px;
+        color: #374151;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 200px;
+      }
+      .wpask-file-remove {
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 0 5px;
+      }
+      .wpask-file-remove:hover {
+        color: #ef4444;
+      }
+      
       .wpask-btn {
         width: 100%;
         background: ${color};
@@ -526,6 +585,25 @@ class SurveyController {
       html += `<input type="email" class="wpask-email wpask-answer-input" placeholder="user@example.com">`;
     } else if (question.type === 'number') {
       html += `<input type="number" class="wpask-number wpask-answer-input" placeholder="0">`;
+    } else if (question.type === 'file_upload') {
+      const allowedTypes = question.allowed_types || '';
+      const maxSize = question.max_file_size || 5;
+      html += `
+        <div class="wpask-file-upload" id="wpask-file-upload-container">
+          <input type="file" class="wpask-answer-input wpask-file-input" 
+                 ${allowedTypes ? `accept=".${allowedTypes.split(',').join(',.')}"` : ''} 
+                 data-max-size="${maxSize}">
+          <div class="wpask-file-dropzone">
+            <div class="wpask-file-icon">📁</div>
+            <div class="wpask-file-text">Click or drag file to upload</div>
+            <div class="wpask-file-hint">Max ${maxSize}MB${allowedTypes ? ` (${allowedTypes})` : ''}</div>
+          </div>
+          <div class="wpask-file-preview" style="display:none;">
+            <div class="wpask-file-name"></div>
+            <button type="button" class="wpask-file-remove">×</button>
+          </div>
+        </div>
+      `;
     } else if (question.type === 'rating') {
       html += `
         <div class="wpask-rating" id="wpask-rating-container">
@@ -566,6 +644,69 @@ class SurveyController {
         });
       });
     }
+
+    // File upload logic
+    if (question.type === 'file_upload') {
+      const fileInput = body.querySelector('.wpask-file-input');
+      const dropzone = body.querySelector('.wpask-file-dropzone');
+      const preview = body.querySelector('.wpask-file-preview');
+      const fileName = body.querySelector('.wpask-file-name');
+      const removeBtn = body.querySelector('.wpask-file-remove');
+      const maxSizeMB = parseInt(fileInput.dataset.maxSize, 10) || 5;
+
+      // Click to upload
+      dropzone.addEventListener('click', () => fileInput.click());
+
+      // File selection
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > maxSizeMB * 1024 * 1024) {
+            alert(`File size exceeds ${maxSizeMB}MB limit`);
+            fileInput.value = '';
+            return;
+          }
+          fileName.textContent = file.name;
+          dropzone.style.display = 'none';
+          preview.style.display = 'flex';
+        }
+      });
+
+      // Remove file
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.value = '';
+        dropzone.style.display = 'block';
+        preview.style.display = 'none';
+      });
+
+      // Drag and drop
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.style.borderColor = this.survey.settings.color || '#4F46E5';
+      });
+
+      dropzone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropzone.style.borderColor = '#d1d5db';
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.style.borderColor = '#d1d5db';
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          if (file.size > maxSizeMB * 1024 * 1024) {
+            alert(`File size exceeds ${maxSizeMB}MB limit`);
+            return;
+          }
+          fileInput.files = e.dataTransfer.files;
+          fileName.textContent = file.name;
+          dropzone.style.display = 'none';
+          preview.style.display = 'flex';
+        }
+      });
+    }
   }
 
   handleNext(question) {
@@ -594,6 +735,29 @@ class SurveyController {
       if (numberInput) value = numberInput.value;
     } else if (question.type === 'rating') {
       value = body.querySelector('#wpask-rating-input').value;
+    } else if (question.type === 'file_upload') {
+      const fileInput = body.querySelector('.wpask-answer-input');
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        // Convert file to base64 for submission
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          value = {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            data: e.target.result
+          };
+          this.answers[question.id] = {
+            type: question.type,
+            label: question.label,
+            value: value
+          };
+          this.moveToNextStep(question);
+        };
+        reader.readAsDataURL(file);
+        return; // Wait for file to be read
+      }
     }
     
     if (question.required) {
@@ -606,6 +770,12 @@ class SurveyController {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!value || !emailRegex.test(value)) {
           alert('Please enter a valid email address.');
+          return;
+        }
+      } else if (question.type === 'file_upload') {
+        const fileInput = body.querySelector('.wpask-answer-input');
+        if (fileInput.files.length === 0) {
+          alert('Please upload a file before continuing.');
           return;
         }
       } else if (!value || value.trim() === '') {
@@ -710,8 +880,19 @@ class SurveyController {
       
       const data = await res.json();
       console.log('Survey submitted successfully:', data);
+      
+      // Show success message
+      const body = this.widget.querySelector('#wpask-body');
+      body.innerHTML = `
+        <div class="wpask-success">
+          <div class="wpask-success-icon">✓</div>
+          <h3>${this.survey.settings?.confirmation?.message || 'Thank you!'}</h3>
+        </div>
+      `;
+      setTimeout(() => this.closeWidget(), 3000);
     } catch (e) {
       console.error('Error submitting survey:', e);
+      alert('Error submitting survey. Please try again.');
     }
   }
 

@@ -190,6 +190,15 @@
                     </span>
                     <span v-else style="color:var(--muted-foreground);">—</span>
                   </template>
+                  <template v-else-if="q.type === 'file_upload'">
+                    <span v-if="res.answers[q.id].value && res.answers[q.id].value.url" style="font-size:13px; color:var(--foreground);">
+                      <a :href="res.answers[q.id].value.url" target="_blank" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:4px;">
+                        <Hash :size="14" />
+                        {{ res.answers[q.id].value.name }}
+                      </a>
+                    </span>
+                    <span v-else style="color:var(--muted-foreground);">—</span>
+                  </template>
                   <template v-else>
                     {{ res.answers[q.id].value }}
                   </template>

@@ -213,6 +213,14 @@
                     <input type="date" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;">
                   </div>
 
+                  <!-- File Upload -->
+                  <div v-else-if="activeQuestion?.type === 'file_upload'">
+                    <div style="width:100%; padding:20px; border:2px dashed #d1d5db; border-radius:6px; text-align:center; color:#6b7280; font-size:13px;">
+                      <Hash style="width:24px; height:24px; margin:0 auto 8px; color:#9ca3af;" />
+                      Click or drag file to upload
+                    </div>
+                  </div>
+
                   <!-- Email -->
                   <div v-else-if="activeQuestion?.type === 'email'">
                     <input type="email" placeholder="user@example.com" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;">
@@ -283,6 +291,19 @@
                   <Plus /> Add option
                 </button>
               </div>
+            </div>
+
+            <!-- File Upload Options -->
+            <div class="wpask-field" v-if="activeQuestion.type === 'file_upload'">
+              <label>Allowed File Types</label>
+              <input v-model="activeQuestion.allowed_types" placeholder="e.g. jpg,png,pdf,doc (comma-separated)" />
+              <p class="wpask-field-hint">Leave empty to allow all file types.</p>
+            </div>
+
+            <div class="wpask-field" v-if="activeQuestion.type === 'file_upload'">
+              <label>Max File Size (MB)</label>
+              <input type="number" v-model="activeQuestion.max_file_size" placeholder="e.g. 5" />
+              <p class="wpask-field-hint">Maximum file size in megabytes. Default: 5MB.</p>
             </div>
 
             <!-- Required -->
@@ -557,6 +578,7 @@ const questionTypes = [
   { type: 'dropdown', label: 'Dropdown', icon: ListChecks },
   { type: 'date', label: 'Date', icon: Type },
   { type: 'yesno', label: 'Yes / No', icon: ToggleLeft },
+  { type: 'file_upload', label: 'File Upload', icon: Hash },
 ];
 
 const questionIcon = (type) => {
