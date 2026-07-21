@@ -228,17 +228,67 @@ const removeRule = (index) => {
   survey.targeting.rules.splice(index, 1);
 };
 
-const saveDraft = () => {
+const saveDraft = async () => {
   survey.status = 'draft';
-  // API Call goes here
-  console.log('Saving draft...', survey);
+  await saveSurvey();
 };
 
-const publishSurvey = () => {
+const publishSurvey = async () => {
   survey.status = 'publish';
-  // API Call goes here
-  console.log('Publishing...', survey);
+  await saveSurvey();
 };
+
+const saveSurvey = async () => {
+  const config = window.WPAskAdminConfig || {};
+  const isEdit = !!route.params.id;
+  const url = isEdit 
+    ? `${config.api_url}/surveys/${route.params.id}` 
+    : `${config.api_url}/surveys`;
+  
+  const method = isEdit ? 'PUT' : 'POST';
+
+  try {
+    const res = await fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-WP-Nonce': config.nonce
+      },
+      body: JSON.stringify(survey)
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      // If it was a new creation, redirect to edit mode to prevent duplicates
+      if (!isEdit) {
+        router.push(`/surveys/${data.id}/edit`);
+      }
+      alert(`Survey ${survey.status === 'publish' ? 'published' : 'saved'} successfully!`);
+    } else {
+      alert('Failed to save survey. Check console.');
+    }
+  } catch (e) {
+    console.error('Error saving survey', e);
+  }
+};
+
+// Load existing survey if editing
+onMounted(async () => {
+  if (route.params.id) {
+    const config = window.WPAskAdminConfig || {};
+    try {
+      const res = await fetch(`${config.api_url}/surveys/${route.params.id}`, {
+        headers: { 'X-WP-Nonce': config.nonce }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        Object.assign(survey, data);
+      }
+    } catch (e) {
+      console.error('Failed to load survey', e);
+    }
+  }
+});
 </script>
 
 <style scoped>

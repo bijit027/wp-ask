@@ -88,12 +88,24 @@ class FrontendHandler {
 		$session = $this->session_service->get_current_session( false );
 
 		// 4. Enqueue Assets (Compiled via Vite in Phase 9/10)
-		$script_url = INSIGHTPULSE_PLUGIN_URL . 'assets/frontend/insightpulse.js';
-		$style_url  = INSIGHTPULSE_PLUGIN_URL . 'assets/frontend/style.css';
+		$is_dev = true; // Use Vite dev server in development
 		
-		// Fallback for development if assets don't exist yet
-		if ( ! file_exists( INSIGHTPULSE_PLUGIN_DIR . 'assets/frontend/insightpulse.js' ) ) {
-			$script_url = '';
+		if ( $is_dev ) {
+			$script_url = 'http://localhost:5173/src/frontend/wpask.js';
+			
+			// Add type="module" to the frontend script
+			add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
+				if ( $handle === 'wpask-frontend' ) {
+					return '<script type="module" src="' . esc_url( $src ) . '"></script>';
+				}
+				return $tag;
+			}, 10, 3 );
+		} else {
+			$script_url = INSIGHTPULSE_PLUGIN_URL . 'assets/frontend/wpask.js';
+			
+			if ( ! file_exists( INSIGHTPULSE_PLUGIN_DIR . 'assets/frontend/wpask.js' ) ) {
+				$script_url = '';
+			}
 		}
 
 		if ( $script_url ) {

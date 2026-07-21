@@ -129,7 +129,7 @@ final class Plugin {
 	 * Render the dashboard widget content.
 	 */
 	public function render_dashboard_widget(): void {
-		$builder_url = admin_url( 'admin.php?page=insightpulse#/surveys/new' );
-		echo '<div id="insightpulse-dashboard-widget" data-builder-url="' . esc_url( $builder_url ) . '"></div>';
+		$builder_url = admin_url( 'admin.php?page=wpask#/surveys/new' );
+		echo '<div id="wpask-dashboard-widget" data-builder-url="' . esc_url( $builder_url ) . '"></div>';
 	}
 }
