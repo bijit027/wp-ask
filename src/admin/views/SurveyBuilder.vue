@@ -135,7 +135,7 @@
                 <el-button type="danger" plain icon="Delete" @click="removeRule(index)" circle />
               </div>
 
-              <el-button @click="addRule" type="dashed" class="mt-10">+ Add Rule</el-button>
+              <el-button @click="addRule" type="default" style="border-style: dashed; width: 100%" class="mt-10">+ Add Rule</el-button>
             </el-form>
           </el-tab-pane>
 
@@ -326,6 +326,17 @@ onMounted(async () => {
       if (res.ok) {
         const data = await res.json();
         Object.assign(survey, data);
+
+        // Ensure nested objects exist to prevent UI errors on older surveys
+        if (!survey.settings) survey.settings = { color: '#4F46E5', position: 'bottom-right', confirmation: { type: 'message', message: 'Thank you for your feedback!' } };
+        if (!survey.targeting) survey.targeting = { rule_match: 'all', rules: [] };
+        
+        // Fix for notifications crash
+        if (!survey.notifications) {
+          survey.notifications = { email: { active: false, addresses: '', logic: { enable: false, conditions: [] } } };
+        } else if (!survey.notifications.email) {
+          survey.notifications.email = { active: false, addresses: '', logic: { enable: false, conditions: [] } };
+        }
       }
     } catch (e) {
       console.error('Failed to load survey', e);
