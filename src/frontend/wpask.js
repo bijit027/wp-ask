@@ -143,6 +143,87 @@ class SurveyController {
         cursor: pointer;
       }
       
+      .wpask-checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      
+      .wpask-checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #374151;
+        cursor: pointer;
+      }
+      
+      .wpask-select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+        background: #fff;
+      }
+      .wpask-select:focus {
+        outline: none;
+        border-color: ${color};
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+      }
+      
+      .wpask-date {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+      }
+      .wpask-date:focus {
+        outline: none;
+        border-color: ${color};
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+      }
+      
+      .wpask-email {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+      }
+      .wpask-email:focus {
+        outline: none;
+        border-color: ${color};
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+      }
+      
+      .wpask-number {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+      }
+      .wpask-number:focus {
+        outline: none;
+        border-color: ${color};
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+      }
+      
       .wpask-btn {
         width: 100%;
         background: ${color};
@@ -213,6 +294,17 @@ class SurveyController {
   renderStep() {
     const body = this.widget.querySelector('#wpask-body');
     
+    // Check if we should skip this question based on logic
+    if (this.shouldSkipQuestion(this.currentStep)) {
+      this.currentStep++;
+      if (this.currentStep >= this.survey.questions.length) {
+        this.submitSurvey();
+      } else {
+        this.renderStep();
+      }
+      return;
+    }
+    
     if (this.currentStep >= this.survey.questions.length) {
       // Completed
       body.innerHTML = `
@@ -242,6 +334,32 @@ class SurveyController {
         `;
       });
       html += `</div>`;
+    } else if (question.type === 'checkbox') {
+      const options = question.options || ['Option 1', 'Option 2'];
+      html += `<div class="wpask-checkbox-group">`;
+      options.forEach(opt => {
+        html += `
+          <label class="wpask-checkbox-label">
+            <input type="checkbox" name="wpask_q_${question.id}" value="${opt}" class="wpask-answer-input">
+            ${opt}
+          </label>
+        `;
+      });
+      html += `</div>`;
+    } else if (question.type === 'dropdown') {
+      const options = question.options || ['Option 1', 'Option 2'];
+      html += `<select class="wpask-select wpask-answer-input">`;
+      html += `<option value="">Select an option...</option>`;
+      options.forEach(opt => {
+        html += `<option value="${opt}">${opt}</option>`;
+      });
+      html += `</select>`;
+    } else if (question.type === 'date') {
+      html += `<input type="date" class="wpask-date wpask-answer-input">`;
+    } else if (question.type === 'email') {
+      html += `<input type="email" class="wpask-email wpask-answer-input" placeholder="user@example.com">`;
+    } else if (question.type === 'number') {
+      html += `<input type="number" class="wpask-number wpask-answer-input" placeholder="0">`;
     } else if (question.type === 'rating') {
       html += `
         <div class="wpask-rating" id="wpask-rating-container">
@@ -293,13 +411,41 @@ class SurveyController {
     } else if (question.type === 'radio') {
       const checked = body.querySelector('.wpask-answer-input:checked');
       if (checked) value = checked.value;
+    } else if (question.type === 'checkbox') {
+      const checked = body.querySelectorAll('.wpask-answer-input:checked');
+      value = Array.from(checked).map(cb => cb.value);
+    } else if (question.type === 'dropdown') {
+      const select = body.querySelector('.wpask-answer-input');
+      if (select) value = select.value;
+    } else if (question.type === 'date') {
+      const dateInput = body.querySelector('.wpask-answer-input');
+      if (dateInput) value = dateInput.value;
+    } else if (question.type === 'email') {
+      const emailInput = body.querySelector('.wpask-answer-input');
+      if (emailInput) value = emailInput.value;
+    } else if (question.type === 'number') {
+      const numberInput = body.querySelector('.wpask-answer-input');
+      if (numberInput) value = numberInput.value;
     } else if (question.type === 'rating') {
       value = body.querySelector('#wpask-rating-input').value;
     }
     
-    if (question.required && (!value || value.trim() === '')) {
-      alert('Please answer the question before continuing.');
-      return;
+    if (question.required) {
+      if (question.type === 'checkbox') {
+        if (!value || value.length === 0) {
+          alert('Please select at least one option before continuing.');
+          return;
+        }
+      } else if (question.type === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!value || !emailRegex.test(value)) {
+          alert('Please enter a valid email address.');
+          return;
+        }
+      } else if (!value || value.trim() === '') {
+        alert('Please answer the question before continuing.');
+        return;
+      }
     }
     
     this.answers[question.id] = {
@@ -308,13 +454,76 @@ class SurveyController {
       value: value
     };
     
+    // Move to next step, checking for skip logic
+    this.moveToNextStep();
+  }
+  
+  moveToNextStep() {
     this.currentStep++;
+    
+    // Skip questions that should be hidden based on logic
+    while (this.currentStep < this.survey.questions.length && this.shouldSkipQuestion(this.currentStep)) {
+      this.currentStep++;
+    }
     
     if (this.currentStep >= this.survey.questions.length) {
       this.submitSurvey();
+    } else {
+      this.renderStep();
+    }
+  }
+  
+  shouldSkipQuestion(questionIndex) {
+    const question = this.survey.questions[questionIndex];
+    
+    // If logic is not enabled, don't skip
+    if (!question.logic || !question.logic.enabled) {
+      return false;
     }
     
-    this.renderStep();
+    // If no conditions, don't skip
+    if (!question.logic.conditions || question.logic.conditions.length === 0) {
+      return false;
+    }
+    
+    // Evaluate all conditions
+    const conditionsMatch = this.evaluateConditions(question.logic.conditions);
+    
+    // Determine if we should skip based on action
+    if (question.logic.action === 'show') {
+      return !conditionsMatch; // Skip if conditions don't match (we want to show only when they match)
+    } else if (question.logic.action === 'hide') {
+      return conditionsMatch; // Skip if conditions match (we want to hide when they match)
+    } else if (question.logic.action === 'skip') {
+      return conditionsMatch; // Skip if conditions match
+    }
+    
+    return false;
+  }
+  
+  evaluateConditions(conditions) {
+    // All conditions must match (AND logic)
+    return conditions.every(cond => this.evaluateCondition(cond));
+  }
+  
+  evaluateCondition(condition) {
+    const { questionId, operator, value } = condition;
+    const answer = this.answers[questionId];
+    
+    if (!answer) return false;
+    
+    const answerValue = answer.value;
+    
+    switch (operator) {
+      case '=':
+        return String(answerValue) === String(value);
+      case '!=':
+        return String(answerValue) !== String(value);
+      case 'in':
+        return Array.isArray(answerValue) && answerValue.includes(value);
+      default:
+        return false;
+    }
   }
 
   async submitSurvey() {

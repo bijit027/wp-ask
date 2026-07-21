@@ -27,13 +27,13 @@
           <div class="wpask-metric-label">
             <Eye /> Impressions
           </div>
-          <div class="wpask-metric-value">{{ survey.impressions || 0 }}</div>
+          <div class="wpask-metric-value">{{ resultsData?.total_impressions || survey?.impressions || 0 }}</div>
         </div>
         <div class="wpask-metric-card">
           <div class="wpask-metric-label">
             <MessageSquare /> Responses
           </div>
-          <div class="wpask-metric-value">{{ responses.length }}</div>
+          <div class="wpask-metric-value">{{ resultsData?.total_responses || responses.length }}</div>
         </div>
         <div class="wpask-metric-card">
           <div class="wpask-metric-label">
@@ -67,7 +67,7 @@
                 </div>
               </template>
               
-              <template v-else-if="q.type === 'radio' || q.type === 'choice'">
+              <template v-else-if="q.type === 'radio' || q.type === 'choice' || q.type === 'checkbox' || q.type === 'dropdown'">
                 <div v-for="opt in q.options" :key="opt" style="margin-bottom: 12px;">
                   <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
                     <span>{{ opt }}</span>
@@ -115,6 +115,30 @@
                       />
                     </div>
                   </template>
+                  <template v-else-if="q.type === 'checkbox'">
+                    <span v-if="Array.isArray(res.answers[q.id].value)" style="font-size:13px; color:var(--foreground);">
+                      {{ res.answers[q.id].value.join(', ') }}
+                    </span>
+                    <span v-else style="color:var(--muted-foreground);">—</span>
+                  </template>
+                  <template v-else-if="q.type === 'date'">
+                    <span v-if="res.answers[q.id].value" style="font-size:13px; color:var(--foreground);">
+                      {{ new Date(res.answers[q.id].value).toLocaleDateString() }}
+                    </span>
+                    <span v-else style="color:var(--muted-foreground);">—</span>
+                  </template>
+                  <template v-else-if="q.type === 'email'">
+                    <span v-if="res.answers[q.id].value" style="font-size:13px; color:var(--foreground);">
+                      {{ res.answers[q.id].value }}
+                    </span>
+                    <span v-else style="color:var(--muted-foreground);">—</span>
+                  </template>
+                  <template v-else-if="q.type === 'number'">
+                    <span v-if="res.answers[q.id].value" style="font-size:13px; color:var(--foreground);">
+                      {{ res.answers[q.id].value }}
+                    </span>
+                    <span v-else style="color:var(--muted-foreground);">—</span>
+                  </template>
                   <template v-else>
                     {{ res.answers[q.id].value }}
                   </template>
@@ -147,41 +171,46 @@ import { ArrowLeft, Download, Eye, MessageSquare, TrendingUp, Star, Trash2 } fro
 const route = useRoute();
 const survey = ref(null);
 const responses = ref([]);
+const resultsData = ref(null);
 
 const completionRate = computed(() => {
-  if (!survey.value || survey.value.impressions === 0) return 0;
-  return Math.round((responses.value.length / survey.value.impressions) * 100);
+  if (!resultsData.value) return 0;
+  return resultsData.value.completion_rate || 0;
 });
 
 const getAverageRating = (questionId) => {
-  const ratings = responses.value
-    .map(r => r.answers[questionId]?.value)
-    .filter(val => val != null);
+  if (!resultsData.value?.questions_data?.[questionId]) return '0.0';
   
-  if (ratings.length === 0) return '0.0';
-  const sum = ratings.reduce((a, b) => a + parseInt(b, 10), 0);
-  return (sum / ratings.length).toFixed(1);
+  const questionData = resultsData.value.questions_data[questionId];
+  const total = Object.values(questionData).reduce((a, b) => a + b, 0);
+  
+  if (total === 0) return '0.0';
+  
+  let sum = 0;
+  for (let i = 1; i <= 5; i++) {
+    sum += (questionData[i] || 0) * i;
+  }
+  
+  return (sum / total).toFixed(1);
 };
 
 const getOptionPercentage = (questionId, optionValue) => {
-  const answers = responses.value
-    .map(r => r.answers[questionId]?.value)
-    .filter(val => val != null);
-    
-  if (answers.length === 0) return 0;
+  if (!resultsData.value?.questions_data?.[questionId]) return 0;
   
-  const count = answers.filter(val => val === optionValue).length;
-  return Math.round((count / answers.length) * 100);
+  const questionData = resultsData.value.questions_data[questionId];
+  const total = Object.values(questionData).reduce((a, b) => a + b, 0);
+  
+  if (total === 0) return 0;
+  
+  const count = questionData[optionValue] || 0;
+  return Math.round((count / total) * 100);
 };
 
 const getAnswerCount = (questionId) => {
-  return responses.value
-    .filter(r => r.answers[questionId]?.value != null)
-    .length;
-};
-
-const exportCSV = () => {
-  alert('Pro Feature: CSV Export is available in the Pro version.');
+  if (!resultsData.value?.questions_data?.[questionId]) return 0;
+  
+  const questionData = resultsData.value.questions_data[questionId];
+  return Object.values(questionData).reduce((a, b) => a + b, 0);
 };
 
 onMounted(async () => {
@@ -189,9 +218,17 @@ onMounted(async () => {
   const id = route.params.id;
   
   try {
+    // Fetch survey details
     let res = await fetch(`${config.api_url}/surveys/${id}`, { headers: { 'X-WP-Nonce': config.nonce } });
     if (res.ok) survey.value = await res.json();
     
+    // Fetch aggregated results data
+    res = await fetch(`${config.api_url}/surveys/${id}/results`, { headers: { 'X-WP-Nonce': config.nonce } });
+    if (res.ok) {
+      resultsData.value = await res.json();
+    }
+    
+    // Fetch individual responses for the table
     res = await fetch(`${config.api_url}/surveys/${id}/responses`, { headers: { 'X-WP-Nonce': config.nonce } });
     if (res.ok) {
       const data = await res.json();
@@ -224,5 +261,12 @@ const deleteResponse = async (responseId) => {
     console.error('Error deleting response', e);
     alert('Error deleting response.');
   }
+};
+
+const exportCSV = () => {
+  const config = window.WPAskAdminConfig || {};
+  const id = route.params.id;
+  const exportUrl = `${config.api_url}/surveys/${id}/export?_wpnonce=${config.nonce}`;
+  window.open(exportUrl, '_blank');
 };
 </script>

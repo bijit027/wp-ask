@@ -65,6 +65,18 @@ class ResultsController {
 				],
 			]
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/surveys/(?P<id>[\d]+)/export',
+			[
+				[
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'export_csv' ],
+					'permission_callback' => [ $this, 'permissions_check' ],
+				],
+			]
+		);
 	}
 
 	/**
@@ -125,5 +137,81 @@ class ResultsController {
 			'total_surveys'     => $total_surveys,
 			'completion_rate'   => $total_impressions > 0 ? round( ( $total_responses / $total_impressions ) * 100, 1 ) : 0,
 		] );
+	}
+
+	/**
+	 * Export survey responses as CSV.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return void
+	 */
+	public function export_csv( $request ) {
+		$survey_id = (int) $request['id'];
+		$survey    = $this->survey_repo->find( $survey_id );
+
+		if ( ! $survey ) {
+			return new WP_Error( 'not_found', 'Survey not found.', [ 'status' => 404 ] );
+		}
+
+		global $wpdb;
+		$responses_table = $wpdb->prefix . 'ipulse_responses';
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$responses = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$responses_table} WHERE survey_id = %d AND status = 'publish' ORDER BY created_at DESC", $survey_id ) );
+
+		if ( empty( $responses ) ) {
+			return new WP_Error( 'no_responses', 'No responses to export.', [ 'status' => 404 ] );
+		}
+
+		$questions = json_decode( $survey->questions, true );
+
+		// Generate CSV headers
+		$headers = [ 'Response ID', 'Date', 'IP Address' ];
+		foreach ( $questions as $q ) {
+			$headers[] = $q['label'] . ' (' . $q['type'] . ')';
+		}
+
+		// Generate CSV rows
+		$rows = [];
+		$rows[] = $headers;
+
+		foreach ( $responses as $response ) {
+			$row = [
+				$response->id,
+				$response->created_at,
+				$response->ip,
+			];
+
+			$answers = json_decode( $response->answers, true );
+
+			foreach ( $questions as $q ) {
+				$answer_value = isset( $answers[ $q['id'] ] ) ? $answers[ $q['id'] ]['value'] : '';
+
+				// Format array values (checkbox)
+				if ( is_array( $answer_value ) ) {
+					$answer_value = implode( ', ', $answer_value );
+				}
+
+				$row[] = $answer_value;
+			}
+
+			$rows[] = $row;
+		}
+
+		// Output CSV
+		$filename = 'survey-' . $survey_id . '-responses-' . date( 'Y-m-d' ) . '.csv';
+
+		header( 'Content-Type: text/csv' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+
+		$output = fopen( 'php://output', 'w' );
+		foreach ( $rows as $row ) {
+			fputcsv( $output, $row );
+		}
+		fclose( $output );
+
+		exit;
 	}
 }

@@ -126,23 +126,23 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 > These are confirmed gaps vs. UserFeedback Lite. Build them in this order.
 
 ### Priority 1 — Core Feature Gaps
-- [ ] **Wire `SurveyResults.vue` to live `/results-summary` API** — The Results view currently uses mock/static data. Fetch from `GET /results-summary` and `GET /surveys/{id}/results` and render real aggregated stats and per-question chart data.
-- [ ] **Expanded Question Types (backend + frontend):**
-  - [ ] `checkbox` — Multi-select (frontend widget render + analytics aggregation)
-  - [ ] `dropdown` — Select input type
-  - [ ] `date` — Date picker input
-  - [ ] `email` — Email address input with validation
-  - [ ] `number` — Numeric input with optional min/max
+- [x] **Wire `SurveyResults.vue` to live `/results-summary` API** — The Results view currently uses mock/static data. Fetch from `GET /results-summary` and `GET /surveys/{id}/results` and render real aggregated stats and per-question chart data.
+- [x] **Expanded Question Types (backend + frontend):**
+  - [x] `checkbox` — Multi-select (frontend widget render + analytics aggregation)
+  - [x] `dropdown` — Select input type
+  - [x] `date` — Date picker input
+  - [x] `email` — Email address input with validation
+  - [x] `number` — Numeric input with optional min/max
   - [ ] `file_upload` — File attachment (complex — do last)
   - Add each type to: `SurveyBuilder.vue` inspector, `frontend/` widget renderer, and `AnalyticsService.php` aggregation
-- [ ] **Conditional Logic (Skip Logic)** — Per-question branching: "If answer to Q1 is X, skip to Q3". UF Lite has this. Requires:
-  - [ ] JSON schema in `questions[]` for `logic` conditions
-  - [ ] Frontend widget skip engine
-  - [ ] Builder UI to configure conditions
+- [x] **Conditional Logic (Skip Logic)** — Per-question branching: "If answer to Q1 is X, skip to Q3". UF Lite has this. Requires:
+  - [x] JSON schema in `questions[]` for `logic` conditions
+  - [x] Frontend widget skip engine
+  - [x] Builder UI to configure conditions
 
 ### Priority 2 — Analytics & Reporting
 - [ ] **Per-question charts in `SurveyResults.vue`** — Show bar charts for choice/radio, gauge for NPS, distribution for rating (use Chart.js or ApexCharts — already likely in node_modules)
-- [ ] **Response export (CSV)** — `GET /surveys/{id}/export` endpoint that streams a CSV of all responses. Add export button to Results view.
+- [x] **Response export (CSV)** — `GET /surveys/{id}/export` endpoint that streams a CSV of all responses. Add export button to Results view.
 - [ ] **Date range filtering on responses** — Pass `?from=&to=` params to `/surveys/{id}/responses`
 
 ### Priority 3 — Advanced Targeting

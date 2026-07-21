@@ -186,6 +186,43 @@
                     </div>
                   </div>
 
+                  <!-- Checkboxes -->
+                  <div class="wpask-choice-list" v-else-if="activeQuestion?.type === 'checkbox'">
+                    <div
+                      class="wpask-choice-item"
+                      v-for="(opt, i) in (activeQuestion.options || ['Option 1', 'Option 2'])"
+                      :key="i"
+                    >
+                      <div style="width:16px; height:16px; border:2px solid #d1d5db; border-radius:3px; display:flex; align-items:center; justify-content:center;">
+                        <Check style="width:12px; height:12px; color:var(--primary);" />
+                      </div>
+                      {{ opt }}
+                    </div>
+                  </div>
+
+                  <!-- Dropdown -->
+                  <div v-else-if="activeQuestion?.type === 'dropdown'">
+                    <select style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;">
+                      <option>Select an option...</option>
+                      <option v-for="(opt, i) in (activeQuestion.options || ['Option 1', 'Option 2'])" :key="i">{{ opt }}</option>
+                    </select>
+                  </div>
+
+                  <!-- Date -->
+                  <div v-else-if="activeQuestion?.type === 'date'">
+                    <input type="date" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;">
+                  </div>
+
+                  <!-- Email -->
+                  <div v-else-if="activeQuestion?.type === 'email'">
+                    <input type="email" placeholder="user@example.com" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;">
+                  </div>
+
+                  <!-- Number -->
+                  <div v-else-if="activeQuestion?.type === 'number'">
+                    <input type="number" placeholder="0" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;">
+                  </div>
+
                   <button class="wpask-widget-next-btn">Next</button>
                 </div>
               </div>
@@ -220,8 +257,8 @@
               <input v-model="activeQuestion.label" placeholder="Enter your question..." />
             </div>
 
-            <!-- Options for choice type -->
-            <div class="wpask-field" v-if="activeQuestion.type === 'choice' || activeQuestion.type === 'radio'">
+            <!-- Options for choice/checkbox/dropdown type -->
+            <div class="wpask-field" v-if="activeQuestion.type === 'choice' || activeQuestion.type === 'radio' || activeQuestion.type === 'checkbox' || activeQuestion.type === 'dropdown'">
               <label>Options</label>
               <div class="wpask-options-list">
                 <div
@@ -256,6 +293,62 @@
                 <p class="wpask-toggle-row-hint">Users must answer before moving on.</p>
               </div>
             </label>
+
+            <hr class="wpask-inspector-divider" />
+
+            <!-- Conditional Logic -->
+            <div class="wpask-field">
+              <label class="wpask-toggle-row" style="margin-bottom:12px;">
+                <input type="checkbox" v-model="activeQuestion.logic.enabled" />
+                <div>
+                  <div class="wpask-toggle-row-label">Enable Conditional Logic</div>
+                  <p class="wpask-toggle-row-hint">Show/hide this question based on previous answers.</p>
+                </div>
+              </label>
+
+              <template v-if="activeQuestion.logic.enabled">
+                <div style="margin-top:12px;">
+                  <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Action</label>
+                  <select v-model="activeQuestion.logic.action" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:6px; font-size:13px;">
+                    <option value="show">Show this question if conditions match</option>
+                    <option value="hide">Hide this question if conditions match</option>
+                    <option value="skip">Skip to next question if conditions match</option>
+                  </select>
+                </div>
+
+                <div style="margin-top:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <label style="font-size:13px; font-weight:500; color:var(--foreground); margin:0;">Conditions</label>
+                    <button class="wpask-add-rule-btn" @click="addLogicCondition" style="margin:0; padding:4px 8px; font-size:12px;">
+                      <Plus style="width:14px; height:14px;" /> Add condition
+                    </button>
+                  </div>
+                  
+                  <div v-if="activeQuestion.logic.conditions.length === 0" style="color:var(--muted-foreground); font-size:12px; padding:12px; background:var(--muted); border-radius:6px;">
+                    No conditions added. Add at least one condition.
+                  </div>
+
+                  <div v-for="(cond, idx) in activeQuestion.logic.conditions" :key="idx" class="wpask-rule-row" style="margin-top:8px;">
+                    <select v-model="cond.questionId" style="width:140px; font-size:12px;" @change="updateConditionOptions(idx)">
+                      <option value="">Select question...</option>
+                      <option v-for="q in getPreviousQuestions()" :key="q.id" :value="q.id">{{ q.label }}</option>
+                    </select>
+                    <select v-model="cond.operator" style="width:100px; font-size:12px;">
+                      <option value="=">Is</option>
+                      <option value="!=">Is not</option>
+                      <option value="in">Includes</option>
+                    </select>
+                    <select v-model="cond.value" style="width:120px; font-size:12px;">
+                      <option value="">Select value...</option>
+                      <option v-for="opt in getConditionOptions(cond.questionId)" :key="opt" :value="opt">{{ opt }}</option>
+                    </select>
+                    <button class="wpask-icon-btn danger" @click="removeLogicCondition(idx)" style="margin-left:8px;">
+                      <X style="width:14px; height:14px;" />
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
 
             <hr class="wpask-inspector-divider" />
 
@@ -433,7 +526,12 @@ const questionTypes = [
   { type: 'rating', label: 'Rating', icon: Star },
   { type: 'nps', label: 'NPS', icon: TrendingUp },
   { type: 'text', label: 'Short text', icon: Type },
+  { type: 'email', label: 'Email', icon: Type },
+  { type: 'number', label: 'Number', icon: Type },
   { type: 'radio', label: 'Multiple choice', icon: ListChecks },
+  { type: 'checkbox', label: 'Checkboxes', icon: ListChecks },
+  { type: 'dropdown', label: 'Dropdown', icon: ListChecks },
+  { type: 'date', label: 'Date', icon: Type },
   { type: 'yesno', label: 'Yes / No', icon: ToggleLeft },
 ];
 
@@ -488,7 +586,12 @@ const addQuestion = (type) => {
     type,
     label: 'New question',
     required: false,
-    options: (type === 'choice' || type === 'radio') ? ['Option 1', 'Option 2'] : undefined,
+    options: (type === 'choice' || type === 'radio' || type === 'checkbox' || type === 'dropdown') ? ['Option 1', 'Option 2'] : undefined,
+    logic: {
+      enabled: false,
+      action: 'show',
+      conditions: []
+    }
   };
   survey.questions.push(newQ);
   activeQuestionId.value = newQ.id;
@@ -501,6 +604,49 @@ const removeQuestion = (index) => {
   } else {
     activeQuestionId.value = null;
   }
+};
+
+const addLogicCondition = () => {
+  if (!activeQuestion.value.logic) {
+    activeQuestion.value.logic = { enabled: true, action: 'show', conditions: [] };
+  }
+  activeQuestion.value.logic.conditions.push({ questionId: '', operator: '=', value: '' });
+};
+
+const removeLogicCondition = (index) => {
+  activeQuestion.value.logic.conditions.splice(index, 1);
+};
+
+const getPreviousQuestions = () => {
+  const currentIndex = survey.questions.findIndex(q => q.id === activeQuestionId.value);
+  return survey.questions.slice(0, currentIndex);
+};
+
+const getConditionOptions = (questionId) => {
+  const question = survey.questions.find(q => q.id === questionId);
+  if (!question) return [];
+  
+  if (question.options && Array.isArray(question.options)) {
+    return question.options;
+  }
+  
+  if (question.type === 'rating') {
+    return ['1', '2', '3', '4', '5'];
+  }
+  
+  if (question.type === 'nps') {
+    return ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+  }
+  
+  if (question.type === 'yesno') {
+    return ['Yes', 'No'];
+  }
+  
+  return [];
+};
+
+const updateConditionOptions = (index) => {
+  activeQuestion.value.logic.conditions[index].value = '';
 };
 
 const updateOption = (i, value) => {
