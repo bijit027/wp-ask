@@ -127,7 +127,21 @@
 
       <!-- Individual Responses Table -->
       <div style="margin-top: 40px;">
-        <h2 class="wpask-section-title">Individual responses</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h2 class="wpask-section-title" style="margin:0;">Individual responses</h2>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label style="font-size:13px; color:var(--muted-foreground);">From:</label>
+              <input type="date" v-model="dateRange.from" style="padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;" />
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label style="font-size:13px; color:var(--muted-foreground);">To:</label>
+              <input type="date" v-model="dateRange.to" style="padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;" />
+            </div>
+            <button @click="applyDateFilter" class="wpask-btn wpask-btn-secondary" style="padding:6px 12px; font-size:13px;">Apply Filter</button>
+            <button @click="clearDateFilter" class="wpask-btn" style="padding:6px 12px; font-size:13px; background:var(--muted); color:var(--foreground);">Clear</button>
+          </div>
+        </div>
         <div class="wpask-responses-panel">
           <div class="wpask-responses-header">
             <div>Date</div>
@@ -209,6 +223,7 @@ const route = useRoute();
 const survey = ref(null);
 const responses = ref([]);
 const resultsData = ref(null);
+const dateRange = ref({ from: '', to: '' });
 
 const completionRate = computed(() => {
   if (!resultsData.value) return 0;
@@ -339,5 +354,56 @@ const exportCSV = () => {
   const id = route.params.id;
   const exportUrl = `${config.api_url}/surveys/${id}/export?_wpnonce=${config.nonce}`;
   window.open(exportUrl, '_blank');
+};
+
+const applyDateFilter = async () => {
+  const config = window.WPAskAdminConfig || {};
+  const id = route.params.id;
+  
+  let url = `${config.api_url}/surveys/${id}/responses`;
+  const params = new URLSearchParams();
+  
+  if (dateRange.value.from) {
+    params.append('from', dateRange.value.from);
+  }
+  if (dateRange.value.to) {
+    params.append('to', dateRange.value.to);
+  }
+  
+  if (params.toString()) {
+    url += '?' + params.toString();
+  }
+  
+  try {
+    const res = await fetch(url, { headers: { 'X-WP-Nonce': config.nonce } });
+    if (res.ok) {
+      const data = await res.json();
+      responses.value = data.map(r => ({
+        ...r,
+        answers: typeof r.answers === 'string' ? JSON.parse(r.answers) : r.answers
+      }));
+    }
+  } catch (e) {
+    console.error('Failed to filter responses', e);
+  }
+};
+
+const clearDateFilter = async () => {
+  dateRange.value = { from: '', to: '' };
+  const config = window.WPAskAdminConfig || {};
+  const id = route.params.id;
+  
+  try {
+    const res = await fetch(`${config.api_url}/surveys/${id}/responses`, { headers: { 'X-WP-Nonce': config.nonce } });
+    if (res.ok) {
+      const data = await res.json();
+      responses.value = data.map(r => ({
+        ...r,
+        answers: typeof r.answers === 'string' ? JSON.parse(r.answers) : r.answers
+      }));
+    }
+  } catch (e) {
+    console.error('Failed to load responses', e);
+  }
 };
 </script>

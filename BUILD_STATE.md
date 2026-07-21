@@ -143,7 +143,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 ### Priority 2 — Analytics & Reporting
 - [x] **Per-question charts in `SurveyResults.vue`** — Show bar charts for choice/radio, gauge for NPS, distribution for rating (using CSS-based charts)
 - [x] **Response export (CSV)** — `GET /surveys/{id}/export` endpoint that streams a CSV of all responses. Add export button to Results view.
-- [ ] **Date range filtering on responses** — Pass `?from=&to=` params to `/surveys/{id}/responses`
+- [x] **Date range filtering on responses** — Pass `?from=&to=` params to `/surveys/{id}/responses`
 
 ### Priority 3 — Advanced Targeting
 - [ ] **More targeting rule types:**

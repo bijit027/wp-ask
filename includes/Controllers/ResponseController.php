@@ -118,29 +118,37 @@ class ResponseController {
 		$page      = (int) $request->get_param( 'page' ) ?: 1;
 		$per_page  = (int) $request->get_param( 'per_page' ) ?: 50;
 		$offset    = ( $page - 1 ) * $per_page;
+		$from_date = $request->get_param( 'from' );
+		$to_date   = $request->get_param( 'to' );
 
-		if ( 'all' === $status ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$query = $wpdb->prepare( 
-				"SELECT * FROM {$table} WHERE survey_id = %d ORDER BY id DESC LIMIT %d OFFSET %d", 
-				$survey_id, 
-				$per_page, 
-				$offset 
-			);
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table} WHERE survey_id = %d", $survey_id ) );
-		} else {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$query = $wpdb->prepare( 
-				"SELECT * FROM {$table} WHERE survey_id = %d AND status = %s ORDER BY id DESC LIMIT %d OFFSET %d", 
-				$survey_id, 
-				$status, 
-				$per_page, 
-				$offset 
-			);
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table} WHERE survey_id = %d AND status = %s", $survey_id, $status ) );
+		$where_conditions = [ 'survey_id = %d' ];
+		$where_values = [ $survey_id ];
+
+		if ( 'all' !== $status ) {
+			$where_conditions[] = 'status = %s';
+			$where_values[] = $status;
 		}
+
+		if ( $from_date ) {
+			$where_conditions[] = 'created_at >= %s';
+			$where_values[] = $from_date;
+		}
+
+		if ( $to_date ) {
+			$where_conditions[] = 'created_at <= %s';
+			$where_values[] = $to_date . ' 23:59:59';
+		}
+
+		$where_clause = implode( ' AND ', $where_conditions );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$query = $wpdb->prepare( 
+			"SELECT * FROM {$table} WHERE {$where_clause} ORDER BY id DESC LIMIT %d OFFSET %d", 
+			array_merge( $where_values, [ $per_page, $offset ] )
+		);
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table} WHERE {$where_clause}", $where_values ) );
 		
 		$results = $wpdb->get_results( $query );
 		
