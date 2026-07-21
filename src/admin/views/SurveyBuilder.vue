@@ -299,14 +299,14 @@
             <!-- Conditional Logic -->
             <div class="wpask-field">
               <label class="wpask-toggle-row" style="margin-bottom:12px;">
-                <input type="checkbox" v-model="activeQuestion.logic.enabled" />
+                <input type="checkbox" :checked="activeQuestion.logic?.enabled" @change="toggleLogicEnabled" />
                 <div>
                   <div class="wpask-toggle-row-label">Enable Conditional Logic</div>
                   <p class="wpask-toggle-row-hint">Show/hide this question based on previous answers.</p>
                 </div>
               </label>
 
-              <template v-if="activeQuestion.logic.enabled">
+              <template v-if="activeQuestion.logic?.enabled">
                 <div style="margin-top:12px;">
                   <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Action</label>
                   <select v-model="activeQuestion.logic.action" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:6px; font-size:13px;">
@@ -324,11 +324,11 @@
                     </button>
                   </div>
                   
-                  <div v-if="activeQuestion.logic.conditions.length === 0" style="color:var(--muted-foreground); font-size:12px; padding:12px; background:var(--muted); border-radius:6px;">
+                  <div v-if="!activeQuestion.logic.conditions || activeQuestion.logic.conditions.length === 0" style="color:var(--muted-foreground); font-size:12px; padding:12px; background:var(--muted); border-radius:6px;">
                     No conditions added. Add at least one condition.
                   </div>
 
-                  <div v-for="(cond, idx) in activeQuestion.logic.conditions" :key="idx" class="wpask-rule-row" style="margin-top:8px;">
+                  <div v-for="(cond, idx) in (activeQuestion.logic.conditions || [])" :key="idx" class="wpask-rule-row" style="margin-top:8px;">
                     <select v-model="cond.questionId" style="width:140px; font-size:12px;" @change="updateConditionOptions(idx)">
                       <option value="">Select question...</option>
                       <option v-for="q in getPreviousQuestions()" :key="q.id" :value="q.id">{{ q.label }}</option>
@@ -649,6 +649,13 @@ const updateConditionOptions = (index) => {
   activeQuestion.value.logic.conditions[index].value = '';
 };
 
+const toggleLogicEnabled = (e) => {
+  if (!activeQuestion.value.logic) {
+    activeQuestion.value.logic = { enabled: false, action: 'show', conditions: [] };
+  }
+  activeQuestion.value.logic.enabled = e.target.checked;
+};
+
 const updateOption = (i, value) => {
   if (activeQuestion.value && activeQuestion.value.options) {
     activeQuestion.value.options[i] = value;
@@ -755,7 +762,18 @@ onMounted(async () => {
         if (!survey.targeting) survey.targeting = { rule_match: 'all', rules: [] };
         if (!survey.notifications) {
           survey.notifications = { email: { active: false, addresses: '', logic: { enable: false, conditions: [] } } };
-        } else if (!survey.notifications.email) {
+        }
+        
+        // Ensure questions have logic property
+        if (survey.questions && Array.isArray(survey.questions)) {
+          survey.questions.forEach(q => {
+            if (!q.logic) {
+              q.logic = { enabled: false, action: 'show', conditions: [] };
+            }
+          });
+        }
+        
+        if (!survey.notifications.email) {
           survey.notifications.email = { active: false, addresses: '', logic: { enable: false, conditions: [] } };
         }
 
