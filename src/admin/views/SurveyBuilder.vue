@@ -138,6 +138,30 @@
               <el-button @click="addRule" type="dashed" class="mt-10">+ Add Rule</el-button>
             </el-form>
           </el-tab-pane>
+
+          <!-- NOTIFICATIONS TAB -->
+          <el-tab-pane label="Notifications" name="notifications">
+            <el-alert
+              title="Send an email when someone fills out this survey"
+              type="info"
+              show-icon
+              :closable="false"
+              class="mb-20"
+            />
+            <el-form label-position="top">
+              <el-form-item label="Enable Email Notifications">
+                <el-switch v-model="survey.notifications.email.active" />
+              </el-form-item>
+
+              <el-form-item label="Email Addresses" v-if="survey.notifications.email.active">
+                <el-input 
+                  v-model="survey.notifications.email.addresses" 
+                  placeholder="admin@example.com, author@example.com"
+                />
+                <div class="help-text">Comma-separated list of email addresses.</div>
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
         </el-tabs>
       </div>
 
@@ -205,6 +229,16 @@ const survey = reactive({
   targeting: {
     rule_match: 'all',
     rules: []
+  },
+  notifications: {
+    email: {
+      active: false,
+      addresses: '',
+      logic: {
+        enable: false,
+        conditions: []
+      }
+    }
   }
 });
 

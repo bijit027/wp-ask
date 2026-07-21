@@ -79,6 +79,22 @@ final class Plugin {
 			( new MetaboxHandler() )->register();
 			add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widget' ] );
 		}
+
+		// Email Notifications.
+		add_action( 'insightpulse_response_saved', [ $this, 'trigger_email_notifications' ], 10, 4 );
+	}
+
+	/**
+	 * Trigger email notifications on new response.
+	 */
+	public function trigger_email_notifications( $response_id, $survey_id, $answers, $context ): void {
+		$survey   = ( new \InsightPulse\Repositories\SurveyRepository() )->find( $survey_id );
+		$response = ( new \InsightPulse\Repositories\ResponseRepository() )->find( $response_id );
+
+		if ( $survey && $response && ! empty( $survey->notifications->email->active ) ) {
+			$notification = new \InsightPulse\Emails\ResponseNotification( $survey, $response );
+			$notification->maybe_send();
+		}
 	}
 
 	/**

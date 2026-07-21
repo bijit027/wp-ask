@@ -42,14 +42,17 @@ Do NOT copy it — **improve upon it**. Follow these principles:
 
 ### Phase 10: Vue Frontend (Admin SPA)
 - **Status:** **COMPLETE**
-- **Files Modified:** `src/admin/*`, `includes/Controllers/*`, `includes/Handlers/*`
+- **Files Modified:** `src/admin/*`, `includes/Controllers/*`, `includes/Handlers/*`, `includes/Emails/*`
 - **Features added:** Vue 3 Composition API setup, Vite HMR, complete Admin CRUD (List, Build, Rules, Results), Submissions.
-- **Recent Gap Fixes:** Added individual response deletion for GDPR compliance (UI + Backend REST endpoint). Added Preview Mode for viewing draft surveys on the frontend (`wpask_preview`).
+- **Recent Gap Fixes:** 
+  - Individual response deletion for GDPR compliance.
+  - Preview Mode for viewing draft surveys on the frontend (`wpask_preview`).
+  - **Email Notifications**: Ported enterprise-grade `WP_Mail` wrapper and HTML templates from UserFeedback Lite, triggering on `insightpulse_response_saved` with a new Notifications tab in the Survey Builder.
 
 ## Next Steps (Based on Feature Gap Analysis)
 1. **Reporting & Analytics (UF Lite has aggregate reporting endpoint)**
-2. **Additional Question Types (UF Lite has more types)**
-3. **Advanced Display Rules (UF Lite has device/page specific rules)**
+2. **Scheduled Publishing (`publish_at` date picker)**
+3. **Expanded Question Types (UF Lite has more types)**
 - **Completed Repositories:**
   - `includes/Repositories/SurveyRepository.php` 
   - `includes/Repositories/ResponseRepository.php`
