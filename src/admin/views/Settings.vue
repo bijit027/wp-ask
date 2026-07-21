@@ -1,62 +1,100 @@
 <template>
-  <div class="wpask-page">
-    <div class="wpask-page-title-bar">
-      <h1 class="wpask-page-title">⚙️ Settings</h1>
-      <div class="wpask-app-header-right">
+  <div class="wpask-content-inner">
+    <!-- Page Header -->
+    <div class="wpask-page-header">
+      <div>
+        <h1 class="wpask-page-title">Settings</h1>
+        <p class="wpask-page-subtitle">Defaults, permissions and data handling for WPAsk.</p>
+      </div>
+      <div>
         <button class="wpask-btn wpask-btn-primary" @click="saveSettings">
-          💾 Save Settings
+          Save changes
         </button>
       </div>
     </div>
 
-    <div class="wpask-content-inner">
-      <div class="wpask-card" style="max-width: 800px; margin: 0 auto;">
-        <div class="wpask-card-header">
-          <span class="wpask-card-title">General Settings</span>
-        </div>
-        <div class="wpask-card-body">
-          <div class="settings-form-group">
-            <label class="settings-label">Brand Color</label>
-            <p class="settings-help">This color will be used as the default for new surveys.</p>
-            <el-color-picker v-model="settings.default_color" />
-          </div>
-
-          <div class="settings-form-group">
-            <label class="settings-label">Widget Position</label>
-            <p class="settings-help">The default screen position for new surveys.</p>
-            <el-radio-group v-model="settings.default_position">
-              <el-radio-button label="bottom-left">Bottom Left</el-radio-button>
-              <el-radio-button label="bottom-right">Bottom Right</el-radio-button>
-              <el-radio-button label="bottom-center">Bottom Center</el-radio-button>
-            </el-radio-group>
-          </div>
-
-          <div class="settings-form-group">
-            <label class="settings-label">Uninstall Behavior</label>
-            <p class="settings-help">What should happen to your data when you delete the plugin?</p>
-            <el-checkbox v-model="settings.delete_on_uninstall">
-              Delete all WPAsk data upon uninstallation (cannot be undone)
-            </el-checkbox>
-          </div>
-        </div>
-      </div>
+    <div class="wpask-settings-sections">
       
-      <div class="wpask-card" style="max-width: 800px; margin: 30px auto 0;">
-        <div class="wpask-card-header">
-          <span class="wpask-card-title">Access Control</span>
+      <!-- General Settings -->
+      <section class="wpask-settings-section">
+        <div>
+          <h2 class="wpask-settings-section-title">General</h2>
+          <p class="wpask-settings-section-desc">Applies to any new survey you create.</p>
         </div>
-        <div class="wpask-card-body">
-          <div class="settings-form-group">
-            <label class="settings-label">Who can manage surveys?</label>
-            <p class="settings-help">Select the minimum user role required to access the WPAsk dashboard.</p>
-            <el-select v-model="settings.minimum_role" placeholder="Select role" style="width: 250px;">
-              <el-option label="Administrator" value="administrator" />
-              <el-option label="Editor" value="editor" />
-              <el-option label="Author" value="author" />
-            </el-select>
+        
+        <div class="wpask-settings-fields">
+          <!-- Brand Color -->
+          <div>
+            <div class="wpask-field-label">Brand color</div>
+            <p class="wpask-field-hint">Used for accents on published surveys.</p>
+            <div class="wpask-field-control wpask-color-row">
+              <label class="wpask-color-swatch">
+                <div class="wpask-color-preview" :style="{ background: settings.default_color || '#6366f1' }"></div>
+                <input type="color" v-model="settings.default_color" />
+              </label>
+              <code class="wpask-color-code">{{ (settings.default_color || '#6366f1').toUpperCase() }}</code>
+            </div>
+          </div>
+
+          <!-- Widget Position -->
+          <div>
+            <div class="wpask-field-label">Widget position</div>
+            <p class="wpask-field-hint">Where the survey widget appears on the page.</p>
+            <div class="wpask-field-control wpask-position-toggle">
+              <button
+                v-for="pos in ['left', 'center', 'right']"
+                :key="pos"
+                class="wpask-pos-btn"
+                :class="{ active: settings.default_position === `bottom-${pos}` }"
+                @click="settings.default_position = `bottom-${pos}`"
+              >
+                Bottom {{ pos }}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Access Control -->
+      <section class="wpask-settings-section">
+        <div>
+          <h2 class="wpask-settings-section-title">Access control</h2>
+          <p class="wpask-settings-section-desc">Choose which roles can manage surveys.</p>
+        </div>
+        
+        <div class="wpask-settings-fields">
+          <div>
+            <div class="wpask-field-label">Minimum role</div>
+            <div class="wpask-field-control">
+              <select class="wpask-select" v-model="settings.minimum_role">
+                <option value="administrator">Administrator</option>
+                <option value="editor">Editor</option>
+                <option value="author">Author</option>
+                <option value="contributor">Contributor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Handling -->
+      <section class="wpask-settings-section">
+        <div>
+          <h2 class="wpask-settings-section-title">Data handling</h2>
+          <p class="wpask-settings-section-desc">Control what happens on plugin removal.</p>
+        </div>
+        
+        <div class="wpask-settings-fields">
+          <label class="wpask-toggle-row">
+            <input type="checkbox" v-model="settings.delete_on_uninstall" />
+            <div>
+              <div class="wpask-toggle-row-label">Delete all data on uninstall</div>
+              <p class="wpask-toggle-row-hint">Removes surveys, responses and settings. This cannot be undone.</p>
+            </div>
+          </label>
+        </div>
+      </section>
+
     </div>
   </div>
 </template>
@@ -108,24 +146,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped>
-.settings-form-group {
-  margin-bottom: 25px;
-}
-.settings-form-group:last-child {
-  margin-bottom: 0;
-}
-.settings-label {
-  display: block;
-  font-weight: 600;
-  color: #1a1d2b;
-  margin-bottom: 5px;
-  font-size: 14px;
-}
-.settings-help {
-  color: #6b7280;
-  font-size: 13px;
-  margin: 0 0 10px 0;
-}
-</style>

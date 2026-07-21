@@ -1,217 +1,426 @@
 <template>
-  <div class="survey-builder">
-    <div class="builder-header">
-      <div class="title-edit">
-        <el-input 
-          v-model="survey.title" 
-          placeholder="Enter Survey Name..." 
-          size="large"
-          class="survey-title-input"
-        >
-          <template #prefix>
-            <el-icon><Edit /></el-icon>
-          </template>
-        </el-input>
+  <div class="wpask-editor-wrap">
+    <!-- Sub-header -->
+    <div class="wpask-editor-subheader">
+      <div class="wpask-editor-subheader-inner">
+        <!-- Left: back + title + status -->
+        <div class="wpask-editor-title-row">
+          <button class="wpask-editor-back-btn" @click="$router.push('/')" aria-label="Back to surveys">
+            <ArrowLeft />
+          </button>
+          <input
+            v-model="survey.title"
+            class="wpask-editor-title-input"
+            placeholder="Untitled survey"
+          />
+          <span class="wpask-status-chip" :class="survey.status">
+            <Circle />
+            {{ survey.status === 'publish' ? 'Published' : 'Draft' }}
+          </span>
+        </div>
+
+        <!-- Right: actions -->
+        <div class="wpask-editor-actions">
+          <button class="wpask-btn wpask-btn-ghost wpask-btn-sm" @click="previewSurvey" v-if="route.params.id">
+            Preview
+          </button>
+          <button class="wpask-btn wpask-btn-secondary wpask-btn-sm" @click="saveDraft">
+            Save draft
+          </button>
+          <button class="wpask-btn wpask-btn-primary wpask-btn-sm" @click="publishSurvey">
+            <Check />
+            Publish
+          </button>
+        </div>
       </div>
-      <div class="actions">
-        <el-button v-if="$route.params.id" @click="previewSurvey" :icon="View">Preview</el-button>
-        <el-tag :type="survey.status === 'publish' ? 'success' : 'info'" size="large" class="status-tag">
-          {{ survey.status === 'publish' ? 'Active' : 'Draft' }}
-        </el-tag>
-        <el-button @click="saveDraft">Save Draft</el-button>
-        <el-button type="primary" @click="publishSurvey" :icon="Check">Publish</el-button>
+
+      <!-- Tabs -->
+      <div class="wpask-editor-tabs">
+        <button
+          v-for="t in editorTabs"
+          :key="t"
+          class="wpask-editor-tab"
+          :class="{ active: activeTab === t }"
+          @click="activeTab = t"
+        >{{ t }}</button>
       </div>
     </div>
 
-    <div class="builder-body">
-      <!-- Left Column: Controls -->
-      <div class="builder-controls">
-        <el-tabs v-model="activeTab" class="builder-tabs">
-          
-          <!-- DESIGN TAB -->
-          <el-tab-pane label="Design" name="design">
-            <div class="design-section">
-              <h3>Questions</h3>
-              <p class="help-text">Drag to reorder. The first question is always shown first.</p>
-              
-              <draggable 
-                v-model="survey.questions" 
-                item-key="id"
-                handle=".drag-handle"
-                class="question-list"
-              >
-                <template #item="{ element, index }">
-                  <el-card class="question-card" shadow="hover">
-                    <div class="question-header">
-                      <span class="drag-handle"><el-icon><Rank /></el-icon></span>
-                      <span class="question-type-badge">{{ element.type }}</span>
-                      <el-button type="danger" link @click="removeQuestion(index)"><el-icon><Delete /></el-icon></el-button>
-                    </div>
-                    <el-input v-model="element.label" placeholder="Question Text" />
-                    <div class="question-settings">
-                      <el-checkbox v-model="element.required">Required</el-checkbox>
-                    </div>
-                  </el-card>
-                </template>
-              </draggable>
+    <!-- Editor body -->
+    <div class="wpask-editor-body">
 
-              <el-dropdown @command="addQuestion" trigger="click" class="add-question-btn">
-                <el-button type="dashed" class="full-width">
-                  + Add Question
-                </el-button>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item command="radio">Multiple Choice (Radio)</el-dropdown-item>
-                    <el-dropdown-item command="checkbox">Multiple Choice (Checkbox)</el-dropdown-item>
-                    <el-dropdown-item command="textarea">Long Text</el-dropdown-item>
-                    <el-dropdown-item command="rating">Star Rating</el-dropdown-item>
-                    <el-dropdown-item command="nps">Net Promoter Score (NPS)</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
+      <!-- ====== DESIGN TAB ====== -->
+      <template v-if="activeTab === 'design'">
+        <!-- Left: Questions list -->
+        <aside class="wpask-questions-panel">
+          <div class="wpask-questions-header">
+            <div>
+              <div class="wpask-questions-title">Questions</div>
+              <p class="wpask-questions-subtitle">Drag to reorder</p>
             </div>
-          </el-tab-pane>
-
-          <!-- SETTINGS TAB -->
-          <el-tab-pane label="Settings" name="settings">
-            <el-form label-position="top">
-              <el-form-item label="Widget Color">
-                <el-color-picker v-model="survey.settings.color" />
-              </el-form-item>
-              
-              <el-form-item label="Position on Screen">
-                <el-radio-group v-model="survey.settings.position">
-                  <el-radio-button label="bottom-left">Bottom Left</el-radio-button>
-                  <el-radio-button label="bottom-right">Bottom Right</el-radio-button>
-                  <el-radio-button label="bottom-center">Bottom Center</el-radio-button>
-                </el-radio-group>
-              </el-form-item>
-
-              <el-divider />
-
-              <h3>Confirmation Message</h3>
-              <el-form-item label="Message to show after submission">
-                <el-input 
-                  type="textarea" 
-                  v-model="survey.settings.confirmation.message" 
-                  rows="3"
-                />
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-
-          <!-- TARGETING TAB -->
-          <el-tab-pane label="Targeting" name="targeting">
-            <el-alert
-              title="Where should this survey appear?"
-              type="info"
-              show-icon
-              :closable="false"
-              class="mb-20"
-            />
-            <el-form label-position="top">
-              <el-form-item label="Match Type">
-                <el-radio-group v-model="survey.targeting.rule_match">
-                  <el-radio label="all">Match ALL rules</el-radio>
-                  <el-radio label="any">Match ANY rule</el-radio>
-                </el-radio-group>
-              </el-form-item>
-
-              <div v-for="(rule, index) in survey.targeting.rules" :key="index" class="rule-row">
-                <el-select v-model="rule.type" placeholder="Rule Type" style="width: 150px">
-                  <el-option label="URL" value="url" />
-                  <el-option label="Post Type" value="post_type" />
-                  <el-option label="User Status" value="user_status" />
-                </el-select>
-                
-                <el-select v-model="rule.operator" style="width: 120px">
-                  <el-option label="Is" value="is" />
-                  <el-option label="Is Not" value="is_not" />
-                  <el-option label="Contains" value="contains" v-if="rule.type === 'url'" />
-                </el-select>
-
-                <el-input v-model="rule.value" placeholder="Value..." style="flex: 1" />
-                
-                <el-button type="danger" plain icon="Delete" @click="removeRule(index)" circle />
-              </div>
-
-              <el-button @click="addRule" type="default" style="border-style: dashed; width: 100%" class="mt-10">+ Add Rule</el-button>
-            </el-form>
-          </el-tab-pane>
-
-          <!-- NOTIFICATIONS TAB -->
-          <el-tab-pane label="Notifications" name="notifications">
-            <el-alert
-              title="Send an email when someone fills out this survey"
-              type="info"
-              show-icon
-              :closable="false"
-              class="mb-20"
-            />
-            <el-form label-position="top">
-              <el-form-item label="Enable Email Notifications">
-                <el-switch v-model="survey.notifications.email.active" />
-              </el-form-item>
-
-              <el-form-item label="Email Addresses" v-if="survey.notifications.email.active">
-                <el-input 
-                  v-model="survey.notifications.email.addresses" 
-                  placeholder="admin@example.com, author@example.com"
-                />
-                <div class="help-text">Comma-separated list of email addresses.</div>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-
-      <!-- Right Column: Live Preview -->
-      <div class="builder-preview">
-        <div class="preview-wrapper">
-          <div class="browser-chrome">
-            <div class="dots"><span></span><span></span><span></span></div>
-            <div class="url-bar">example.com</div>
+            <span class="wpask-q-count">{{ survey.questions.length }}</span>
           </div>
-          <div class="preview-content">
-            <!-- Simulated Widget -->
-            <div 
-              class="live-widget-preview" 
-              :class="survey.settings.position"
+
+          <ul class="wpask-q-list">
+            <li
+              v-for="(q, i) in survey.questions"
+              :key="q.id"
+              class="wpask-q-item"
+              :class="{ active: activeQuestionId === q.id }"
+              @click="activeQuestionId = q.id"
             >
-              <div class="widget-header" :style="{ backgroundColor: survey.settings.color }">
-                <span>{{ survey.title || 'Survey' }}</span>
-                <el-icon><Close /></el-icon>
+              <GripVertical class="wpask-q-grip" />
+              <div class="wpask-q-type-icon">
+                <component :is="questionIcon(q.type)" />
               </div>
-              <div class="widget-body" v-if="survey.questions.length > 0">
-                <p class="question-label">{{ survey.questions[0].label }}</p>
-                <div v-if="survey.questions[0].type === 'textarea'" class="preview-textarea"></div>
-                <div v-if="survey.questions[0].type === 'rating'" class="preview-rating">⭐⭐⭐⭐⭐</div>
-                <div v-if="survey.questions[0].type === 'radio'" class="preview-radio">
-                  <label><input type="radio" disabled> Option 1</label>
-                  <label><input type="radio" disabled> Option 2</label>
+              <div style="min-width:0">
+                <div class="wpask-q-label">{{ q.label || 'Untitled' }}</div>
+                <p class="wpask-q-meta">{{ q.type }} · #{{ i + 1 }}</p>
+              </div>
+              <button
+                class="wpask-q-remove"
+                @click.stop="removeQuestion(i)"
+                aria-label="Remove question"
+              >
+                <X />
+              </button>
+            </li>
+          </ul>
+
+          <!-- Add question types -->
+          <div class="wpask-add-question-section">
+            <p class="wpask-add-q-label">Add question</p>
+            <div class="wpask-q-type-grid">
+              <button
+                v-for="qt in questionTypes"
+                :key="qt.type"
+                class="wpask-q-type-btn"
+                @click="addQuestion(qt.type)"
+              >
+                <component :is="qt.icon" />
+                {{ qt.label }}
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center: Live preview -->
+        <section class="wpask-preview-panel">
+          <div class="wpask-preview-toolbar">
+            <span class="wpask-preview-label">Live preview</span>
+            <div class="wpask-device-toggle">
+              <button
+                class="wpask-device-btn"
+                :class="{ active: previewDevice === 'desktop' }"
+                @click="previewDevice = 'desktop'"
+                aria-label="Desktop"
+              >
+                <Monitor />
+              </button>
+              <button
+                class="wpask-device-btn"
+                :class="{ active: previewDevice === 'mobile' }"
+                @click="previewDevice = 'mobile'"
+                aria-label="Mobile"
+              >
+                <Smartphone />
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="wpask-browser-chrome-wrap"
+            :class="{ mobile: previewDevice === 'mobile' }"
+          >
+            <!-- Browser chrome -->
+            <div class="wpask-browser-bar">
+              <span class="wpask-browser-dot" style="background:#f87171;" />
+              <span class="wpask-browser-dot" style="background:#fbbf24;" />
+              <span class="wpask-browser-dot" style="background:#34d399;" />
+              <div class="wpask-browser-url">example.com</div>
+            </div>
+
+            <!-- Preview viewport -->
+            <div class="wpask-preview-viewport">
+              <div class="wpask-widget-preview">
+                <div class="wpask-widget-header" :style="{ backgroundColor: survey.settings?.color || '#6366f1' }">
+                  <span class="wpask-widget-header-title">{{ survey.title || 'Survey' }}</span>
+                  <X />
                 </div>
-                <el-button type="primary" class="preview-btn" :style="{ backgroundColor: survey.settings.color, borderColor: survey.settings.color }">Next</el-button>
+                <div class="wpask-widget-body">
+                  <div class="wpask-widget-question">{{ activeQuestion?.label || 'New question' }}</div>
+
+                  <!-- Rating -->
+                  <div class="wpask-preview-stars" v-if="activeQuestion?.type === 'rating'">
+                    <Star v-for="n in 5" :key="n" />
+                  </div>
+
+                  <!-- NPS -->
+                  <div class="wpask-nps-grid" v-else-if="activeQuestion?.type === 'nps'">
+                    <div class="wpask-nps-cell" v-for="n in 11" :key="n">{{ n - 1 }}</div>
+                  </div>
+
+                  <!-- Text / Textarea -->
+                  <textarea
+                    v-else-if="activeQuestion?.type === 'textarea' || activeQuestion?.type === 'text'"
+                    class="wpask-preview-textarea"
+                    placeholder="Type your answer…"
+                    readonly
+                  />
+
+                  <!-- Yes/No -->
+                  <div class="wpask-yesno-grid" v-else-if="activeQuestion?.type === 'yesno'">
+                    <button class="wpask-yesno-btn">Yes</button>
+                    <button class="wpask-yesno-btn">No</button>
+                  </div>
+
+                  <!-- Multiple choice -->
+                  <div class="wpask-choice-list" v-else-if="activeQuestion?.type === 'choice' || activeQuestion?.type === 'radio'">
+                    <div
+                      class="wpask-choice-item"
+                      v-for="(opt, i) in (activeQuestion.options || ['Option 1', 'Option 2'])"
+                      :key="i"
+                    >
+                      <Circle />
+                      {{ opt }}
+                    </div>
+                  </div>
+
+                  <button class="wpask-widget-next-btn">Next</button>
+                </div>
               </div>
-              <div class="widget-body empty-state" v-else>
-                <el-empty description="Add questions to see preview" :image-size="60" />
+            </div>
+          </div>
+        </section>
+
+        <!-- Right: Inspector -->
+        <aside class="wpask-inspector-panel">
+          <div class="wpask-inspector-header">
+            <div class="wpask-inspector-icon">
+              <Hash />
+            </div>
+            <div>
+              <div class="wpask-inspector-label">Question</div>
+              <div class="wpask-inspector-title">Properties</div>
+            </div>
+          </div>
+
+          <div class="wpask-inspector-fields" v-if="activeQuestion">
+            <!-- Type -->
+            <div class="wpask-field">
+              <label>Type</label>
+              <select v-model="activeQuestion.type">
+                <option v-for="qt in questionTypes" :key="qt.type" :value="qt.type">{{ qt.label }}</option>
+              </select>
+            </div>
+
+            <!-- Question text -->
+            <div class="wpask-field">
+              <label>Question</label>
+              <input v-model="activeQuestion.label" placeholder="Enter your question..." />
+            </div>
+
+            <!-- Options for choice type -->
+            <div class="wpask-field" v-if="activeQuestion.type === 'choice' || activeQuestion.type === 'radio'">
+              <label>Options</label>
+              <div class="wpask-options-list">
+                <div
+                  class="wpask-option-row"
+                  v-for="(opt, i) in (activeQuestion.options || [])"
+                  :key="i"
+                >
+                  <input
+                    :value="opt"
+                    @input="updateOption(i, $event.target.value)"
+                    placeholder="Option text"
+                  />
+                  <button class="wpask-icon-btn danger" @click="removeOption(i)">
+                    <X />
+                  </button>
+                </div>
+                <button
+                  class="wpask-add-rule-btn"
+                  @click="addOption"
+                  style="margin-top:6px;"
+                >
+                  <Plus /> Add option
+                </button>
+              </div>
+            </div>
+
+            <!-- Required -->
+            <label class="wpask-toggle-row">
+              <input type="checkbox" v-model="activeQuestion.required" />
+              <div>
+                <div class="wpask-toggle-row-label">Required</div>
+                <p class="wpask-toggle-row-hint">Users must answer before moving on.</p>
+              </div>
+            </label>
+
+            <hr class="wpask-inspector-divider" />
+
+            <button
+              class="wpask-btn wpask-btn-danger"
+              style="font-size:13px; padding: 6px 0;"
+              @click="removeQuestion(activeQuestionIndex)"
+            >
+              <Trash2 />
+              Delete question
+            </button>
+          </div>
+
+          <div v-else style="color: var(--muted-foreground); font-size:13px; text-align:center; padding: 24px 0;">
+            Select a question to edit its properties.
+          </div>
+        </aside>
+      </template>
+
+      <!-- ====== SETTINGS TAB ====== -->
+      <template v-if="activeTab === 'settings'">
+        <div style="grid-column: 1 / -1;">
+          <div class="wpask-builder-tab-content">
+            <div class="wpask-field">
+              <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Brand color</label>
+              <p style="font-size:12px; color:var(--muted-foreground); margin-bottom:10px !important;">Used for accents on published surveys.</p>
+              <div class="wpask-color-row">
+                <label class="wpask-color-swatch">
+                  <div class="wpask-color-preview" :style="{ background: survey.settings?.color || '#6366f1' }"></div>
+                  <input type="color" v-model="survey.settings.color" />
+                </label>
+                <code class="wpask-color-code">{{ (survey.settings?.color || '#6366f1').toUpperCase() }}</code>
+              </div>
+            </div>
+
+            <div class="wpask-field" style="margin-top:24px;">
+              <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Widget position</label>
+              <p style="font-size:12px; color:var(--muted-foreground); margin-bottom:10px !important;">Where the survey widget appears on the page.</p>
+              <div class="wpask-position-toggle">
+                <button
+                  v-for="pos in ['bottom-left', 'bottom-center', 'bottom-right']"
+                  :key="pos"
+                  class="wpask-pos-btn"
+                  :class="{ active: survey.settings?.position === pos }"
+                  @click="survey.settings.position = pos"
+                >{{ pos }}</button>
+              </div>
+            </div>
+
+            <div class="wpask-field" style="margin-top:24px;">
+              <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Confirmation message</label>
+              <input v-model="survey.settings.confirmation.message" placeholder="Thank you for your feedback!" style="max-width:480px;" />
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- ====== TARGETING TAB ====== -->
+      <template v-if="activeTab === 'targeting'">
+        <div style="grid-column: 1 / -1;">
+          <div class="wpask-builder-tab-content">
+            <div class="wpask-field">
+              <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Match type</label>
+              <div class="wpask-position-toggle">
+                <button
+                  class="wpask-pos-btn"
+                  :class="{ active: survey.targeting?.rule_match === 'all' }"
+                  @click="survey.targeting.rule_match = 'all'"
+                >Match ALL rules</button>
+                <button
+                  class="wpask-pos-btn"
+                  :class="{ active: survey.targeting?.rule_match === 'any' }"
+                  @click="survey.targeting.rule_match = 'any'"
+                >Match ANY rule</button>
+              </div>
+            </div>
+
+            <div v-for="(rule, index) in survey.targeting.rules" :key="index" class="wpask-rule-row" style="margin-top:10px;">
+              <select v-model="rule.type" style="width:150px;">
+                <option value="url">URL</option>
+                <option value="post_type">Post Type</option>
+                <option value="user_status">User Status</option>
+              </select>
+              <select v-model="rule.operator" style="width:120px;">
+                <option value="is">Is</option>
+                <option value="is_not">Is Not</option>
+                <option value="contains" v-if="rule.type === 'url'">Contains</option>
+              </select>
+              <input v-model="rule.value" placeholder="Value..." style="flex:1;" />
+              <button class="wpask-icon-btn danger" @click="removeRule(index)">
+                <Trash2 />
+              </button>
+            </div>
+
+            <button class="wpask-add-rule-btn" @click="addRule" style="margin-top:12px;">
+              <Plus /> Add Rule
+            </button>
+          </div>
+        </div>
+      </template>
+
+      <!-- ====== NOTIFICATIONS TAB ====== -->
+      <template v-if="activeTab === 'notifications'">
+        <div style="grid-column: 1 / -1;">
+          <div class="wpask-builder-tab-content">
+            <div class="wpask-notif-alert">
+              Send an email when someone fills out this survey.
+            </div>
+
+            <div class="wpask-switch-row">
+              <span class="wpask-switch-label">Enable Email Notifications</span>
+              <label class="wpask-switch">
+                <input type="checkbox" v-model="survey.notifications.email.active" />
+                <span class="wpask-switch-slider"></span>
+              </label>
+            </div>
+
+            <div v-if="survey.notifications.email.active" style="margin-top:20px;">
+              <div class="wpask-field">
+                <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:6px !important; display:block;">Email Addresses</label>
+                <input
+                  v-model="survey.notifications.email.addresses"
+                  placeholder="admin@example.com, author@example.com"
+                  style="max-width:480px;"
+                />
+                <p class="wpask-help-text">Comma-separated list of email addresses.</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+
+    </div><!-- end editor-body -->
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { Edit, Check, Delete, Rank, Close, View } from '@element-plus/icons-vue';
-import draggable from 'vuedraggable';
+import {
+  ArrowLeft, Check, X, Circle, GripVertical,
+  Star, TrendingUp, Type, ListChecks, ToggleLeft,
+  Monitor, Smartphone, Hash, Plus, Trash2,
+} from 'lucide-vue-next';
 
 const router = useRouter();
 const route = useRoute();
 const activeTab = ref('design');
+const previewDevice = ref('desktop');
+const activeQuestionId = ref(null);
+
+const editorTabs = ['design', 'settings', 'targeting', 'notifications'];
+
+const questionTypes = [
+  { type: 'rating', label: 'Rating', icon: Star },
+  { type: 'nps', label: 'NPS', icon: TrendingUp },
+  { type: 'text', label: 'Short text', icon: Type },
+  { type: 'radio', label: 'Multiple choice', icon: ListChecks },
+  { type: 'yesno', label: 'Yes / No', icon: ToggleLeft },
+];
+
+const questionIcon = (type) => {
+  const found = questionTypes.find(qt => qt.type === type);
+  return found ? found.icon : Type;
+};
 
 // Initial State
 const survey = reactive({
@@ -222,7 +431,7 @@ const survey = reactive({
     { id: 'q1', type: 'rating', label: 'How would you rate your experience?', required: true }
   ],
   settings: {
-    color: '#4F46E5',
+    color: '#6366f1',
     position: 'bottom-right',
     confirmation: { type: 'message', message: 'Thank you for your feedback!' }
   },
@@ -234,25 +443,62 @@ const survey = reactive({
     email: {
       active: false,
       addresses: '',
-      logic: {
-        enable: false,
-        conditions: []
-      }
+      logic: { enable: false, conditions: [] }
     }
   }
 });
 
+// Set initial active question
+if (survey.questions.length > 0) {
+  activeQuestionId.value = survey.questions[0].id;
+}
+
+const activeQuestion = computed(() =>
+  survey.questions.find(q => q.id === activeQuestionId.value) || null
+);
+
+const activeQuestionIndex = computed(() =>
+  survey.questions.findIndex(q => q.id === activeQuestionId.value)
+);
+
 const addQuestion = (type) => {
-  survey.questions.push({
+  const newQ = {
     id: 'q' + Date.now(),
-    type: type,
-    label: 'New Question',
-    required: false
-  });
+    type,
+    label: 'New question',
+    required: false,
+    options: (type === 'choice' || type === 'radio') ? ['Option 1', 'Option 2'] : undefined,
+  };
+  survey.questions.push(newQ);
+  activeQuestionId.value = newQ.id;
 };
 
 const removeQuestion = (index) => {
   survey.questions.splice(index, 1);
+  if (survey.questions.length > 0) {
+    activeQuestionId.value = survey.questions[Math.max(0, index - 1)].id;
+  } else {
+    activeQuestionId.value = null;
+  }
+};
+
+const updateOption = (i, value) => {
+  if (activeQuestion.value && activeQuestion.value.options) {
+    activeQuestion.value.options[i] = value;
+  }
+};
+
+const addOption = () => {
+  if (activeQuestion.value) {
+    if (!activeQuestion.value.options) activeQuestion.value.options = [];
+    activeQuestion.value.options.push(`Option ${activeQuestion.value.options.length + 1}`);
+  }
+};
+
+const removeOption = (i) => {
+  if (activeQuestion.value?.options) {
+    activeQuestion.value.options.splice(i, 1);
+  }
 };
 
 const addRule = () => {
@@ -284,25 +530,22 @@ const publishSurvey = async () => {
 const saveSurvey = async () => {
   const config = window.WPAskAdminConfig || {};
   const isEdit = !!route.params.id;
-  const url = isEdit 
-    ? `${config.api_url}/surveys/${route.params.id}` 
+  const url = isEdit
+    ? `${config.api_url}/surveys/${route.params.id}`
     : `${config.api_url}/surveys`;
-  
   const method = isEdit ? 'PUT' : 'POST';
 
   try {
     const res = await fetch(url, {
-      method: method,
+      method,
       headers: {
         'Content-Type': 'application/json',
         'X-WP-Nonce': config.nonce
       },
       body: JSON.stringify(survey)
     });
-    
     if (res.ok) {
       const data = await res.json();
-      // If it was a new creation, redirect to edit mode to prevent duplicates
       if (!isEdit) {
         router.push(`/surveys/${data.id}/edit`);
       }
@@ -327,15 +570,18 @@ onMounted(async () => {
         const data = await res.json();
         Object.assign(survey, data);
 
-        // Ensure nested objects exist to prevent UI errors on older surveys
-        if (!survey.settings) survey.settings = { color: '#4F46E5', position: 'bottom-right', confirmation: { type: 'message', message: 'Thank you for your feedback!' } };
+        // Ensure nested objects exist
+        if (!survey.settings) survey.settings = { color: '#6366f1', position: 'bottom-right', confirmation: { type: 'message', message: 'Thank you for your feedback!' } };
         if (!survey.targeting) survey.targeting = { rule_match: 'all', rules: [] };
-        
-        // Fix for notifications crash
         if (!survey.notifications) {
           survey.notifications = { email: { active: false, addresses: '', logic: { enable: false, conditions: [] } } };
         } else if (!survey.notifications.email) {
           survey.notifications.email = { active: false, addresses: '', logic: { enable: false, conditions: [] } };
+        }
+
+        // Set first question active
+        if (survey.questions?.length > 0) {
+          activeQuestionId.value = survey.questions[0].id;
         }
       }
     } catch (e) {
@@ -344,288 +590,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped>
-.survey-builder {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  height: calc(100vh - 120px);
-}
-
-.builder-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  padding: 15px 25px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.title-edit {
-  width: 400px;
-}
-
-.survey-title-input :deep(.el-input__wrapper) {
-  box-shadow: none;
-  font-size: 20px;
-  font-weight: 600;
-  padding-left: 0;
-}
-
-.survey-title-input :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #4F46E5 inset;
-  padding-left: 11px;
-}
-
-.actions {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.status-tag {
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.builder-body {
-  display: flex;
-  gap: 20px;
-  flex: 1;
-  min-height: 0;
-}
-
-.builder-controls {
-  flex: 0 0 450px;
-  background: white;
-  border-radius: 8px;
-  padding: 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.builder-tabs {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.builder-tabs :deep(.el-tabs__header) {
-  margin: 0;
-  padding: 0 20px;
-  background: #fafafa;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.builder-tabs :deep(.el-tabs__content) {
-  flex: 1;
-  overflow-y: auto;
-  padding: 25px;
-}
-
-.help-text {
-  color: #606266;
-  font-size: 13px;
-  margin-bottom: 20px;
-}
-
-.question-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.question-card :deep(.el-card__body) {
-  padding: 15px;
-}
-
-.question-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.drag-handle {
-  cursor: grab;
-  color: #909399;
-}
-
-.question-type-badge {
-  background: #f0f2f5;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #606266;
-  text-transform: uppercase;
-  font-weight: 600;
-  flex: 1;
-}
-
-.question-settings {
-  margin-top: 10px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.rule-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  align-items: center;
-}
-
-.mb-20 { margin-bottom: 20px; }
-.mt-10 { margin-top: 10px; }
-
-/* Preview Pane */
-.builder-preview {
-  flex: 1;
-  background: #e5e7eb;
-  border-radius: 8px;
-  padding: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.preview-wrapper {
-  background: white;
-  width: 100%;
-  max-width: 800px;
-  height: 600px;
-  border-radius: 12px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-}
-
-.browser-chrome {
-  background: #f3f4f6;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.dots {
-  display: flex;
-  gap: 6px;
-}
-
-.dots span {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #d1d5db;
-}
-
-.dots span:nth-child(1) { background: #ef4444; }
-.dots span:nth-child(2) { background: #f59e0b; }
-.dots span:nth-child(3) { background: #10b981; }
-
-.url-bar {
-  background: white;
-  padding: 4px 15px;
-  border-radius: 4px;
-  font-size: 13px;
-  color: #6b7280;
-  flex: 1;
-  max-width: 300px;
-  text-align: center;
-}
-
-.preview-content {
-  flex: 1;
-  position: relative;
-  background: url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="%23e5e7eb"/></svg>');
-}
-
-/* Simulated Widget */
-.live-widget-preview {
-  position: absolute;
-  width: 320px;
-  background: white;
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.live-widget-preview.bottom-right { bottom: 0; right: 30px; }
-.live-widget-preview.bottom-left { bottom: 0; left: 30px; }
-.live-widget-preview.bottom-center { bottom: 0; left: 50%; transform: translateX(-50%); }
-
-.widget-header {
-  padding: 12px 20px;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.widget-body {
-  padding: 20px;
-}
-
-.question-label {
-  margin: 0 0 15px 0;
-  font-size: 15px;
-  font-weight: 500;
-  color: #1f2937;
-}
-
-.preview-textarea {
-  height: 60px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #f9fafb;
-  margin-bottom: 15px;
-}
-
-.preview-rating {
-  font-size: 24px;
-  margin-bottom: 15px;
-  letter-spacing: 5px;
-}
-
-.preview-radio {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.preview-radio label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #4b5563;
-  font-size: 14px;
-}
-
-.preview-btn {
-  width: 100%;
-}
-
-.empty-state {
-  display: flex;
-  justify-content: center;
-  padding: 40px 0;
-}
-</style>

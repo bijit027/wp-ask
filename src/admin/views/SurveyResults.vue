@@ -1,132 +1,148 @@
 <template>
-  <div class="wpask-page">
-    <div class="wpask-page-title-bar">
-      <div style="display: flex; align-items: center; gap: 15px;">
-        <router-link to="/" class="wpask-btn wpask-btn-secondary" style="padding: 6px 10px;">
-          ← Back
-        </router-link>
-        <h1 class="wpask-page-title">Results: {{ survey?.title || 'Loading...' }}</h1>
+  <div class="wpask-content-inner">
+    <!-- Back Link -->
+    <button class="wpask-back-link" @click="$router.push('/')">
+      <ArrowLeft />
+      Back to surveys
+    </button>
+
+    <!-- Page Header -->
+    <div class="wpask-page-header">
+      <div>
+        <h1 class="wpask-page-title">{{ survey?.title || 'Loading...' }}</h1>
+        <p class="wpask-page-subtitle">Response overview and question breakdown.</p>
       </div>
-      <div class="wpask-app-header-right">
+      <div>
         <button class="wpask-btn wpask-btn-secondary" @click="exportCSV">
-          📥 Export CSV
+          <Download />
+          Export CSV
         </button>
       </div>
     </div>
 
-    <div class="wpask-content-inner" v-if="survey">
-      <!-- Top Stats -->
-      <div class="wpask-stats-grid">
-        <div class="wpask-stat-card">
-          <div class="wpask-stat-icon blue">👁️</div>
-          <div>
-            <div class="wpask-stat-value">{{ survey.impressions || 0 }}</div>
-            <div class="wpask-stat-label">Impressions</div>
+    <template v-if="survey">
+      <!-- Top Metrics -->
+      <div class="wpask-metrics-grid">
+        <div class="wpask-metric-card">
+          <div class="wpask-metric-label">
+            <Eye /> Impressions
           </div>
+          <div class="wpask-metric-value">{{ survey.impressions || 0 }}</div>
         </div>
-        <div class="wpask-stat-card">
-          <div class="wpask-stat-icon green">💬</div>
-          <div>
-            <div class="wpask-stat-value">{{ responses.length }}</div>
-            <div class="wpask-stat-label">Responses</div>
+        <div class="wpask-metric-card">
+          <div class="wpask-metric-label">
+            <MessageSquare /> Responses
           </div>
+          <div class="wpask-metric-value">{{ responses.length }}</div>
         </div>
-        <div class="wpask-stat-card">
-          <div class="wpask-stat-icon amber">📈</div>
-          <div>
-            <div class="wpask-stat-value">{{ completionRate }}%</div>
-            <div class="wpask-stat-label">Completion Rate</div>
+        <div class="wpask-metric-card">
+          <div class="wpask-metric-label">
+            <TrendingUp /> Completion rate
           </div>
+          <div class="wpask-metric-value">{{ completionRate }}%</div>
         </div>
       </div>
 
-      <!-- Question Summaries -->
-      <div style="margin-bottom: 30px;">
-        <h2 style="font-size: 18px; margin-bottom: 15px; color: #1a1d2b;">Question Breakdown</h2>
-        <div class="grid-2-col">
-          <div class="wpask-card" v-for="q in survey.questions" :key="q.id">
-            <div class="wpask-card-header">
-              <span class="wpask-card-title">{{ q.label }}</span>
-              <span style="font-size:12px; color:#9ca3af; text-transform:uppercase;">{{ q.type }}</span>
+      <!-- Question Breakdown -->
+      <div class="wpask-q-breakdown">
+        <h2 class="wpask-section-title">Question breakdown</h2>
+        <div class="wpask-q-cards-grid">
+          <div class="wpask-q-card" v-for="q in survey.questions" :key="q.id">
+            <div class="wpask-q-card-header">
+              <h3 class="wpask-q-card-title">{{ q.label }}</h3>
+              <span class="wpask-q-card-type-badge">{{ q.type }}</span>
             </div>
-            <div class="wpask-card-body">
-              <div v-if="q.type === 'rating'">
-                <div style="font-size: 32px; font-weight: 800; color: #fbbf24;">
-                  {{ getAverageRating(q.id) }} <span style="font-size: 16px; color: #9ca3af;">/ 5</span>
+            <div class="wpask-q-card-body">
+              <template v-if="q.type === 'rating'">
+                <div style="display:flex; align-items:baseline;">
+                  <span class="wpask-avg-score">{{ getAverageRating(q.id) }}</span>
+                  <span class="wpask-avg-sub">/ 5 average</span>
                 </div>
-                <div style="font-size: 13px; color: #6b7280; margin-top: 5px;">Average Rating</div>
-              </div>
+                <div class="wpask-stars-row">
+                  <Star
+                    v-for="n in 5"
+                    :key="n"
+                    :style="n <= Math.round(getAverageRating(q.id)) ? 'fill: var(--primary); color: var(--primary);' : 'color: var(--border);'"
+                  />
+                </div>
+              </template>
               
-              <div v-else-if="q.type === 'radio'">
-                <div v-for="opt in q.options" :key="opt" style="margin-bottom: 10px;">
-                  <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+              <template v-else-if="q.type === 'radio' || q.type === 'choice'">
+                <div v-for="opt in q.options" :key="opt" style="margin-bottom: 12px;">
+                  <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
                     <span>{{ opt }}</span>
-                    <strong>{{ getOptionPercentage(q.id, opt) }}%</strong>
+                    <strong style="font-family:'Sora',sans-serif;">{{ getOptionPercentage(q.id, opt) }}%</strong>
                   </div>
-                  <div style="background:#f0f0f5; height:6px; border-radius:3px; overflow:hidden;">
-                    <div style="background:#6366f1; height:100%;" :style="{ width: getOptionPercentage(q.id, opt) + '%' }"></div>
+                  <div style="background:var(--muted); height:6px; border-radius:3px; overflow:hidden;">
+                    <div style="background:var(--primary); height:100%; transition:width 0.3s;" :style="{ width: getOptionPercentage(q.id, opt) + '%' }"></div>
                   </div>
                 </div>
-              </div>
+              </template>
 
-              <div v-else>
-                <div style="font-size: 24px; font-weight: 800; color: #1a1d2b;">
-                  {{ getAnswerCount(q.id) }}
-                </div>
-                <div style="font-size: 13px; color: #6b7280; margin-top: 5px;">Text Responses Received</div>
-              </div>
+              <template v-else>
+                <div class="wpask-avg-score">{{ getAnswerCount(q.id) }}</div>
+                <div class="wpask-avg-sub" style="margin-left:0; margin-top:4px;">Responses received</div>
+              </template>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Individual Responses Table -->
-      <div class="wpask-card">
-        <div class="wpask-card-header">
-          <span class="wpask-card-title">Individual Responses</span>
-        </div>
-        <table class="wpask-survey-table" v-if="responses.length > 0">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th v-for="q in survey.questions" :key="q.id">{{ q.label }}</th>
-              <th style="width: 80px; text-align: right;">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="res in responses" :key="res.id">
-              <td style="white-space:nowrap; color:#6b7280; font-size:13px;">
-                {{ new Date(res.created_at).toLocaleString() }}
-              </td>
-              <td v-for="q in survey.questions" :key="q.id">
-                <div class="answer-cell">
-                  <span v-if="res.answers[q.id]">
-                    {{ q.type === 'rating' ? '⭐ '.repeat(res.answers[q.id].value) : res.answers[q.id].value }}
-                  </span>
-                  <span v-else style="color:#d1d5db;">—</span>
+      <div style="margin-top: 40px;">
+        <h2 class="wpask-section-title">Individual responses</h2>
+        <div class="wpask-responses-panel">
+          <div class="wpask-responses-header">
+            <div>Date</div>
+            <div v-for="q in survey.questions" :key="q.id" class="truncate" :title="q.label">{{ q.label }}</div>
+            <div style="text-align:right">Actions</div>
+          </div>
+          
+          <div v-if="responses.length > 0">
+            <div class="wpask-response-row" v-for="res in responses" :key="res.id">
+              <div class="wpask-response-date">
+                {{ new Date(res.created_at).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' }) }}
+              </div>
+              
+              <div v-for="q in survey.questions" :key="q.id" style="min-width:0;">
+                <div v-if="res.answers[q.id]" class="truncate" style="font-size:13px; color:var(--foreground);">
+                  <template v-if="q.type === 'rating'">
+                    <div class="wpask-stars-row" style="margin-top:0;">
+                      <Star
+                        v-for="n in 5"
+                        :key="n"
+                        :style="n <= res.answers[q.id].value ? 'fill: var(--primary); color: var(--primary);' : 'color: var(--border);'"
+                      />
+                    </div>
+                  </template>
+                  <template v-else>
+                    {{ res.answers[q.id].value }}
+                  </template>
                 </div>
-              </td>
-              <td style="text-align: right;">
-                <button class="wpask-btn-icon wpask-btn-danger" @click="deleteResponse(res.id)" title="Permanently Delete Response">
-                  🗑️
+                <div v-else style="color:var(--muted-foreground);">—</div>
+              </div>
+              
+              <div style="text-align:right;">
+                <button class="wpask-icon-btn danger" @click="deleteResponse(res.id)" title="Permanently Delete Response">
+                  <Trash2 />
                 </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="wpask-empty-state" style="padding: 40px;" v-else>
-          <span class="wpask-empty-icon" style="font-size:32px;">📭</span>
-          <h3 class="wpask-empty-title">No responses yet</h3>
-          <p class="wpask-empty-desc">When users fill out your survey, their answers will appear here.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="wpask-empty-row" v-else>
+            No responses yet.
+          </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { ArrowLeft, Download, Eye, MessageSquare, TrendingUp, Star, Trash2 } from 'lucide-vue-next';
 
 const route = useRoute();
 const survey = ref(null);
@@ -173,15 +189,12 @@ onMounted(async () => {
   const id = route.params.id;
   
   try {
-    // Fetch Survey details
     let res = await fetch(`${config.api_url}/surveys/${id}`, { headers: { 'X-WP-Nonce': config.nonce } });
     if (res.ok) survey.value = await res.json();
     
-    // Fetch Responses for this survey
     res = await fetch(`${config.api_url}/surveys/${id}/responses`, { headers: { 'X-WP-Nonce': config.nonce } });
     if (res.ok) {
       const data = await res.json();
-      // Ensure answers are parsed
       responses.value = data.map(r => ({
         ...r,
         answers: typeof r.answers === 'string' ? JSON.parse(r.answers) : r.answers
@@ -213,18 +226,3 @@ const deleteResponse = async (responseId) => {
   }
 };
 </script>
-
-<style scoped>
-.grid-2-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.answer-cell {
-  max-width: 250px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-</style>
