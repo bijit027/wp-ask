@@ -22,9 +22,19 @@ const routes = [
     component: () => import('./views/SurveyResults.vue')
   },
   {
+    path: '/results',
+    name: 'AllResults',
+    component: () => import('./views/SurveyResults.vue')
+  },
+  {
     path: '/settings',
     name: 'Settings',
     component: () => import('./views/Settings.vue')
+  },
+  {
+    path: '/addons',
+    name: 'Addons',
+    component: () => import('./views/Addons.vue')
   },
   {
     path: '/onboarding',

@@ -3,6 +3,24 @@
 > **Notice to other AI models/agents:** 
 > Read this file to understand the current architecture, what has been completed, and what is remaining. This plugin follows a strict Laravel-inspired WordPress architecture (Controllers, Services, Repositories, Models).
 
+---
+
+## 🎨 DESIGN DIRECTIVE — READ BEFORE BUILDING ANY UI
+
+**Always reference `/wp-content/plugins/userfeedback-lite-master/` for design inspiration.**
+
+Do NOT copy it — **improve upon it**. Follow these principles:
+
+1. **Sidebar Navigation**: Use a dark sidebar (`#1e1e3a`) with white text and an active state indicator — similar to UserFeedback's sidebar but more modern.
+2. **Top Bar**: A clean white header bar per page with the page title and primary action buttons.
+3. **Cards**: White rounded cards (`border-radius: 12px`) with subtle shadows for all content sections.
+4. **Color Palette**: Primary brand `#6366f1` (indigo), gradient `#6366f1 → #8b5cf6`, background `#f6f7fb`.
+5. **Typography**: Use `Inter` font from Google Fonts. Titles `700`, labels `500`, body `400`.
+6. **No WP Clutter**: Always reset WordPress admin CSS interference by setting `padding-left: 0 !important` on `#wpcontent`.
+7. **Element Plus**: Used for interactive widgets (modals, dropdowns, form inputs). Do NOT use raw WordPress form elements.
+8. **Live Preview Pane**: The Survey Builder must always have a right-side live browser preview of the widget.
+
+
 ## Current Status: Building Phase 3 (Repositories)
 
 ### ✅ Phase 1: Bootstrap & Core (Completed)

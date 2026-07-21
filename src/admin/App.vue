@@ -1,77 +1,61 @@
 <template>
-  <div class="wpask-admin">
-    <header class="wpask-header">
-      <div class="logo">
-        <span class="dashicons dashicons-feedback"></span>
-        <h2>WPAsk</h2>
+  <div id="wpask-app-root">
+    <!-- ====== Top Header (like UserFeedback Lite) ====== -->
+    <header class="wpask-app-header">
+      <div class="wpask-app-header-left">
+        <!-- Logo -->
+        <div class="wpask-logo">
+          <div class="wpask-logo-icon">💬</div>
+          <span class="wpask-logo-text">WPAsk</span>
+          <span class="wpask-logo-badge">Pro</span>
+        </div>
+
+        <!-- Nav Tabs -->
+        <nav class="wpask-nav-tabs">
+          <router-link to="/" class="wpask-nav-tab" exact-active-class="active">
+            <span class="tab-icon">📋</span> Surveys
+          </router-link>
+          <router-link to="/results" class="wpask-nav-tab" active-class="active">
+            <span class="tab-icon">📊</span> Results
+          </router-link>
+          <router-link to="/settings" class="wpask-nav-tab" active-class="active">
+            <span class="tab-icon">⚙️</span> Settings
+          </router-link>
+          <router-link to="/addons" class="wpask-nav-tab" active-class="active">
+            <span class="tab-icon">🔌</span>
+            <span style="color: #8b5cf6; font-weight: 700;">Addons</span>
+          </router-link>
+        </nav>
       </div>
-      <nav class="wpask-nav">
-        <router-link to="/">Surveys</router-link>
-        <router-link to="/settings">Settings</router-link>
-      </nav>
+
+      <div class="wpask-app-header-right">
+        <a href="https://wpask.io/docs" target="_blank" class="wpask-btn wpask-btn-secondary wpask-btn-sm">
+          📖 Docs
+        </a>
+        <router-link to="/surveys/new" class="wpask-btn wpask-btn-primary wpask-btn-sm">
+          ✨ New Survey
+        </router-link>
+      </div>
     </header>
 
-    <main class="wpask-main">
+    <!-- ====== Router View ====== -->
+    <div class="wpask-page-content">
       <router-view></router-view>
-    </main>
+    </div>
   </div>
 </template>
 
 <script setup>
-// Main App Component
+// Root App Shell
 </script>
 
-<style scoped>
-.wpask-admin {
-  background: #f0f0f1;
-  min-height: 100vh;
-  margin-left: -20px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import './admin.css';
 
-.wpask-header {
-  background: white;
-  padding: 0 30px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid #c3c4c7;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #4F46E5;
-}
-
-.logo h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.wpask-nav {
-  display: flex;
-  gap: 20px;
-}
-
-.wpask-nav a {
-  text-decoration: none;
-  color: #50575e;
-  font-weight: 500;
-  padding: 5px 0;
-}
-
-.wpask-nav a.router-link-active {
-  color: #4F46E5;
-  border-bottom: 2px solid #4F46E5;
-}
-
-.wpask-main {
-  padding: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+/* Kill WP Admin CSS interference */
+#wpcontent { padding-left: 0 !important; }
+#wpbody-content { padding-bottom: 0 !important; }
+#wpbody-content .wrap { margin: 0 !important; padding: 0 !important; }
+#wpask-admin-app { margin: 0 !important; }
 </style>
