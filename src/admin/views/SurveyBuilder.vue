@@ -14,6 +14,7 @@
         </el-input>
       </div>
       <div class="actions">
+        <el-button v-if="$route.params.id" @click="previewSurvey" :icon="View">Preview</el-button>
         <el-tag :type="survey.status === 'publish' ? 'success' : 'info'" size="large" class="status-tag">
           {{ survey.status === 'publish' ? 'Active' : 'Draft' }}
         </el-tag>
@@ -181,7 +182,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { Edit, Check, Delete, Rank, Close } from '@element-plus/icons-vue';
+import { Edit, Check, Delete, Rank, Close, View } from '@element-plus/icons-vue';
 import draggable from 'vuedraggable';
 
 const router = useRouter();
@@ -226,6 +227,14 @@ const addRule = () => {
 
 const removeRule = (index) => {
   survey.targeting.rules.splice(index, 1);
+};
+
+const previewSurvey = () => {
+  if (route.params.id) {
+    const previewUrl = new URL(window.location.origin);
+    previewUrl.searchParams.set('wpask_preview', route.params.id);
+    window.open(previewUrl.toString(), '_blank');
+  }
 };
 
 const saveDraft = async () => {

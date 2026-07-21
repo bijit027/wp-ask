@@ -90,6 +90,7 @@
             <tr>
               <th>Date</th>
               <th v-for="q in survey.questions" :key="q.id">{{ q.label }}</th>
+              <th style="width: 80px; text-align: right;">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -104,6 +105,11 @@
                   </span>
                   <span v-else style="color:#d1d5db;">—</span>
                 </div>
+              </td>
+              <td style="text-align: right;">
+                <button class="wpask-btn-icon wpask-btn-danger" @click="deleteResponse(res.id)" title="Permanently Delete Response">
+                  🗑️
+                </button>
               </td>
             </tr>
           </tbody>
@@ -185,6 +191,27 @@ onMounted(async () => {
     console.error('Failed to load results', e);
   }
 });
+
+const deleteResponse = async (responseId) => {
+  if (!confirm('Are you sure you want to permanently delete this response?')) return;
+  
+  const config = window.WPAskAdminConfig || {};
+  try {
+    const res = await fetch(`${config.api_url}/responses/${responseId}`, {
+      method: 'DELETE',
+      headers: { 'X-WP-Nonce': config.nonce }
+    });
+    
+    if (res.ok) {
+      responses.value = responses.value.filter(r => r.id !== responseId);
+    } else {
+      alert('Failed to delete response.');
+    }
+  } catch (e) {
+    console.error('Error deleting response', e);
+    alert('Error deleting response.');
+  }
+};
 </script>
 
 <style scoped>

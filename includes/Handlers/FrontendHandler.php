@@ -53,33 +53,46 @@ class FrontendHandler {
 	 */
 	public function enqueue_assets(): void {
 		global $wpdb;
-
-		// 1. Get all published surveys
 		$table   = $wpdb->prefix . 'ipulse_surveys';
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$results = $wpdb->get_results( "SELECT * FROM {$table} WHERE status = 'publish' ORDER BY id DESC" );
+		
+		$matched_survey = null;
 
-		if ( empty( $results ) ) {
-			return;
+		// 1. Check for Preview Mode
+		if ( isset( $_GET['wpask_preview'] ) && current_user_can( 'insightpulse_manage_surveys' ) ) {
+			$preview_id = (int) $_GET['wpask_preview'];
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $preview_id ) );
+			if ( $row ) {
+				$matched_survey = new Survey( $row );
+			}
 		}
 
-		// 2. Check targeting rules for each survey
-		$matched_survey = null;
-		foreach ( $results as $row ) {
-			$survey = new Survey( $row );
+		// 2. Normal flow if not previewing
+		if ( ! $matched_survey ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$results = $wpdb->get_results( "SELECT * FROM {$table} WHERE status = 'publish' ORDER BY id DESC" );
 
-			// Check per-post override (UserFeedback feature)
-			if ( $this->is_survey_disabled_on_post() ) {
+			if ( empty( $results ) ) {
 				return;
 			}
-			$specific_survey_id = $this->get_specific_survey_for_post();
-			if ( $specific_survey_id && (int) $specific_survey_id !== (int) $survey->id ) {
-				continue;
-			}
 
-			if ( $this->targeting_service->should_display( $survey ) ) {
-				$matched_survey = $survey;
-				break; // Just load the first one that matches for now
+			// Check targeting rules for each survey
+			foreach ( $results as $row ) {
+				$survey = new Survey( $row );
+
+				// Check per-post override (UserFeedback feature)
+				if ( $this->is_survey_disabled_on_post() ) {
+					return;
+				}
+				$specific_survey_id = $this->get_specific_survey_for_post();
+				if ( $specific_survey_id && (int) $specific_survey_id !== (int) $survey->id ) {
+					continue;
+				}
+
+				if ( $this->targeting_service->should_display( $survey ) ) {
+					$matched_survey = $survey;
+					break; // Just load the first one that matches for now
+				}
 			}
 		}
 
