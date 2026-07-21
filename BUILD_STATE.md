@@ -79,9 +79,10 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 | POST | `/responses/{id}/restore` | ResponseController | ✅ |
 | DELETE | `/responses/{id}` | ResponseController | ✅ |
 | GET/POST | `/settings` | SettingsController | ✅ |
-| GET | `/templates` | TemplateController | ✅ |
+| GET | `/survey-templates` | TemplateController | ✅ (template registry + Pro locks) |
 | POST | `/submit` | FrontendController | ✅ (public, rate-limited) |
 | GET | `/logic-type` | LogicController | ✅ (post types + roles) |
+| GET | `/addons` | AddonsController | ✅ (Pro add-on registry + upgrade links) |
 
 ### Admin SPA (Vue 3 + Vite)
 - [x] `SurveysList.vue` — CRUD list, status tabs (All/Published/Draft/Trash), bulk actions, impressions counter, Lucide icons, status ping dots
@@ -156,9 +157,8 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - [x] **LogicController** — Update `/logic-type` to also return a paginated list of individual pages/posts for the "specific page" targeting option
 
 ### Priority 4 — Polish & Monetisation
-- [ ] **Git push to `https://github.com/bijit027/wpask.git`** — Not yet pushed. Run: `git push origin main`
-- [ ] **Addons.vue** — Hook up real addon data (at minimum show 2–3 "Pro" addon cards with lock icons and a Stripe/pricing link)
-- [ ] **Survey Templates** — `TemplateController` exists but templates aren't selectable in the "New Survey" flow. Add a template picker modal to `SurveysList.vue` / onboarding.
+- [x] **Addons.vue** — Hook up real addon data (at minimum show 2–3 "Pro" addon cards with lock icons and a Stripe/pricing link)
+- [x] **Survey Templates** — `TemplateController` exists but templates aren't selectable in the "New Survey" flow. Add a template picker modal to `SurveysList.vue` / onboarding.
 - [ ] **Post Ratings Widget** — `ipulse_post_ratings` table exists. Build a "thumbs up/down" or "star" per-post rating widget that can be embedded via shortcode `[wpask_rating]`
 - [ ] **Heatmap module** — `ipulse_heatmaps` table exists. This is a larger feature — defer to last.
 

@@ -61,8 +61,10 @@ class AdminMenuHandler {
 
 			// Localize config
 			wp_localize_script( 'wpask-admin-app', 'WPAskAdminConfig', [
-				'api_url' => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
-				'nonce'   => wp_create_nonce( 'wp_rest' ),
+				'api_url'     => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
+				'nonce'       => wp_create_nonce( 'wp_rest' ),
+				'is_pro'      => (bool) apply_filters( 'wpask_is_pro', defined( 'WPASK_PRO_VERSION' ) ),
+				'upgrade_url' => \InsightPulse\Utils\UpgradeLink::get( 'admin', 'upgrade' ),
 			] );
 		} );
 	}

@@ -6,6 +6,12 @@
         <h1 class="wpask-page-title">Surveys</h1>
         <p class="wpask-page-subtitle">Create, publish and manage the surveys running on your site.</p>
       </div>
+      <div>
+        <button type="button" class="wpask-btn wpask-btn-primary" @click="openTemplatePicker">
+          <Plus />
+          New survey
+        </button>
+      </div>
     </div>
 
     <!-- Stats -->
@@ -151,8 +157,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { Search, Pencil, Copy, Trash2, MoreHorizontal } from 'lucide-vue-next';
+import { ref, computed, onMounted, inject } from 'vue';
+import { Search, Pencil, Copy, Trash2, MoreHorizontal, Plus } from 'lucide-vue-next';
+
+const openTemplatePicker = inject('openTemplatePicker', () => {});
 
 const surveys = ref([]);
 const searchQuery = ref('');

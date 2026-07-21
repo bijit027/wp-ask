@@ -36,10 +36,10 @@
           <BookOpen />
           Docs
         </a>
-        <router-link to="/surveys/new" class="wpask-btn wpask-btn-primary wpask-btn-sm">
+        <button type="button" class="wpask-btn wpask-btn-primary wpask-btn-sm" @click="showTemplatePicker = true">
           <Plus />
           New survey
-        </router-link>
+        </button>
       </div>
     </header>
 
@@ -47,10 +47,14 @@
     <div class="wpask-page-content">
       <router-view></router-view>
     </div>
+
+    <TemplatePickerModal v-model:visible="showTemplatePicker" />
   </div>
 </template>
 
 <script setup>
+import { ref, provide, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import {
   MessageSquare,
   ClipboardList,
@@ -60,6 +64,24 @@ import {
   BookOpen,
   Plus,
 } from 'lucide-vue-next';
+import TemplatePickerModal from './components/TemplatePickerModal.vue';
+
+const route = useRoute();
+const showTemplatePicker = ref(false);
+
+provide('openTemplatePicker', () => {
+  showTemplatePicker.value = true;
+});
+
+watch(
+  () => route.query.new,
+  (value) => {
+    if (value === '1') {
+      showTemplatePicker.value = true;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style>

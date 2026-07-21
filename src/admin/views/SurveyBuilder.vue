@@ -769,7 +769,7 @@ const saveSurvey = async () => {
   }
 };
 
-// Load existing survey if editing
+// Load existing survey if editing, or apply template for new surveys
 onMounted(async () => {
   const config = window.WPAskAdminConfig || {};
 
@@ -822,6 +822,76 @@ onMounted(async () => {
     } catch (e) {
       console.error('Failed to load survey', e);
     }
+    return;
+  }
+
+  // New survey: load defaults and optional template
+  try {
+    const settingsRes = await fetch(`${config.api_url}/settings`, {
+      headers: { 'X-WP-Nonce': config.nonce }
+    });
+    if (settingsRes.ok) {
+      const settings = await settingsRes.json();
+      if (settings.default_color) {
+        survey.settings.color = settings.default_color;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not load default settings', e);
+  }
+
+  if (route.query.template) {
+    try {
+      const templatesRes = await fetch(`${config.api_url}/survey-templates`, {
+        headers: { 'X-WP-Nonce': config.nonce }
+      });
+      if (templatesRes.ok) {
+        const templates = await templatesRes.json();
+        const template = templates.find(t => t.id === route.query.template);
+        if (template?.is_available) {
+          applyTemplate(template);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load survey template', e);
+    }
   }
 });
+
+const normalizeOptions = (options, type) => {
+  if (!options || !['radio', 'choice', 'checkbox', 'dropdown'].includes(type)) {
+    return undefined;
+  }
+  if (Array.isArray(options) && options.length && typeof options[0] === 'object') {
+    return options.map(o => o.label || o.value);
+  }
+  return options;
+};
+
+const applyTemplate = (template) => {
+  survey.title = template.title || 'My New Survey';
+  survey.questions = (template.questions || []).map((q, i) => ({
+    id: q.id || `q${Date.now()}_${i}`,
+    type: q.type === 'textarea' ? 'text' : q.type,
+    label: q.label,
+    required: !!q.required,
+    options: normalizeOptions(q.options, q.type),
+    logic: { enabled: false, action: 'show', conditions: [] },
+  }));
+
+  if (template.settings) {
+    if (template.settings.position) {
+      survey.settings.position = template.settings.position;
+    }
+    if (template.settings.confirmation) {
+      survey.settings.confirmation = { ...template.settings.confirmation };
+    }
+  }
+
+  if (survey.questions.length > 0) {
+    activeQuestionId.value = survey.questions[0].id;
+  } else {
+    activeQuestionId.value = null;
+  }
+};
 </script>

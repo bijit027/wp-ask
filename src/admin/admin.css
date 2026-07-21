@@ -1595,6 +1595,52 @@ button { cursor: pointer; background: none; border: none; padding: 0; font-famil
 /* =============================================
    ADDONS PAGE
    ============================================= */
+.wpask-addons-upgrade-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, oklch(0.55 0.18 258 / 0.08), oklch(0.62 0.2 300 / 0.08));
+  border: 1px solid oklch(0.55 0.18 258 / 0.2);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.wpask-addons-upgrade-banner-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.wpask-addons-upgrade-banner-icon svg { width: 18px; height: 18px; }
+
+.wpask-addons-upgrade-banner-body {
+  font-size: 14px;
+  color: var(--foreground);
+  line-height: 1.5;
+}
+
+.wpask-addons-upgrade-banner-body a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.wpask-addons-upgrade-banner-body a:hover { text-decoration: underline; }
+
+.wpask-addons-loading {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+
 .wpask-addons-grid {
   display: grid;
   gap: 16px;
@@ -1609,6 +1655,70 @@ button { cursor: pointer; background: none; border: none; padding: 0; font-famil
   border-radius: 16px;
   border: 1px solid var(--border);
   padding: 20px;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.wpask-addon-card--locked {
+  background: oklch(0.98 0.005 258);
+}
+
+.wpask-addon-card--pro:hover {
+  border-color: oklch(0.55 0.18 258 / 0.35);
+  box-shadow: 0 4px 16px oklch(0.55 0.18 258 / 0.08);
+}
+
+.wpask-addon-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.wpask-addon-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: oklch(0.55 0.18 258 / 0.1);
+  color: var(--primary);
+  position: relative;
+}
+
+.wpask-addon-icon svg { width: 20px; height: 20px; }
+
+.wpask-addon-icon--locked {
+  background: oklch(0.55 0.02 258 / 0.08);
+  color: var(--muted-foreground);
+}
+
+.wpask-addon-lock-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  border: 2px solid var(--surface);
+}
+
+.wpask-addon-lock-badge svg { width: 10px; height: 10px; }
+
+.wpask-addon-pro-badge {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  background: oklch(0.55 0.18 258 / 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
 }
 
 .wpask-addon-card-inner {
@@ -1621,12 +1731,22 @@ button { cursor: pointer; background: none; border: none; padding: 0; font-famil
 .wpask-addon-name { font-size: 14px; font-weight: 600; color: var(--foreground); }
 .wpask-addon-desc { font-size: 13px; color: var(--muted-foreground); margin-top: 4px !important; }
 
-.wpask-installed-badge {
+.wpask-addon-action { align-self: flex-start; }
+
+.wpask-addon-upgrade-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--accent);
-  color: var(--accent-foreground);
+  text-decoration: none;
+}
+
+.wpask-addon-upgrade-btn svg { width: 14px; height: 14px; }
+
+.wpask-installed-badge,
+.wpask-included-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
   font-weight: 500;
   padding: 4px 10px;
@@ -1634,7 +1754,18 @@ button { cursor: pointer; background: none; border: none; padding: 0; font-famil
   flex-shrink: 0;
 }
 
-.wpask-installed-badge svg { width: 8px; height: 8px; fill: currentColor; }
+.wpask-installed-badge {
+  background: oklch(0.62 0.17 155 / 0.12);
+  color: oklch(0.45 0.14 155);
+}
+
+.wpask-included-badge {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.wpask-installed-badge svg,
+.wpask-included-badge svg { width: 14px; height: 14px; }
 
 /* =============================================
    NOTIFICATIONS TAB CONTENT
@@ -1715,6 +1846,197 @@ button { cursor: pointer; background: none; border: none; padding: 0; font-famil
 .gap-8 { gap: 8px; }
 .gap-4 { gap: 4px; }
 .flex-1 { flex: 1; }
+
+/* =============================================
+   TEMPLATE PICKER
+   ============================================= */
+.wpask-template-loading {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+
+.wpask-template-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .wpask-template-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.wpask-template-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.wpask-template-card:hover:not(:disabled) {
+  border-color: oklch(0.55 0.18 258 / 0.35);
+  box-shadow: 0 4px 16px oklch(0.55 0.18 258 / 0.08);
+}
+
+.wpask-template-card--selected {
+  border-color: var(--primary);
+  background: oklch(0.55 0.18 258 / 0.04);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.wpask-template-card--locked {
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.wpask-template-card:disabled {
+  cursor: not-allowed;
+}
+
+.wpask-template-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: oklch(0.55 0.18 258 / 0.1);
+  color: var(--primary);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.wpask-template-card-icon svg { width: 20px; height: 20px; }
+
+.wpask-template-card-icon--locked {
+  background: oklch(0.55 0.02 258 / 0.08);
+  color: var(--muted-foreground);
+}
+
+.wpask-template-lock-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  border: 2px solid var(--surface);
+}
+
+.wpask-template-lock-badge svg { width: 10px; height: 10px; }
+
+.wpask-template-card-body { min-width: 0; flex: 1; }
+
+.wpask-template-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.wpask-template-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.wpask-template-pro-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  background: oklch(0.55 0.18 258 / 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.wpask-template-card-desc {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin: 0 0 8px !important;
+  line-height: 1.4;
+}
+
+.wpask-template-card-meta {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+/* =============================================
+   MODAL
+   ============================================= */
+.wpask-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  padding: 20px;
+}
+
+.wpask-modal {
+  width: 100%;
+  max-width: 720px;
+  max-height: calc(100vh - 40px);
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wpask-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.wpask-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.wpask-modal-subtitle {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin: 4px 0 0;
+}
+
+.wpask-modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.wpask-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+}
 
 /* WP admin interference reset */
 #wpcontent { padding-left: 0 !important; }
