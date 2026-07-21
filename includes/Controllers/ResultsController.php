@@ -53,6 +53,18 @@ class ResultsController {
 				],
 			]
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/results-summary',
+			[
+				[
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_summary' ],
+					'permission_callback' => [ $this, 'permissions_check' ],
+				],
+			]
+		);
 	}
 
 	/**
@@ -89,6 +101,29 @@ class ResultsController {
 			'total_responses'   => $total_responses,
 			'completion_rate'   => $survey->impressions > 0 ? round( ( $total_responses / $survey->impressions ) * 100, 1 ) : 0,
 			'questions_data'    => $reportable_data,
+		] );
+	}
+
+	/**
+	 * Get aggregated results across all surveys.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function get_summary( $request ) {
+		global $wpdb;
+		$surveys_table = $wpdb->prefix . 'ipulse_surveys';
+		$responses_table = $wpdb->prefix . 'ipulse_responses';
+
+		$total_impressions = (int) $wpdb->get_var( "SELECT SUM(impressions) FROM {$surveys_table} WHERE status != 'trash'" );
+		$total_responses = (int) $wpdb->get_var( "SELECT COUNT(id) FROM {$responses_table} WHERE status = 'publish'" );
+		$total_surveys = (int) $wpdb->get_var( "SELECT COUNT(id) FROM {$surveys_table} WHERE status != 'trash'" );
+
+		return rest_ensure_response( [
+			'total_impressions' => $total_impressions,
+			'total_responses'   => $total_responses,
+			'total_surveys'     => $total_surveys,
+			'completion_rate'   => $total_impressions > 0 ? round( ( $total_responses / $total_impressions ) * 100, 1 ) : 0,
 		] );
 	}
 }

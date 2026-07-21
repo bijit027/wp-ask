@@ -58,6 +58,10 @@ register_activation_hook( __FILE__, function () {
 	require_once INSIGHTPULSE_PLUGIN_DIR . 'includes/Database/Migrator.php';
 	\InsightPulse\Database\Migrator::run();
 
+	// Set activation date for review prompt.
+	require_once INSIGHTPULSE_PLUGIN_DIR . 'includes/Handlers/ReviewNoticeHandler.php';
+	\InsightPulse\Handlers\ReviewNoticeHandler::set_activation_date();
+
 	set_transient( '_insightpulse_activation_redirect', 1, 30 );
 } );
 

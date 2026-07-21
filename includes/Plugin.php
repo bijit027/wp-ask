@@ -11,12 +11,15 @@ use InsightPulse\Handlers\AdminMenuHandler;
 use InsightPulse\Handlers\ActivationHandler;
 use InsightPulse\Handlers\FrontendHandler;
 use InsightPulse\Handlers\MetaboxHandler;
+use InsightPulse\Handlers\ShortcodeHandler;
+use InsightPulse\Handlers\ReviewNoticeHandler;
 use InsightPulse\Controllers\SurveyController;
 use InsightPulse\Controllers\ResponseController;
 use InsightPulse\Controllers\ResultsController;
 use InsightPulse\Controllers\SettingsController;
 use InsightPulse\Controllers\TemplateController;
 use InsightPulse\Controllers\FrontendController;
+use InsightPulse\Controllers\LogicController;
 use InsightPulse\Database\Migrator;
 
 /**
@@ -74,9 +77,13 @@ final class Plugin {
 		// Inject widget on frontend.
 		( new FrontendHandler() )->register();
 
-		// Post metabox.
+		// Shortcode support.
+		( new ShortcodeHandler() )->register();
+
+		// Post metabox and admin notices.
 		if ( is_admin() ) {
 			( new MetaboxHandler() )->register();
+			( new ReviewNoticeHandler() )->register();
 			add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widget' ] );
 		}
 
@@ -128,6 +135,7 @@ final class Plugin {
 		( new SettingsController() )->register_routes();
 		( new TemplateController() )->register_routes();
 		( new FrontendController() )->register_routes();
+		( new LogicController() )->register_routes();
 	}
 
 	/**

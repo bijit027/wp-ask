@@ -309,6 +309,12 @@
               <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Confirmation message</label>
               <input v-model="survey.settings.confirmation.message" placeholder="Thank you for your feedback!" style="max-width:480px;" />
             </div>
+
+            <div class="wpask-field" style="margin-top:24px;">
+              <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Schedule Publish (Optional)</label>
+              <p style="font-size:12px; color:var(--muted-foreground); margin-bottom:10px !important;">Set a future date and time for the survey to go live.</p>
+              <input type="datetime-local" v-model="survey.publish_at" style="max-width:480px;" />
+            </div>
           </div>
         </div>
       </template>
@@ -334,7 +340,7 @@
             </div>
 
             <div v-for="(rule, index) in survey.targeting.rules" :key="index" class="wpask-rule-row" style="margin-top:10px;">
-              <select v-model="rule.type" style="width:150px;">
+              <select v-model="rule.type" style="width:150px;" @change="rule.value = ''">
                 <option value="url">URL</option>
                 <option value="post_type">Post Type</option>
                 <option value="user_status">User Status</option>
@@ -344,7 +350,19 @@
                 <option value="is_not">Is Not</option>
                 <option value="contains" v-if="rule.type === 'url'">Contains</option>
               </select>
-              <input v-model="rule.value" placeholder="Value..." style="flex:1;" />
+
+              <select v-if="rule.type === 'post_type'" v-model="rule.value" style="flex:1;">
+                <option value="" disabled>Select post type...</option>
+                <option v-for="pt in logicOptions.post_types" :key="pt.value" :value="pt.value">{{ pt.label }}</option>
+              </select>
+
+              <select v-else-if="rule.type === 'user_status'" v-model="rule.value" style="flex:1;">
+                <option value="" disabled>Select status...</option>
+                <option v-for="st in logicOptions.user_status" :key="st.value" :value="st.value">{{ st.label }}</option>
+              </select>
+
+              <input v-else v-model="rule.value" placeholder="Value..." style="flex:1;" />
+
               <button class="wpask-icon-btn danger" @click="removeRule(index)">
                 <Trash2 />
               </button>
@@ -409,6 +427,8 @@ const activeQuestionId = ref(null);
 
 const editorTabs = ['design', 'settings', 'targeting', 'notifications'];
 
+const logicOptions = ref({ post_types: [], user_status: [] });
+
 const questionTypes = [
   { type: 'rating', label: 'Rating', icon: Star },
   { type: 'nps', label: 'NPS', icon: TrendingUp },
@@ -445,7 +465,8 @@ const survey = reactive({
       addresses: '',
       logic: { enable: false, conditions: [] }
     }
-  }
+  },
+  publish_at: null
 });
 
 // Set initial active question
@@ -560,8 +581,21 @@ const saveSurvey = async () => {
 
 // Load existing survey if editing
 onMounted(async () => {
+  const config = window.WPAskAdminConfig || {};
+
+  // Fetch logic options
+  try {
+    const logicRes = await fetch(`${config.api_url}/logic-type`, {
+      headers: { 'X-WP-Nonce': config.nonce }
+    });
+    if (logicRes.ok) {
+      logicOptions.value = await logicRes.json();
+    }
+  } catch (e) {
+    console.error('Error fetching logic options', e);
+  }
+
   if (route.params.id) {
-    const config = window.WPAskAdminConfig || {};
     try {
       const res = await fetch(`${config.api_url}/surveys/${route.params.id}`, {
         headers: { 'X-WP-Nonce': config.nonce }

@@ -69,8 +69,9 @@ class FrontendHandler {
 
 		// 2. Normal flow if not previewing
 		if ( ! $matched_survey ) {
+			$now_utc = current_time( 'mysql', true );
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$results = $wpdb->get_results( "SELECT * FROM {$table} WHERE status = 'publish' ORDER BY id DESC" );
+			$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE status = 'publish' AND (publish_at IS NULL OR publish_at <= %s) ORDER BY id DESC", $now_utc ) );
 
 			if ( empty( $results ) ) {
 				return;
