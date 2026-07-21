@@ -65,14 +65,18 @@ final class Plugin {
 		// Register REST API routes.
 		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
 
-		// TODO: Re-enable handlers as they are built in Phase 8
+		// Register admin menu.
 		add_action( 'admin_menu', [ new AdminMenuHandler(), 'register' ] );
-		// add_action( 'admin_init', [ new ActivationHandler(), 'maybe_redirect' ] );
-		// ( new FrontendHandler() )->register();
+
+		// Handle activation redirect.
+		add_action( 'admin_init', [ new ActivationHandler(), 'maybe_redirect' ] );
+
+		// Inject widget on frontend.
+		( new FrontendHandler() )->register();
 
 		// Post metabox.
 		if ( is_admin() ) {
-			// ( new MetaboxHandler() )->register();
+			( new MetaboxHandler() )->register();
 			add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widget' ] );
 		}
 	}

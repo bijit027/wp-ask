@@ -48,12 +48,11 @@
 - `SurveyController.php`, `ResponseController.php`, `ResultsController.php`
 - `SettingsController.php`, `TemplateController.php`, `FrontendController.php`
 
-### ⏳ Phase 7: Templates (Pending)
+### ✅ Phase 7: Templates (Completed)
 - `Registry.php`, `DefaultTemplates.php`
 
-### ⏳ Phase 8: Handlers (Pending)
+### ✅ Phase 8: Handlers (Completed)
 - `ActivationHandler.php`, `AdminMenuHandler.php`, `FrontendHandler.php`, `MetaboxHandler.php`
-- *Note: Once these are built, uncomment them in `Plugin.php`.*
 
 ### ⏳ Phase 9: Frontend (Vue + Vanilla JS) (Pending)
 - Admin SPA in Vue 3 (Survey Builder, Results)
