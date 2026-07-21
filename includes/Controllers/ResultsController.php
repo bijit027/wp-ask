@@ -163,7 +163,7 @@ class ResultsController {
 			return new WP_Error( 'no_responses', 'No responses to export.', [ 'status' => 404 ] );
 		}
 
-		$questions = json_decode( $survey->questions, true );
+		$questions = is_array( $survey->questions ) ? $survey->questions : json_decode( $survey->questions, true );
 
 		// Generate CSV headers
 		$headers = [ 'Response ID', 'Date', 'IP Address' ];
@@ -182,7 +182,7 @@ class ResultsController {
 				$response->ip,
 			];
 
-			$answers = json_decode( $response->answers, true );
+			$answers = is_array( $response->answers ) ? $response->answers : json_decode( $response->answers, true );
 
 			foreach ( $questions as $q ) {
 				$answer_value = isset( $answers[ $q['id'] ] ) ? $answers[ $q['id'] ]['value'] : '';

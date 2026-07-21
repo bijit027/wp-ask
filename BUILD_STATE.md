@@ -141,7 +141,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
   - [x] Builder UI to configure conditions
 
 ### Priority 2 — Analytics & Reporting
-- [ ] **Per-question charts in `SurveyResults.vue`** — Show bar charts for choice/radio, gauge for NPS, distribution for rating (use Chart.js or ApexCharts — already likely in node_modules)
+- [x] **Per-question charts in `SurveyResults.vue`** — Show bar charts for choice/radio, gauge for NPS, distribution for rating (using CSS-based charts)
 - [x] **Response export (CSV)** — `GET /surveys/{id}/export` endpoint that streams a CSV of all responses. Add export button to Results view.
 - [ ] **Date range filtering on responses** — Pass `?from=&to=` params to `/surveys/{id}/responses`
 

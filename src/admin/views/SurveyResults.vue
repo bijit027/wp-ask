@@ -65,6 +65,43 @@
                     :style="n <= Math.round(getAverageRating(q.id)) ? 'fill: var(--primary); color: var(--primary);' : 'color: var(--border);'"
                   />
                 </div>
+                <!-- Rating distribution -->
+                <div style="margin-top:12px;">
+                  <div v-for="n in 5" :key="n" style="display:flex; align-items:center; margin-bottom:4px; font-size:12px;">
+                    <span style="width:20px;">{{ n }}</span>
+                    <Star style="width:12px; height:12px; margin-right:8px;" :style="n <= Math.round(getAverageRating(q.id)) ? 'fill: var(--primary); color: var(--primary);' : 'color: var(--border);'" />
+                    <div style="flex:1; background:var(--muted); height:6px; border-radius:3px; overflow:hidden;">
+                      <div style="background:var(--primary); height:100%;" :style="{ width: getRatingDistribution(q.id, n) + '%' }"></div>
+                    </div>
+                    <span style="width:40px; text-align:right; margin-left:8px; color:var(--muted-foreground);">{{ getRatingDistribution(q.id, n) }}%</span>
+                  </div>
+                </div>
+              </template>
+              
+              <template v-else-if="q.type === 'nps'">
+                <div style="display:flex; align-items:baseline;">
+                  <span class="wpask-avg-score">{{ getAverageRating(q.id) }}</span>
+                  <span class="wpask-avg-sub">/ 10 average</span>
+                </div>
+                <div style="margin-top:12px;">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px; color:var(--muted-foreground);">
+                    <span>Promoters (9-10)</span>
+                    <span>{{ getNPSRangePercentage(q.id, 9, 10) }}%</span>
+                  </div>
+                  <div style="background:#22c55e; height:8px; border-radius:4px; margin-bottom:8px;" :style="{ width: getNPSRangePercentage(q.id, 9, 10) + '%' }"></div>
+                  
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px; color:var(--muted-foreground);">
+                    <span>Passives (7-8)</span>
+                    <span>{{ getNPSRangePercentage(q.id, 7, 8) }}%</span>
+                  </div>
+                  <div style="background:#eab308; height:8px; border-radius:4px; margin-bottom:8px;" :style="{ width: getNPSRangePercentage(q.id, 7, 8) + '%' }"></div>
+                  
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px; color:var(--muted-foreground);">
+                    <span>Detractors (0-6)</span>
+                    <span>{{ getNPSRangePercentage(q.id, 0, 6) }}%</span>
+                  </div>
+                  <div style="background:#ef4444; height:8px; border-radius:4px;" :style="{ width: getNPSRangePercentage(q.id, 0, 6) + '%' }"></div>
+                </div>
               </template>
               
               <template v-else-if="q.type === 'radio' || q.type === 'choice' || q.type === 'checkbox' || q.type === 'dropdown'">
@@ -187,7 +224,13 @@ const getAverageRating = (questionId) => {
   if (total === 0) return '0.0';
   
   let sum = 0;
-  for (let i = 1; i <= 5; i++) {
+  const keys = Object.keys(questionData).map(Number).sort((a, b) => a - b);
+  
+  // Determine scale based on max value
+  const maxVal = Math.max(...keys);
+  const scale = maxVal > 5 ? 10 : 5;
+  
+  for (let i = 0; i <= scale; i++) {
     sum += (questionData[i] || 0) * i;
   }
   
@@ -211,6 +254,34 @@ const getAnswerCount = (questionId) => {
   
   const questionData = resultsData.value.questions_data[questionId];
   return Object.values(questionData).reduce((a, b) => a + b, 0);
+};
+
+const getNPSRangePercentage = (questionId, min, max) => {
+  if (!resultsData.value?.questions_data?.[questionId]) return 0;
+  
+  const questionData = resultsData.value.questions_data[questionId];
+  const total = Object.values(questionData).reduce((a, b) => a + b, 0);
+  
+  if (total === 0) return 0;
+  
+  let rangeCount = 0;
+  for (let i = min; i <= max; i++) {
+    rangeCount += (questionData[i] || 0);
+  }
+  
+  return Math.round((rangeCount / total) * 100);
+};
+
+const getRatingDistribution = (questionId, rating) => {
+  if (!resultsData.value?.questions_data?.[questionId]) return 0;
+  
+  const questionData = resultsData.value.questions_data[questionId];
+  const total = Object.values(questionData).reduce((a, b) => a + b, 0);
+  
+  if (total === 0) return 0;
+  
+  const count = questionData[rating] || 0;
+  return Math.round((count / total) * 100);
 };
 
 onMounted(async () => {
