@@ -8,11 +8,12 @@
 namespace InsightPulse\Handlers;
 
 use InsightPulse\Models\Survey;
+use InsightPulse\Utils\AssetLoader;
 
 /**
  * Class ShortcodeHandler
  *
- * Registers the [wpask] shortcode for embedding surveys inside post content.
+ * Registers shortcodes for embedding surveys and post ratings.
  */
 class ShortcodeHandler {
 
@@ -21,6 +22,26 @@ class ShortcodeHandler {
 	 */
 	public function register(): void {
 		add_shortcode( 'wpask', [ $this, 'render_shortcode' ] );
+		add_shortcode( 'wpask_rating', [ $this, 'render_rating_shortcode' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_shortcode_assets' ] );
+	}
+
+	/**
+	 * Pre-enqueue assets when the current post contains our shortcodes.
+	 */
+	public function maybe_enqueue_shortcode_assets(): void {
+		if ( is_admin() || ! is_singular() ) {
+			return;
+		}
+
+		global $post;
+		if ( ! $post || empty( $post->post_content ) ) {
+			return;
+		}
+
+		if ( has_shortcode( $post->post_content, 'wpask_rating' ) ) {
+			$this->enqueue_post_rating_script();
+		}
 	}
 
 	/**
@@ -56,28 +77,16 @@ class ShortcodeHandler {
 
 		$survey = new Survey( $row );
 
-		// Enqueue the frontend script
-		$is_dev = true; // Toggle for dev mode
-		if ( $is_dev ) {
-			wp_enqueue_script( 'vite-client-shortcode', 'http://localhost:5173/@vite/client', [], null );
-			wp_enqueue_script( 'wpask-frontend', 'http://localhost:5173/src/frontend/wpask.js', [], null );
-			add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
-				if ( in_array( $handle, [ 'wpask-frontend', 'vite-client-shortcode' ], true ) ) {
-					return '<script type="module" src="' . esc_url( $src ) . '"></script>';
-				}
-				return $tag;
-			}, 10, 3 );
-		} else {
-			$script_url = INSIGHTPULSE_PLUGIN_URL . 'assets/frontend/wpask.js';
-			if ( file_exists( INSIGHTPULSE_PLUGIN_DIR . 'assets/frontend/wpask.js' ) ) {
-				wp_enqueue_script( 'wpask-frontend', $script_url, [], INSIGHTPULSE_VERSION, true );
-			}
-		}
+		AssetLoader::enqueue_frontend_script(
+			'wpask-frontend',
+			'src/frontend/wpask.js',
+			'assets/frontend/frontend.js',
+			'shortcode'
+		);
 
-		// Build inline config for this specific survey
 		$config = [
-			'api_url'   => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
-			'survey'    => [
+			'api_url' => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
+			'survey'  => [
 				'id'        => $survey->id,
 				'title'     => $survey->title,
 				'type'      => $survey->type,
@@ -87,15 +96,126 @@ class ShortcodeHandler {
 			],
 		];
 
-		// Output the container and config.
-		// The unique ID allows multiple shortcodes on one page.
 		$container_id = 'wpask-widget-' . $id;
 
 		return sprintf(
-			'<script>window.WPAskConfig_%1$d = %2$s; window.WPAskShortcodeTargets = window.WPAskShortcodeTargets || {}; window.WPAskShortcodeTargets[%1$d] = document.getElementById && document.getElementById("%3$s");</script><div id="%3$s" class="wpask-shortcode-widget" data-survey-id="%1$d"></div>',
+			'<div id="%1$s" class="wpask-shortcode-widget" data-survey-id="%2$d" data-wpask-config="%3$s"></div>',
+			esc_attr( $container_id ),
 			$id,
-			wp_json_encode( $config ),
-			esc_attr( $container_id )
+			esc_attr( wp_json_encode( $config ) )
 		);
+	}
+
+	/**
+	 * Render the [wpask_rating] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output.
+	 */
+	public function render_rating_shortcode( $atts ): string {
+		$atts = shortcode_atts(
+			[
+				'id'    => 0,
+				'type'  => 'stars',
+				'label' => __( 'Rate this post', 'wpask' ),
+				'color' => '#6366f1',
+			],
+			$atts,
+			'wpask_rating'
+		);
+
+		$post_id = $this->resolve_post_id( (int) $atts['id'] );
+		$type    = in_array( $atts['type'], [ 'stars', 'thumbs' ], true ) ? $atts['type'] : 'stars';
+
+		if ( ! $post_id || ! get_post( $post_id ) ) {
+			return '';
+		}
+
+		$this->enqueue_post_rating_script();
+
+		$config = [
+			'api_url' => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
+			'post_id' => $post_id,
+			'type'    => $type,
+			'label'   => sanitize_text_field( $atts['label'] ),
+			'color'   => sanitize_hex_color( $atts['color'] ) ?: '#6366f1',
+		];
+
+		$container_id = 'wpask-rating-' . $post_id . '-' . wp_unique_id();
+
+		return sprintf(
+			'<div id="%1$s" class="wpask-post-rating" data-post-id="%2$d" data-type="%3$s" data-wpask-config="%4$s"><span class="wpask-post-rating-fallback">%5$s</span></div>',
+			esc_attr( $container_id ),
+			$post_id,
+			esc_attr( $type ),
+			esc_attr( wp_json_encode( $config ) ),
+			esc_html( $config['label'] )
+		);
+	}
+
+	/**
+	 * Resolve the post ID for rating shortcodes.
+	 *
+	 * @param int $requested_id Explicit ID from shortcode attributes.
+	 * @return int
+	 */
+	private function resolve_post_id( int $requested_id ): int {
+		if ( $requested_id > 0 ) {
+			return $requested_id;
+		}
+
+		$post_id = (int) get_the_ID();
+		if ( $post_id > 0 ) {
+			return $post_id;
+		}
+
+		if ( is_singular() ) {
+			return (int) get_queried_object_id();
+		}
+
+		global $post;
+		return ( $post && ! empty( $post->ID ) ) ? (int) $post->ID : 0;
+	}
+
+	/**
+	 * Enqueue the post rating frontend script once.
+	 */
+	private function enqueue_post_rating_script(): void {
+		static $enqueued = false;
+
+		if ( $enqueued ) {
+			return;
+		}
+
+		$this->enqueue_post_rating_styles();
+
+		AssetLoader::enqueue_frontend_script(
+			'wpask-post-rating',
+			'src/frontend/post-rating.js',
+			'assets/post-rating/post-rating.js',
+			'rating'
+		);
+
+		$enqueued = true;
+	}
+
+	/**
+	 * Enqueue rating styles once.
+	 */
+	private function enqueue_post_rating_styles(): void {
+		static $styled = false;
+
+		if ( $styled ) {
+			return;
+		}
+
+		wp_register_style( 'wpask-post-rating', false, [], INSIGHTPULSE_VERSION );
+		wp_enqueue_style( 'wpask-post-rating' );
+		wp_add_inline_style(
+			'wpask-post-rating',
+			'.wpask-post-rating{display:block;margin:16px 0;font-family:Inter,system-ui,sans-serif}.wpask-post-rating-fallback{font-size:14px;font-weight:600;color:#1a1d2b}'
+		);
+
+		$styled = true;
 	}
 }

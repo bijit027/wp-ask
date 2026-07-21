@@ -21,6 +21,7 @@ use InsightPulse\Controllers\TemplateController;
 use InsightPulse\Controllers\FrontendController;
 use InsightPulse\Controllers\LogicController;
 use InsightPulse\Controllers\AddonsController;
+use InsightPulse\Controllers\PostRatingController;
 use InsightPulse\Database\Migrator;
 
 /**
@@ -138,6 +139,7 @@ final class Plugin {
 		( new FrontendController() )->register_routes();
 		( new LogicController() )->register_routes();
 		( new AddonsController() )->register_routes();
+		( new PostRatingController() )->register_routes();
 	}
 
 	/**

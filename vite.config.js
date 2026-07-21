@@ -10,7 +10,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         admin: resolve(__dirname, 'src/admin/main.js'),
-        frontend: resolve(__dirname, 'src/frontend/wpask.js')
+        frontend: resolve(__dirname, 'src/frontend/wpask.js'),
+        'post-rating': resolve(__dirname, 'src/frontend/post-rating.js')
       },
       output: {
         entryFileNames: '[name]/[name].js',

@@ -110,7 +110,7 @@ class Registry {
 				'name'        => __( 'Post ratings', 'wpask' ),
 				'description' => __( 'Embed star or thumbs ratings on posts via shortcode.', 'wpask' ),
 				'icon'        => 'star',
-				'tier'        => 'pro',
+				'tier'        => 'included',
 				'feature'     => 'post_ratings',
 			],
 		];
@@ -124,7 +124,7 @@ class Registry {
 	 * @return array<string, mixed>
 	 */
 	private static function resolve_state( array $addon, bool $is_pro ): array {
-		$included_features = [ 'email_notifications', 'conditional_logic', 'csv_export' ];
+		$included_features = [ 'email_notifications', 'conditional_logic', 'csv_export', 'post_ratings' ];
 		$feature           = $addon['feature'] ?? '';
 		$is_included       = 'included' === ( $addon['tier'] ?? '' );
 

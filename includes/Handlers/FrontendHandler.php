@@ -10,6 +10,7 @@ namespace InsightPulse\Handlers;
 use InsightPulse\Models\Survey;
 use InsightPulse\Services\TargetingService;
 use InsightPulse\Services\SessionService;
+use InsightPulse\Utils\AssetLoader;
 
 /**
  * Class FrontendHandler
@@ -107,45 +108,28 @@ class FrontendHandler {
 		$session = $this->session_service->get_current_session( false );
 
 		// 4. Enqueue Assets (Compiled via Vite in Phase 9/10)
-		$is_dev = true; // Use Vite dev server in development
-		
-		if ( $is_dev ) {
-			$script_url = 'http://localhost:5173/src/frontend/wpask.js';
-			
-			wp_enqueue_script( 'vite-client-frontend', 'http://localhost:5173/@vite/client', [], null );
-			
-			// Add type="module" to the scripts
-			add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
-				if ( in_array( $handle, [ 'wpask-frontend', 'vite-client-frontend' ], true ) ) {
-					return '<script type="module" src="' . esc_url( $src ) . '"></script>';
-				}
-				return $tag;
-			}, 10, 3 );
-		} else {
-			$script_url = INSIGHTPULSE_PLUGIN_URL . 'assets/frontend/wpask.js';
-			
-			if ( ! file_exists( INSIGHTPULSE_PLUGIN_DIR . 'assets/frontend/wpask.js' ) ) {
-				$script_url = '';
-			}
+		if ( ! AssetLoader::enqueue_frontend_script(
+			'wpask-frontend',
+			'src/frontend/wpask.js',
+			'assets/frontend/frontend.js',
+			'frontend'
+		) ) {
+			return;
 		}
 
-		if ( $script_url ) {
-			wp_enqueue_script( 'wpask-frontend', $script_url, [], INSIGHTPULSE_VERSION, true );
-			
-			// Inline config avoids page cache issues better than wp_localize_script
-			$this->current_config = [
-				'api_url'   => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
-				'survey'    => [
-					'id'        => $matched_survey->id,
-					'title'     => $matched_survey->title,
-					'type'      => $matched_survey->type,
-					'questions' => $matched_survey->questions,
-					'settings'  => $matched_survey->settings,
-					'targeting' => $matched_survey->targeting,
-				],
-				'session'   => $session ? [ 'uid' => $session->uid ] : null,
-			];
-		}
+		// Inline config avoids page cache issues better than wp_localize_script
+		$this->current_config = [
+			'api_url'   => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
+			'survey'    => [
+				'id'        => $matched_survey->id,
+				'title'     => $matched_survey->title,
+				'type'      => $matched_survey->type,
+				'questions' => $matched_survey->questions,
+				'settings'  => $matched_survey->settings,
+				'targeting' => $matched_survey->targeting,
+			],
+			'session'   => $session ? [ 'uid' => $session->uid ] : null,
+		];
 	}
 
 	/**

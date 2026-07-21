@@ -81,6 +81,8 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 | GET/POST | `/settings` | SettingsController | ✅ |
 | GET | `/survey-templates` | TemplateController | ✅ (template registry + Pro locks) |
 | POST | `/submit` | FrontendController | ✅ (public, rate-limited) |
+| GET | `/post-ratings/{post_id}` | PostRatingController | ✅ (public stats) |
+| POST | `/post-ratings` | PostRatingController | ✅ (public submit, rate-limited) |
 | GET | `/logic-type` | LogicController | ✅ (post types + roles) |
 | GET | `/addons` | AddonsController | ✅ (Pro add-on registry + upgrade links) |
 
@@ -107,7 +109,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 ### WordPress Integration
 - [x] **FrontendHandler** — Conditionally enqueues widget, respects `publish_at` scheduling, `wpask_preview` query param for draft preview
 - [x] **MetaboxHandler** — Per-post "Disable surveys" and "Force specific survey" meta boxes
-- [x] **ShortcodeHandler** — `[wpask id="X"]` shortcode embeds survey in post/page content
+- [x] **ShortcodeHandler** — `[wpask id="X"]` shortcode embeds survey in post/page content; `[wpask_rating]` embeds per-post star/thumbs ratings
 - [x] **ReviewNoticeHandler** — Dismissible WP admin notice after 14 days, prompts for 5-star review
 - [x] **ActivationHandler** — Redirects to onboarding on first activation
 - [x] **AdminMenuHandler** — Registers `wpask` admin page, injects `WPAskAdminConfig`
@@ -159,7 +161,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 ### Priority 4 — Polish & Monetisation
 - [x] **Addons.vue** — Hook up real addon data (at minimum show 2–3 "Pro" addon cards with lock icons and a Stripe/pricing link)
 - [x] **Survey Templates** — `TemplateController` exists but templates aren't selectable in the "New Survey" flow. Add a template picker modal to `SurveysList.vue` / onboarding.
-- [ ] **Post Ratings Widget** — `ipulse_post_ratings` table exists. Build a "thumbs up/down" or "star" per-post rating widget that can be embedded via shortcode `[wpask_rating]`
+- [x] **Post Ratings Widget** — `ipulse_post_ratings` table exists. Build a "thumbs up/down" or "star" per-post rating widget that can be embedded via shortcode `[wpask_rating]`
 - [ ] **Heatmap module** — `ipulse_heatmaps` table exists. This is a larger feature — defer to last.
 
 ---
@@ -169,7 +171,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - **Node:** NVM is required. When running npm commands, prepend: `export PATH="/Users/bijitdeb/.nvm/versions/node/v16.17.1/bin:$PATH" &&`
 - **Build command:** `npm run build` (Vite 4)
 - **Dev server:** `npm run dev` (Vite HMR on port 5173)
-- **In `FrontendHandler.php` and `ShortcodeHandler.php`:** `$is_dev = true` — change to `false` before production build/deploy
+- **In `FrontendHandler.php` and `ShortcodeHandler.php`:** assets auto-load from `assets/` when built. Set `define( 'WPASK_VITE_DEV', true );` in `wp-config.php` to use the Vite dev server on port 5173.
 - **WordPress URL:** Local dev (standard MAMP/LocalWP setup assumed)
 - **REST Nonce:** Injected as `window.WPAskAdminConfig.nonce` by `AdminMenuHandler.php`
 
