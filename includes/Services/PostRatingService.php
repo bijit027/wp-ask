@@ -5,10 +5,10 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Services;
+namespace WPAsk\Services;
 
-use InsightPulse\Repositories\PostRatingRepository;
-use InsightPulse\Utils\IpHelper;
+use WPAsk\Repositories\PostRatingRepository;
+use WPAsk\Utils\IpHelper;
 use WP_Error;
 
 /**

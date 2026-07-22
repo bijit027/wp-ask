@@ -2,29 +2,29 @@
 /**
  * Main Plugin bootstrap class. Binds all handlers and registers REST routes.
  *
- * @package InsightPulse
+ * @package WPAsk
  */
 
-namespace InsightPulse;
+namespace WPAsk;
 
-use InsightPulse\Handlers\AdminMenuHandler;
-use InsightPulse\Handlers\ActivationHandler;
-use InsightPulse\Handlers\FrontendHandler;
-use InsightPulse\Handlers\MetaboxHandler;
-use InsightPulse\Handlers\ShortcodeHandler;
-use InsightPulse\Handlers\ReviewNoticeHandler;
-use InsightPulse\Handlers\HeatmapHandler;
-use InsightPulse\Controllers\SurveyController;
-use InsightPulse\Controllers\ResponseController;
-use InsightPulse\Controllers\ResultsController;
-use InsightPulse\Controllers\SettingsController;
-use InsightPulse\Controllers\TemplateController;
-use InsightPulse\Controllers\FrontendController;
-use InsightPulse\Controllers\LogicController;
-use InsightPulse\Controllers\AddonsController;
-use InsightPulse\Controllers\PostRatingController;
-use InsightPulse\Controllers\HeatmapController;
-use InsightPulse\Database\Migrator;
+use WPAsk\Handlers\AdminMenuHandler;
+use WPAsk\Handlers\ActivationHandler;
+use WPAsk\Handlers\FrontendHandler;
+use WPAsk\Handlers\MetaboxHandler;
+use WPAsk\Handlers\ShortcodeHandler;
+use WPAsk\Handlers\ReviewNoticeHandler;
+use WPAsk\Handlers\HeatmapHandler;
+use WPAsk\Controllers\SurveyController;
+use WPAsk\Controllers\ResponseController;
+use WPAsk\Controllers\ResultsController;
+use WPAsk\Controllers\SettingsController;
+use WPAsk\Controllers\TemplateController;
+use WPAsk\Controllers\FrontendController;
+use WPAsk\Controllers\LogicController;
+use WPAsk\Controllers\AddonsController;
+use WPAsk\Controllers\PostRatingController;
+use WPAsk\Controllers\HeatmapController;
+use WPAsk\Database\Migrator;
 
 /**
  * Class Plugin
@@ -95,18 +95,18 @@ final class Plugin {
 		}
 
 		// Email Notifications.
-		add_action( 'insightpulse_response_saved', [ $this, 'trigger_email_notifications' ], 10, 4 );
+		add_action( 'wpask_response_saved', [ $this, 'trigger_email_notifications' ], 10, 4 );
 	}
 
 	/**
 	 * Trigger email notifications on new response.
 	 */
 	public function trigger_email_notifications( $response_id, $survey_id, $answers, $context ): void {
-		$survey   = ( new \InsightPulse\Repositories\SurveyRepository() )->find( $survey_id );
-		$response = ( new \InsightPulse\Repositories\ResponseRepository() )->find( $response_id );
+		$survey   = ( new \WPAsk\Repositories\SurveyRepository() )->find( $survey_id );
+		$response = ( new \WPAsk\Repositories\ResponseRepository() )->find( $response_id );
 
 		if ( $survey && $response && ! empty( $survey->notifications->email->active ) ) {
-			$notification = new \InsightPulse\Emails\ResponseNotification( $survey, $response );
+			$notification = new \WPAsk\Emails\ResponseNotification( $survey, $response );
 			$notification->maybe_send();
 		}
 	}
@@ -115,8 +115,8 @@ final class Plugin {
 	 * Run DB migrations if DB version is behind.
 	 */
 	private function maybe_run_migrations(): void {
-		$current = get_option( 'insightpulse_db_version', '0.0.0' );
-		if ( version_compare( $current, INSIGHTPULSE_DB_VERSION, '<' ) ) {
+		$current = get_option( 'wpask_db_version', '0.0.0' );
+		if ( version_compare( $current, WPASK_DB_VERSION, '<' ) ) {
 			Migrator::run();
 		}
 	}
@@ -126,9 +126,9 @@ final class Plugin {
 	 */
 	public function load_textdomain(): void {
 		load_plugin_textdomain(
-			'insightpulse',
+			'wpask',
 			false,
-			dirname( INSIGHTPULSE_PLUGIN_BASENAME ) . '/languages'
+			dirname( WPASK_PLUGIN_BASENAME ) . '/languages'
 		);
 	}
 
@@ -153,8 +153,8 @@ final class Plugin {
 	 */
 	public function register_dashboard_widget(): void {
 		wp_add_dashboard_widget(
-			'insightpulse_dashboard_widget',
-			__( 'InsightPulse — Recent Activity', 'insightpulse' ),
+			'wpask_dashboard_widget',
+			__( 'WPAsk — Recent Activity', 'wpask' ),
 			[ $this, 'render_dashboard_widget' ]
 		);
 	}

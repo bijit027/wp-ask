@@ -5,10 +5,10 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Handlers;
+namespace WPAsk\Handlers;
 
-use InsightPulse\Services\HeatmapService;
-use InsightPulse\Utils\AssetLoader;
+use WPAsk\Services\HeatmapService;
+use WPAsk\Utils\AssetLoader;
 
 /**
  * Class HeatmapHandler

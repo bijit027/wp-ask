@@ -5,7 +5,7 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Templates;
+namespace WPAsk\Templates;
 
 /**
  * Class DefaultTemplates
@@ -25,6 +25,7 @@ class DefaultTemplates {
 				'icon'        => 'file-plus',
 				'category'    => 'general',
 				'is_pro'      => false,
+				'is_available' => true,
 				'questions'   => [],
 				'settings'    => self::default_settings(),
 			]
@@ -39,6 +40,7 @@ class DefaultTemplates {
 				'icon'        => 'globe',
 				'category'    => 'general',
 				'is_pro'      => false,
+				'is_available' => true,
 				'questions'   => [
 					[
 						'id'       => 'q1',
@@ -68,6 +70,7 @@ class DefaultTemplates {
 				'icon'        => 'trending-up',
 				'category'    => 'nps',
 				'is_pro'      => false,
+				'is_available' => true,
 				'questions'   => [
 					[
 						'id'       => 'q1',
@@ -97,6 +100,7 @@ class DefaultTemplates {
 				'icon'        => 'shopping-cart',
 				'category'    => 'ecommerce',
 				'is_pro'      => false,
+				'is_available' => true,
 				'questions'   => [
 					[
 						'id'       => 'q1',
@@ -132,6 +136,7 @@ class DefaultTemplates {
 				'icon'        => 'mail',
 				'category'    => 'leads',
 				'is_pro'      => false,
+				'is_available' => true,
 				'questions'   => [
 					[
 						'id'       => 'q1',
@@ -152,34 +157,6 @@ class DefaultTemplates {
 			]
 		);
 
-		Registry::register(
-			'ecommerce-advanced',
-			[
-				'id'          => 'ecommerce-advanced',
-				'title'       => __( 'eCommerce Store Survey', 'wpask' ),
-				'description' => __( 'Uncover why visitors purchase — or abandon their cart.', 'wpask' ),
-				'icon'        => 'store',
-				'category'    => 'ecommerce',
-				'is_pro'      => true,
-				'questions'   => [],
-				'settings'    => self::default_settings(),
-			]
-		);
-
-		Registry::register(
-			'customer-effort',
-			[
-				'id'          => 'customer-effort',
-				'title'       => __( 'Customer Effort Score', 'wpask' ),
-				'description' => __( 'Measure how easy it is for customers to get help or complete tasks.', 'wpask' ),
-				'icon'        => 'headphones',
-				'category'    => 'support',
-				'is_pro'      => true,
-				'questions'   => [],
-				'settings'    => self::default_settings(),
-			]
-		);
-
 		// UserFeedback Lite inspired templates
 		Registry::register(
 			'website-experience',
@@ -190,6 +167,7 @@ class DefaultTemplates {
 				'icon'        => 'star',
 				'category'    => 'general',
 				'is_pro'      => false,
+				'is_available' => true,
 				'questions'   => [
 					[
 						'id'       => 'q1',
@@ -213,6 +191,7 @@ class DefaultTemplates {
 				'icon'        => 'file-text',
 				'category'    => 'content',
 				'is_pro'      => false,
+				'is_available' => true,
 				'questions'   => [
 					[
 						'id'       => 'q1',
@@ -242,6 +221,7 @@ class DefaultTemplates {
 				'icon'        => 'message-square',
 				'category'    => 'general',
 				'is_pro'      => false,
+				'is_available' => true,
 				'questions'   => [
 					[
 						'id'       => 'q1',

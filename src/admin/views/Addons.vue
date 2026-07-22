@@ -6,29 +6,6 @@
         <h1 class="wpask-page-title">Add-ons</h1>
         <p class="wpask-page-subtitle">Extend WPAsk with integrations and advanced features.</p>
       </div>
-      <div v-if="!isPro">
-        <a
-          :href="upgradeUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="wpask-btn wpask-btn-primary"
-        >
-          <Sparkles />
-          Upgrade to Pro
-        </a>
-      </div>
-    </div>
-
-    <!-- Lite upgrade banner -->
-    <div v-if="!isPro" class="wpask-addons-upgrade-banner">
-      <div class="wpask-addons-upgrade-banner-icon">
-        <Lock />
-      </div>
-      <div class="wpask-addons-upgrade-banner-body">
-        <strong>You're using WPAsk Lite.</strong>
-        Unlock heatmaps, webhooks, integrations, and more with
-        <a :href="upgradeUrl" target="_blank" rel="noopener noreferrer">WPAsk Pro</a>.
-      </div>
     </div>
 
     <!-- Loading -->
@@ -40,14 +17,10 @@
         v-for="addon in addons"
         :key="addon.id"
         class="wpask-addon-card"
-        :class="{ 'wpask-addon-card--locked': addon.locked, 'wpask-addon-card--pro': addon.tier === 'pro' }"
       >
         <div class="wpask-addon-card-top">
-          <div class="wpask-addon-icon" :class="{ 'wpask-addon-icon--locked': addon.locked }">
+          <div class="wpask-addon-icon">
             <component :is="iconFor(addon.icon)" />
-            <span v-if="addon.locked" class="wpask-addon-lock-badge">
-              <Lock />
-            </span>
           </div>
           <span v-if="addon.tier === 'pro'" class="wpask-addon-pro-badge">Pro</span>
         </div>
@@ -62,20 +35,6 @@
               <CircleCheck />
               Active
             </span>
-            <span class="wpask-included-badge" v-else-if="addon.installed && !addon.locked">
-              <CircleCheck />
-              Included
-            </span>
-            <a
-              v-else-if="addon.locked"
-              :href="addon.upgrade_url || upgradeUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="wpask-btn wpask-btn-secondary wpask-btn-sm wpask-addon-upgrade-btn"
-            >
-              <Lock />
-              Get Pro
-            </a>
           </div>
         </div>
       </div>
@@ -87,32 +46,22 @@
 import { ref, onMounted } from 'vue';
 import {
   CircleCheck,
-  Lock,
-  Sparkles,
   Mail,
   GitBranch,
   Download,
   MousePointerClick,
-  Webhook,
-  Send,
-  Zap,
   Star,
   Puzzle,
 } from 'lucide-vue-next';
 
 const loading = ref(true);
 const addons = ref([]);
-const isPro = ref(false);
-const upgradeUrl = ref('https://wpask.io/pricing');
 
 const iconMap = {
   mail: Mail,
   'git-branch': GitBranch,
   download: Download,
   'mouse-pointer-click': MousePointerClick,
-  webhook: Webhook,
-  send: Send,
-  zap: Zap,
   star: Star,
 };
 
@@ -122,8 +71,6 @@ function iconFor(name) {
 
 async function fetchAddons() {
   const config = window.WPAskAdminConfig || {};
-  isPro.value = !!config.is_pro;
-  upgradeUrl.value = config.upgrade_url || upgradeUrl.value;
 
   try {
     const res = await fetch(`${config.api_url}/addons`, {

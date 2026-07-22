@@ -5,7 +5,7 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Controllers;
+namespace WPAsk\Controllers;
 
 use WP_REST_Request;
 use WP_REST_Response;
@@ -18,7 +18,7 @@ class SettingsController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'insightpulse/v1';
+	private $namespace = 'wpask/v1';
 
 	/**
 	 * @var string
@@ -51,7 +51,7 @@ class SettingsController {
 	 * Check permissions.
 	 */
 	public function permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_save_settings' );
+		return current_user_can( 'wpask_save_settings' );
 	}
 
 	/**
@@ -69,7 +69,7 @@ class SettingsController {
 		$params = $request->get_json_params() ?: $request->get_body_params();
 		
 		// Sanitize settings deeply
-		$sanitized = \InsightPulse\Utils\Sanitizer::sanitize_array( $params );
+		$sanitized = \WPAsk\Utils\Sanitizer::sanitize_array( $params );
 		
 		update_option( 'wpask_settings', $sanitized );
 

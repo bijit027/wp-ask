@@ -2,18 +2,18 @@
 /**
  * Database Migrator.
  *
- * @package InsightPulse
+ * @package WPAsk
  */
 
-namespace InsightPulse\Database;
+namespace WPAsk\Database;
 
-use InsightPulse\Database\Migrations\CreateEmailSurveysTable;
-use InsightPulse\Database\Migrations\CreateHeatmapsTable;
-use InsightPulse\Database\Migrations\CreateMetaTable;
-use InsightPulse\Database\Migrations\CreatePostRatingsTable;
-use InsightPulse\Database\Migrations\CreateResponsesTable;
-use InsightPulse\Database\Migrations\CreateSessionsTable;
-use InsightPulse\Database\Migrations\CreateSurveysTable;
+use WPAsk\Database\Migrations\CreateEmailSurveysTable;
+use WPAsk\Database\Migrations\CreateHeatmapsTable;
+use WPAsk\Database\Migrations\CreateMetaTable;
+use WPAsk\Database\Migrations\CreatePostRatingsTable;
+use WPAsk\Database\Migrations\CreateResponsesTable;
+use WPAsk\Database\Migrations\CreateSessionsTable;
+use WPAsk\Database\Migrations\CreateSurveysTable;
 
 /**
  * Class Migrator
@@ -40,6 +40,6 @@ class Migrator {
 			$migration->up();
 		}
 
-		update_option( 'insightpulse_db_version', INSIGHTPULSE_DB_VERSION );
+		update_option( 'wpask_db_version', WPASK_DB_VERSION );
 	}
 }

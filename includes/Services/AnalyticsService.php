@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Services;
+namespace WPAsk\Services;
 
-use InsightPulse\Repositories\MetaRepository;
+use WPAsk\Repositories\MetaRepository;
 
 /**
  * Class AnalyticsService

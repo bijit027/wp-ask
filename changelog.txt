@@ -1,0 +1,34 @@
+== Changelog ==
+
+= 1.0.0 - 2026-07-22 =
+* Initial release
+* Core Features:
+  - Survey builder with drag-and-drop interface
+  - Multiple question types: rating, NPS, text, email, number, radio, checkbox, dropdown, date, yes/no, file upload
+  - Advanced targeting rules: page, referrer, time on page, scroll depth, device, exit intent
+  - Conditional logic for skip/show questions based on previous answers
+  - Real-time analytics with per-question charts
+  - CSV export functionality
+  - Date range filtering for responses
+  - Survey templates for quick setup
+  - Heatmaps module for click visualization
+  - Post ratings with shortcodes
+  - File upload support with WordPress media library integration
+* Admin Interface:
+  - Vue 3 SPA with modern UI
+  - Survey list with status management
+  - Results page with analytics and response table
+  - Settings page for global configuration
+  - Addons page showing available features
+* Frontend Widget:
+  - Shadow DOM for CSS isolation
+  - Responsive design
+  - Multiple position options (bottom-right, bottom-left, bottom-center)
+  - Customizable colors
+  - Exit intent and scroll-based triggers
+* Technical:
+  - PSR-4 autoloading
+  - REST API endpoints
+  - Database migrations system
+  - Session management for anonymous users
+  - Email notifications for new responses

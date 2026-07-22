@@ -5,10 +5,10 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Services;
+namespace WPAsk\Services;
 
-use InsightPulse\Repositories\HeatmapRecordingRepository;
-use InsightPulse\Repositories\HeatmapRepository;
+use WPAsk\Repositories\HeatmapRecordingRepository;
+use WPAsk\Repositories\HeatmapRepository;
 use WP_Error;
 
 /**
@@ -213,14 +213,14 @@ class HeatmapService {
 		return [
 			'heatmap_id' => (int) $heatmap->id,
 			'page_id'    => (int) $heatmap->page_id,
-			'api_url'    => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
+			'api_url'    => esc_url_raw( rest_url( 'wpask/v1' ) ),
 		];
 	}
 
 	/**
 	 * Format heatmap with page info and stats.
 	 *
-	 * @param \InsightPulse\Models\Heatmap $heatmap Heatmap model.
+	 * @param \WPAsk\Models\Heatmap $heatmap Heatmap model.
 	 * @return array<string, mixed>
 	 */
 	private function format_heatmap( $heatmap ): array {

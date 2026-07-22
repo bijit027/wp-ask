@@ -5,7 +5,7 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Handlers;
+namespace WPAsk\Handlers;
 
 /**
  * Class MetaboxHandler

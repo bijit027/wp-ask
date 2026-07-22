@@ -5,10 +5,10 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Controllers;
+namespace WPAsk\Controllers;
 
-use InsightPulse\Services\PostRatingService;
-use InsightPulse\Utils\IpHelper;
+use WPAsk\Services\PostRatingService;
+use WPAsk\Utils\IpHelper;
 use WP_Error;
 use WP_REST_Request;
 
@@ -20,7 +20,7 @@ class PostRatingController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'insightpulse/v1';
+	private $namespace = 'wpask/v1';
 
 	/**
 	 * @var string

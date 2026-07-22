@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Database\Migrations;
+namespace WPAsk\Database\Migrations;
 
 /**
  * Class CreateResponsesTable

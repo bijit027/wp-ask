@@ -5,7 +5,7 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Handlers;
+namespace WPAsk\Handlers;
 
 /**
  * Class AdminMenuHandler
@@ -19,7 +19,7 @@ class AdminMenuHandler {
 		$hook = add_menu_page(
 			__( 'WPAsk', 'wpask' ),           // Page title
 			__( 'WPAsk', 'wpask' ),           // Menu title
-			'insightpulse_create_edit_surveys', // Capability required
+			'wpask_create_edit_surveys', // Capability required
 			'wpask',                            // Menu slug
 			[ $this, 'render_admin_page' ],     // Callback
 			'dashicons-feedback',               // Icon
@@ -33,7 +33,7 @@ class AdminMenuHandler {
 
 			// In development, load from Vite dev server if running
 			// In production, load from assets folder
-			$is_dev = true; // Set to true if you configure Vite for HMR
+			$is_dev = false; // Set to false for production build
 			
 			if ( $is_dev ) {
 				wp_enqueue_script( 'wpask-admin-vite', 'http://localhost:5173/@vite/client', [], null, true );
@@ -47,24 +47,43 @@ class AdminMenuHandler {
 					return $tag;
 				}, 10, 3 );
 			} else {
-				$script_url = INSIGHTPULSE_PLUGIN_URL . 'assets/admin/admin.js';
-				$style_url  = INSIGHTPULSE_PLUGIN_URL . 'assets/admin/style.css';
+				$script_url = WPASK_PLUGIN_URL . 'assets/admin/admin.js';
 
-				if ( file_exists( INSIGHTPULSE_PLUGIN_DIR . 'assets/admin/admin.js' ) ) {
-					wp_enqueue_script( 'wpask-admin-app', $script_url, [], INSIGHTPULSE_VERSION, true );
+				if ( file_exists( WPASK_PLUGIN_DIR . 'assets/admin/admin.js' ) ) {
+					wp_enqueue_script( 'wpask-admin-app', $script_url, [], WPASK_VERSION, true );
 					
-					if ( file_exists( INSIGHTPULSE_PLUGIN_DIR . 'assets/admin/style.css' ) ) {
-						wp_enqueue_style( 'wpask-admin-style', $style_url, [], INSIGHTPULSE_VERSION );
+					// Add type="module" to the script
+					add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
+						if ( $handle === 'wpask-admin-app' ) {
+							return '<script type="module" src="' . esc_url( $src ) . '"></script>';
+						}
+						return $tag;
+					}, 10, 3 );
+				}
+				
+				// Load CSS from main directory (where Vite puts it)
+				$css_files = glob( WPASK_PLUGIN_DIR . 'assets/main/*.css' );
+				if ( ! empty( $css_files ) ) {
+					foreach ( $css_files as $css_file ) {
+						$css_url = WPASK_PLUGIN_URL . 'assets/main/' . basename( $css_file );
+						wp_enqueue_style( 'wpask-admin-style-' . md5( basename( $css_file ) ), $css_url, [], WPASK_VERSION );
+					}
+				}
+				
+				// Also check for CSS in admin directory
+				$admin_css = glob( WPASK_PLUGIN_DIR . 'assets/admin/*.css' );
+				if ( ! empty( $admin_css ) ) {
+					foreach ( $admin_css as $css_file ) {
+						$css_url = WPASK_PLUGIN_URL . 'assets/admin/' . basename( $css_file );
+						wp_enqueue_style( 'wpask-admin-style-admin-' . md5( basename( $css_file ) ), $css_url, [], WPASK_VERSION );
 					}
 				}
 			}
 
 			// Localize config
 			wp_localize_script( 'wpask-admin-app', 'WPAskAdminConfig', [
-				'api_url'     => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
-				'nonce'       => wp_create_nonce( 'wp_rest' ),
-				'is_pro'      => (bool) apply_filters( 'wpask_is_pro', defined( 'WPASK_PRO_VERSION' ) ),
-				'upgrade_url' => \InsightPulse\Utils\UpgradeLink::get( 'admin', 'upgrade' ),
+				'api_url' => esc_url_raw( rest_url( 'wpask/v1' ) ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
 			] );
 		} );
 	}

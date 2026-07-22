@@ -5,10 +5,10 @@
  *
  * @since 1.0.0
  */
-namespace InsightPulse\Emails;
+namespace WPAsk\Emails;
 
-use InsightPulse\Models\Survey;
-use InsightPulse\Models\Response;
+use WPAsk\Models\Survey;
+use WPAsk\Models\Response;
 
 class ResponseNotification {
 
@@ -144,7 +144,7 @@ class ResponseNotification {
 				$submitted_value = $answer->value;
 				$compare_to      = $condition->value;
 
-				$send = $send && insightpulse_check_logic( $symbol, $submitted_value, $compare_to );
+				$send = $send && wpask_check_logic( $symbol, $submitted_value, $compare_to );
 			}
 
 			if ( ! $send ) {
@@ -175,7 +175,7 @@ class ResponseNotification {
 			$img['2x']  = '';
 		}
 
-		return apply_filters( 'insightpulse_email_header_image', $img );
+		return apply_filters( 'wpask_email_header_image', $img );
 	}
 
 	/**
@@ -191,7 +191,7 @@ class ResponseNotification {
 		// Translators: The domain of the site is appended to the subject.
 		$subject = sprintf( __( 'New UserFeedback Response - %s', 'wpask' ), $this->survey->title );
 
-		return apply_filters( 'insightpulse_emails_new_response_subject', $subject, $this->survey, $this->response );
+		return apply_filters( 'wpask_emails_new_response_subject', $subject, $this->survey, $this->response );
 	}
 
 	/**
@@ -211,7 +211,7 @@ class ResponseNotification {
 			}
 		}
 
-		return apply_filters( 'insightpulse_email_notification_addresses', $emails, $this->survey, $this->response );
+		return apply_filters( 'wpask_email_notification_addresses', $emails, $this->survey, $this->response );
 	}
 
 	/**
@@ -226,7 +226,7 @@ class ResponseNotification {
 		if ( false === $this->email_options['html_template'] ) {
 			$value = false;
 		}
-		return apply_filters( 'insightpulse_email_html_template', $value, $this );
+		return apply_filters( 'wpask_email_html_template', $value, $this );
 	}
 
 	/**
@@ -258,7 +258,7 @@ class ResponseNotification {
 		$args['answers']          = $this->get_answers();
 		$args['settings_tab_url'] = $notification_config_url;
 
-		return apply_filters( 'insightpulse_email_notification_template_args', $args );
+		return apply_filters( 'wpask_email_notification_template_args', $args );
 	}
 
 	/**

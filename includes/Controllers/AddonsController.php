@@ -5,10 +5,9 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Controllers;
+namespace WPAsk\Controllers;
 
-use InsightPulse\Addons\Registry;
-use InsightPulse\Utils\UpgradeLink;
+use WPAsk\Addons\Registry;
 use WP_REST_Request;
 
 /**
@@ -19,7 +18,7 @@ class AddonsController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'insightpulse/v1';
+	private $namespace = 'wpask/v1';
 
 	/**
 	 * @var string
@@ -50,7 +49,7 @@ class AddonsController {
 	 * @return bool
 	 */
 	public function permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_save_settings' );
+		return current_user_can( 'wpask_save_settings' );
 	}
 
 	/**
@@ -62,9 +61,7 @@ class AddonsController {
 	public function get_items( $request ) {
 		return rest_ensure_response(
 			[
-				'is_pro'      => Registry::is_pro(),
-				'upgrade_url' => UpgradeLink::get( 'addons', 'upgrade' ),
-				'addons'      => Registry::get_all(),
+				'addons' => Registry::get_all(),
 			]
 		);
 	}

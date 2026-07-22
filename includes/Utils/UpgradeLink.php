@@ -4,10 +4,10 @@
  *
  * Mirrors the UserFeedback Lite upgrade-link pattern with UTM tracking.
  *
- * @package InsightPulse
+ * @package WPAsk
  */
 
-namespace InsightPulse\Utils;
+namespace WPAsk\Utils;
 
 /**
  * Class UpgradeLink
@@ -30,7 +30,7 @@ class UpgradeLink {
 				'utm_source'   => apply_filters( 'wpask_upgrade_utm_source', 'liteplugin' ),
 				'utm_medium'   => sanitize_key( $medium ?: 'default' ),
 				'utm_campaign' => sanitize_key( $campaign ?: 'upgrade' ),
-				'utm_content'  => INSIGHTPULSE_VERSION,
+				'utm_content'  => WPASK_VERSION,
 			],
 			trailingslashit( $url )
 		);

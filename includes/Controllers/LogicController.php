@@ -5,7 +5,7 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Controllers;
+namespace WPAsk\Controllers;
 
 use WP_REST_Request;
 use WP_REST_Response;
@@ -18,7 +18,7 @@ class LogicController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'insightpulse/v1';
+	private $namespace = 'wpask/v1';
 
 	/**
 	 * Register the routes.
@@ -53,7 +53,7 @@ class LogicController {
 	 * Check permissions.
 	 */
 	public function permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_create_edit_surveys' );
+		return current_user_can( 'wpask_create_edit_surveys' );
 	}
 
 	/**

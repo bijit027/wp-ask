@@ -5,12 +5,12 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Handlers;
+namespace WPAsk\Handlers;
 
-use InsightPulse\Models\Survey;
-use InsightPulse\Services\TargetingService;
-use InsightPulse\Services\SessionService;
-use InsightPulse\Utils\AssetLoader;
+use WPAsk\Models\Survey;
+use WPAsk\Services\TargetingService;
+use WPAsk\Services\SessionService;
+use WPAsk\Utils\AssetLoader;
 
 /**
  * Class FrontendHandler
@@ -59,7 +59,7 @@ class FrontendHandler {
 		$matched_survey = null;
 
 		// 1. Check for Preview Mode
-		if ( isset( $_GET['wpask_preview'] ) && current_user_can( 'insightpulse_manage_surveys' ) ) {
+		if ( isset( $_GET['wpask_preview'] ) && current_user_can( 'wpask_manage_surveys' ) ) {
 			$preview_id = (int) $_GET['wpask_preview'];
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $preview_id ) );
@@ -119,7 +119,7 @@ class FrontendHandler {
 
 		// Inline config avoids page cache issues better than wp_localize_script
 		$this->current_config = [
-			'api_url'   => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
+			'api_url'   => esc_url_raw( rest_url( 'wpask/v1' ) ),
 			'survey'    => [
 				'id'        => $matched_survey->id,
 				'title'     => $matched_survey->title,

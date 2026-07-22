@@ -2,10 +2,10 @@
 /**
  * Frontend asset loader helper.
  *
- * @package InsightPulse
+ * @package WPAsk
  */
 
-namespace InsightPulse\Utils;
+namespace WPAsk\Utils;
 
 /**
  * Class AssetLoader
@@ -23,7 +23,7 @@ class AssetLoader {
 			return (bool) WPASK_VITE_DEV;
 		}
 
-		return ! file_exists( INSIGHTPULSE_PLUGIN_DIR . ltrim( $built_relative_path, '/' ) );
+		return ! file_exists( WPASK_PLUGIN_DIR . ltrim( $built_relative_path, '/' ) );
 	}
 
 	/**
@@ -62,16 +62,16 @@ class AssetLoader {
 			return true;
 		}
 
-		$script_path = INSIGHTPULSE_PLUGIN_DIR . ltrim( $built_relative, '/' );
+		$script_path = WPASK_PLUGIN_DIR . ltrim( $built_relative, '/' );
 		if ( ! file_exists( $script_path ) ) {
 			return false;
 		}
 
 		wp_enqueue_script(
 			$handle,
-			INSIGHTPULSE_PLUGIN_URL . ltrim( $built_relative, '/' ),
+			WPASK_PLUGIN_URL . ltrim( $built_relative, '/' ),
 			[],
-			INSIGHTPULSE_VERSION,
+			WPASK_VERSION,
 			true
 		);
 

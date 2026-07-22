@@ -5,9 +5,9 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Controllers;
+namespace WPAsk\Controllers;
 
-use InsightPulse\Services\SubmissionService;
+use WPAsk\Services\SubmissionService;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -22,7 +22,7 @@ class FrontendController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'insightpulse/v1';
+	private $namespace = 'wpask/v1';
 
 	/**
 	 * @var SubmissionService
@@ -68,7 +68,7 @@ class FrontendController {
 		// A nonce check `wp_verify_nonce( $request->get_header('X-WP-Nonce'), 'wp_rest' )` could go here if strict.
 		
 		// Rate limiting: 5 submissions per IP per hour.
-		$ip       = \InsightPulse\Utils\IpHelper::get_ip();
+		$ip       = \WPAsk\Utils\IpHelper::get_ip();
 		$transient_key = 'wpask_rl_' . md5( $ip . '_' . $survey_id );
 		$attempts = get_transient( $transient_key ) ?: 0;
 

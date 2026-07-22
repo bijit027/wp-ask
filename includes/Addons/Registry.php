@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Addons;
+namespace WPAsk\Addons;
 
-use InsightPulse\Utils\UpgradeLink;
+use WPAsk\Utils\UpgradeLink;
 
 /**
  * Class Registry
@@ -54,64 +54,45 @@ class Registry {
 				'name'        => __( 'Email notifications', 'wpask' ),
 				'description' => __( 'Get emailed when a new survey response comes in.', 'wpask' ),
 				'icon'        => 'mail',
-				'tier'        => 'included',
-				'feature'     => 'email_notifications',
+				'installed'  => true,
+				'active'     => true,
+				'locked'     => false,
 			],
 			[
 				'id'          => 'conditional-logic',
 				'name'        => __( 'Conditional logic', 'wpask' ),
 				'description' => __( 'Show or skip questions based on previous answers.', 'wpask' ),
 				'icon'        => 'git-branch',
-				'tier'        => 'included',
-				'feature'     => 'conditional_logic',
+				'installed'  => true,
+				'active'     => true,
+				'locked'     => false,
 			],
 			[
 				'id'          => 'csv-export',
 				'name'        => __( 'CSV export', 'wpask' ),
 				'description' => __( 'Download all survey responses as a CSV file.', 'wpask' ),
 				'icon'        => 'download',
-				'tier'        => 'included',
-				'feature'     => 'csv_export',
+				'installed'  => true,
+				'active'     => true,
+				'locked'     => false,
 			],
 			[
 				'id'          => 'heatmaps',
 				'name'        => __( 'Heatmaps', 'wpask' ),
 				'description' => __( 'Visualize where visitors click and how they interact with your pages.', 'wpask' ),
 				'icon'        => 'mouse-pointer-click',
-				'tier'        => 'included',
-				'feature'     => 'heatmaps',
-			],
-			[
-				'id'          => 'webhooks',
-				'name'        => __( 'Webhooks', 'wpask' ),
-				'description' => __( 'Send new responses to a custom URL in real time.', 'wpask' ),
-				'icon'        => 'webhook',
-				'tier'        => 'pro',
-				'feature'     => 'webhooks',
-			],
-			[
-				'id'          => 'mailchimp',
-				'name'        => __( 'Mailchimp sync', 'wpask' ),
-				'description' => __( 'Push new contacts into a Mailchimp audience automatically.', 'wpask' ),
-				'icon'        => 'send',
-				'tier'        => 'pro',
-				'feature'     => 'mailchimp',
-			],
-			[
-				'id'          => 'zapier',
-				'name'        => __( 'Zapier', 'wpask' ),
-				'description' => __( 'Connect WPAsk to 5,000+ apps with automated zaps.', 'wpask' ),
-				'icon'        => 'zap',
-				'tier'        => 'pro',
-				'feature'     => 'zapier',
+				'installed'  => true,
+				'active'     => true,
+				'locked'     => false,
 			],
 			[
 				'id'          => 'post-ratings',
 				'name'        => __( 'Post ratings', 'wpask' ),
 				'description' => __( 'Embed star or thumbs ratings on posts via shortcode.', 'wpask' ),
 				'icon'        => 'star',
-				'tier'        => 'included',
-				'feature'     => 'post_ratings',
+				'installed'  => true,
+				'active'     => true,
+				'locked'     => false,
 			],
 		];
 	}
@@ -124,26 +105,7 @@ class Registry {
 	 * @return array<string, mixed>
 	 */
 	private static function resolve_state( array $addon, bool $is_pro ): array {
-		$included_features = [ 'email_notifications', 'conditional_logic', 'csv_export', 'post_ratings', 'heatmaps' ];
-		$feature           = $addon['feature'] ?? '';
-		$is_included       = 'included' === ( $addon['tier'] ?? '' );
-
-		if ( $is_included ) {
-			$addon['installed'] = in_array( $feature, $included_features, true );
-			$addon['active']    = $addon['installed'];
-			$addon['locked']    = false;
-		} else {
-			$addon['installed'] = $is_pro && self::is_pro_feature_active( $feature );
-			$addon['active']    = $addon['installed'];
-			$addon['locked']    = ! $is_pro;
-		}
-
-		if ( ! empty( $addon['locked'] ) ) {
-			$addon['upgrade_url'] = UpgradeLink::get( 'addons', $addon['id'], 'https://wpask.io/pricing' );
-		}
-
-		unset( $addon['feature'] );
-
+		// All features are now included, no Pro tier
 		return $addon;
 	}
 
@@ -154,7 +116,6 @@ class Registry {
 	 * @return bool
 	 */
 	private static function is_pro_feature_active( string $feature ): bool {
-		$active = (array) get_option( 'wpask_active_addons', [] );
-		return in_array( $feature, $active, true );
+		return true; // All features are active
 	}
 }

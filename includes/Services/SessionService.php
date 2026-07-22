@@ -5,11 +5,11 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Services;
+namespace WPAsk\Services;
 
-use InsightPulse\Models\Session;
-use InsightPulse\Repositories\SessionRepository;
-use InsightPulse\Utils\IpHelper;
+use WPAsk\Models\Session;
+use WPAsk\Repositories\SessionRepository;
+use WPAsk\Utils\IpHelper;
 
 /**
  * Class SessionService

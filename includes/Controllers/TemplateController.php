@@ -5,9 +5,9 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Controllers;
+namespace WPAsk\Controllers;
 
-use InsightPulse\Templates\Registry;
+use WPAsk\Templates\Registry;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -19,7 +19,7 @@ class TemplateController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'insightpulse/v1';
+	private $namespace = 'wpask/v1';
 
 	/**
 	 * @var string
@@ -47,7 +47,7 @@ class TemplateController {
 	 * Check permissions.
 	 */
 	public function permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_create_edit_surveys' );
+		return current_user_can( 'wpask_create_edit_surveys' );
 	}
 
 	/**
@@ -55,7 +55,7 @@ class TemplateController {
 	 */
 	public function get_items( $request ) {
 		// Template registry will be built in Phase 7
-		$templates = class_exists( '\InsightPulse\Templates\Registry' ) ? Registry::get_all() : [];
+		$templates = class_exists( '\WPAsk\Templates\Registry' ) ? Registry::get_all() : [];
 		return rest_ensure_response( array_values( $templates ) );
 	}
 }

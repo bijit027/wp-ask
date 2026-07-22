@@ -4,6 +4,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [vue()],
+  base: './',
   build: {
     outDir: 'assets',
     emptyOutDir: true,
@@ -16,8 +17,8 @@ export default defineConfig({
       },
       output: {
         entryFileNames: '[name]/[name].js',
-        chunkFileNames: '[name]/[name]-[hash].js',
-        assetFileNames: '[name]/style.[ext]'
+        chunkFileNames: 'chunks/[name]-[hash].js',
+        assetFileNames: '[name]/[name]-[hash][extname]'
       }
     }
   },

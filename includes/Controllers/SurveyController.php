@@ -5,10 +5,10 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Controllers;
+namespace WPAsk\Controllers;
 
-use InsightPulse\Repositories\SurveyRepository;
-use InsightPulse\Validators\SurveyValidator;
+use WPAsk\Repositories\SurveyRepository;
+use WPAsk\Validators\SurveyValidator;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -21,7 +21,7 @@ class SurveyController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'insightpulse/v1';
+	private $namespace = 'wpask/v1';
 
 	/**
 	 * @var string
@@ -146,7 +146,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function get_items_permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_create_edit_surveys' );
+		return current_user_can( 'wpask_create_edit_surveys' );
 	}
 
 	/**
@@ -215,7 +215,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function create_item_permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_create_edit_surveys' );
+		return current_user_can( 'wpask_create_edit_surveys' );
 	}
 
 	/**
@@ -249,7 +249,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function get_item_permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_create_edit_surveys' );
+		return current_user_can( 'wpask_create_edit_surveys' );
 	}
 
 	/**
@@ -276,7 +276,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function update_item_permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_create_edit_surveys' );
+		return current_user_can( 'wpask_create_edit_surveys' );
 	}
 
 	/**
@@ -312,7 +312,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function delete_item_permissions_check( $request ): bool {
-		return current_user_can( 'insightpulse_delete_surveys' );
+		return current_user_can( 'wpask_delete_surveys' );
 	}
 
 	/**

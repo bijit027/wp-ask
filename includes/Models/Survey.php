@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Models;
+namespace WPAsk\Models;
 
 /**
  * Class Survey

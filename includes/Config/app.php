@@ -5,12 +5,12 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Config;
+namespace WPAsk\Config;
 
 return [
 	'slug'      => 'insightpulse',
 	'rest'      => [
-		'namespace' => 'insightpulse/v1',
+		'namespace' => 'wpask/v1',
 	],
 	'admin'     => [
 		'menu_slug' => 'insightpulse',

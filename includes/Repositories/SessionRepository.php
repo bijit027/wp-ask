@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Repositories;
+namespace WPAsk\Repositories;
 
-use InsightPulse\Models\Session;
+use WPAsk\Models\Session;
 
 /**
  * Class SessionRepository

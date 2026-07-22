@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Repositories;
+namespace WPAsk\Repositories;
 
-use InsightPulse\Models\Meta;
+use WPAsk\Models\Meta;
 
 /**
  * Class MetaRepository

@@ -5,10 +5,10 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Controllers;
+namespace WPAsk\Controllers;
 
-use InsightPulse\Services\HeatmapService;
-use InsightPulse\Utils\IpHelper;
+use WPAsk\Services\HeatmapService;
+use WPAsk\Utils\IpHelper;
 use WP_Error;
 use WP_REST_Request;
 
@@ -20,7 +20,7 @@ class HeatmapController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'insightpulse/v1';
+	private $namespace = 'wpask/v1';
 
 	/**
 	 * @var string
@@ -98,7 +98,7 @@ class HeatmapController {
 	 * @return bool
 	 */
 	public function admin_check(): bool {
-		return current_user_can( 'insightpulse_view_results' );
+		return current_user_can( 'wpask_view_results' );
 	}
 
 	/**

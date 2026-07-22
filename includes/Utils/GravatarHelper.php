@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Utils;
+namespace WPAsk\Utils;
 
 /**
  * Class GravatarHelper

@@ -5,10 +5,10 @@
  * @package WPAsk
  */
 
-namespace InsightPulse\Handlers;
+namespace WPAsk\Handlers;
 
-use InsightPulse\Models\Survey;
-use InsightPulse\Utils\AssetLoader;
+use WPAsk\Models\Survey;
+use WPAsk\Utils\AssetLoader;
 
 /**
  * Class ShortcodeHandler
@@ -85,7 +85,7 @@ class ShortcodeHandler {
 		);
 
 		$config = [
-			'api_url' => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
+			'api_url' => esc_url_raw( rest_url( 'wpask/v1' ) ),
 			'survey'  => [
 				'id'        => $survey->id,
 				'title'     => $survey->title,
@@ -134,7 +134,7 @@ class ShortcodeHandler {
 		$this->enqueue_post_rating_script();
 
 		$config = [
-			'api_url' => esc_url_raw( rest_url( 'insightpulse/v1' ) ),
+			'api_url' => esc_url_raw( rest_url( 'wpask/v1' ) ),
 			'post_id' => $post_id,
 			'type'    => $type,
 			'label'   => sanitize_text_field( $atts['label'] ),
@@ -209,7 +209,7 @@ class ShortcodeHandler {
 			return;
 		}
 
-		wp_register_style( 'wpask-post-rating', false, [], INSIGHTPULSE_VERSION );
+		wp_register_style( 'wpask-post-rating', false, [], WPASK_VERSION );
 		wp_enqueue_style( 'wpask-post-rating' );
 		wp_add_inline_style(
 			'wpask-post-rating',

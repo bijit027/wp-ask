@@ -1,4 +1,4 @@
-import{c as x,p as D,a as m,o as E,r as H,b as l,d as i,e as s,f as w,u as c,g as L,t as o,F as _,h as b,A as g,C as B,w as M,x as W,j as X,J as z,l as u,P as F,n as C,m as I,X as J}from"../admin/admin.js";import{T as O}from"../trash-2/trash-2-1c2a063a.js";/**
+import{c as x,p as D,a as m,o as E,r as H,b as l,d as i,e as s,f as w,u as c,g as L,t as o,F as _,h as b,A as g,C as B,w as M,x as W,j as X,J as z,l as u,P as F,n as C,m as I,X as J}from"../admin/admin.js";import{T as O}from"./trash-2-1c2a063a.js";/**
  * @license lucide-vue-next v1.0.0 - ISC
  *
  * This source code is licensed under the ISC license.

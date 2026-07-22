@@ -5,13 +5,13 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Services;
+namespace WPAsk\Services;
 
-use InsightPulse\Models\Survey;
-use InsightPulse\Repositories\ResponseRepository;
-use InsightPulse\Repositories\SurveyRepository;
-use InsightPulse\Services\SessionService;
-use InsightPulse\Services\AnalyticsService;
+use WPAsk\Models\Survey;
+use WPAsk\Repositories\ResponseRepository;
+use WPAsk\Repositories\SurveyRepository;
+use WPAsk\Services\SessionService;
+use WPAsk\Services\AnalyticsService;
 
 /**
  * Class SubmissionService
@@ -113,7 +113,7 @@ class SubmissionService {
 			'context'    => $encoded_context,
 			'email'      => sanitize_email( $payload['email'] ?? ( $session->email ?? '' ) ),
 			'full_name'  => sanitize_text_field( $payload['full_name'] ?? ( $session->full_name ?? '' ) ),
-			'ip_address' => \InsightPulse\Utils\IpHelper::get_ip(),
+			'ip_address' => \WPAsk\Utils\IpHelper::get_ip(),
 			'browser'    => sanitize_text_field( $context['browser'] ?? '' ),
 			'device'     => sanitize_text_field( $context['device'] ?? '' ),
 			'status'     => 'publish',
@@ -142,7 +142,7 @@ class SubmissionService {
 		}
 
 		// Fire generic action for webhooks/emails
-		do_action( 'insightpulse_response_saved', $response_id, $survey->id, $answers, $context );
+		do_action( 'wpask_response_saved', $response_id, $survey->id, $answers, $context );
 
 		return $response_id;
 	}

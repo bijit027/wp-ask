@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse;
+namespace WPAsk;
 
 /**
  * Class Capabilities
@@ -23,10 +23,10 @@ class Capabilities {
 		}
 
 		$caps = [
-			'insightpulse_create_edit_surveys',
-			'insightpulse_delete_surveys',
-			'insightpulse_view_results',
-			'insightpulse_save_settings',
+			'wpask_create_edit_surveys',
+			'wpask_delete_surveys',
+			'wpask_view_results',
+			'wpask_save_settings',
 		];
 
 		foreach ( $caps as $cap ) {
@@ -34,6 +34,6 @@ class Capabilities {
 		}
 		
 		// Update option to track that capabilities were added.
-		update_option( 'insightpulse_capabilities_added', true );
+		update_option( 'wpask_capabilities_added', true );
 	}
 }

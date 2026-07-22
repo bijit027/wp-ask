@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace InsightPulse\Validators;
+namespace WPAsk\Validators;
 
 /**
  * Class ResponseValidator
@@ -24,8 +24,8 @@ class ResponseValidator {
 		}
 
 		$valid_data = [
-			'answers'   => \InsightPulse\Utils\Sanitizer::sanitize_array( $data['answers'] ),
-			'context'   => isset( $data['context'] ) && is_array( $data['context'] ) ? \InsightPulse\Utils\Sanitizer::sanitize_array( $data['context'] ) : [],
+			'answers'   => \WPAsk\Utils\Sanitizer::sanitize_array( $data['answers'] ),
+			'context'   => isset( $data['context'] ) && is_array( $data['context'] ) ? \WPAsk\Utils\Sanitizer::sanitize_array( $data['context'] ) : [],
 			'email'     => isset( $data['email'] ) ? sanitize_email( $data['email'] ) : '',
 			'full_name' => isset( $data['full_name'] ) ? sanitize_text_field( $data['full_name'] ) : '',
 		];
