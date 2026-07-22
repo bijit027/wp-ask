@@ -179,6 +179,82 @@ class DefaultTemplates {
 				'settings'    => self::default_settings(),
 			]
 		);
+
+		// UserFeedback Lite inspired templates
+		Registry::register(
+			'website-experience',
+			[
+				'id'          => 'website-experience',
+				'title'       => __( 'Website Experience', 'wpask' ),
+				'description' => __( 'Learn how customers currently rate your website experience.', 'wpask' ),
+				'icon'        => 'star',
+				'category'    => 'general',
+				'is_pro'      => false,
+				'questions'   => [
+					[
+						'id'       => 'q1',
+						'type'     => 'rating',
+						'label'    => __( 'On a scale of 1-5, how would you rate your experience?', 'wpask' ),
+						'required' => true,
+					],
+				],
+				'settings'    => self::default_settings(
+					__( 'Thank you for rating your experience!', 'wpask' )
+				),
+			]
+		);
+
+		Registry::register(
+			'content-engagement',
+			[
+				'id'          => 'content-engagement',
+				'title'       => __( 'Content Engagement', 'wpask' ),
+				'description' => __( 'Measure what content is engaging, and what content to create.', 'wpask' ),
+				'icon'        => 'file-text',
+				'category'    => 'content',
+				'is_pro'      => false,
+				'questions'   => [
+					[
+						'id'       => 'q1',
+						'type'     => 'yesno',
+						'label'    => __( 'Did you find this content engaging?', 'wpask' ),
+						'required' => true,
+					],
+					[
+						'id'       => 'q2',
+						'type'     => 'text',
+						'label'    => __( 'What content would you like us to create?', 'wpask' ),
+						'required' => false,
+					],
+				],
+				'settings'    => self::default_settings(
+					__( 'Thanks for your feedback on our content!', 'wpask' )
+				),
+			]
+		);
+
+		Registry::register(
+			'website-improvement',
+			[
+				'id'          => 'website-improvement',
+				'title'       => __( 'Website Improvement', 'wpask' ),
+				'description' => __( 'See what users think about your website and gather improvement suggestions.', 'wpask' ),
+				'icon'        => 'message-square',
+				'category'    => 'general',
+				'is_pro'      => false,
+				'questions'   => [
+					[
+						'id'       => 'q1',
+						'type'     => 'text',
+						'label'    => __( 'What can we do to improve this website?', 'wpask' ),
+						'required' => true,
+					],
+				],
+				'settings'    => self::default_settings(
+					__( 'Thank you for your improvement suggestions!', 'wpask' )
+				),
+			]
+		);
 	}
 
 	/**
