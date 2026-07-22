@@ -70,7 +70,7 @@ class SessionService {
 			}
 		}
 
-		$uid = md5( wp_generate_uuid4() . microtime( true ) . mt_rand( 1, 99999999 ) );
+		$uid = md5( wp_generate_uuid4() . microtime( true ) . wp_rand( 1, 99999999 ) );
 
 		$data = [
 			'uid'       => $uid,

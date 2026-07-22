@@ -186,7 +186,7 @@ class ResponseNotification {
 	public function get_email_subject() {
 
 		$site_url        = get_site_url();
-		$site_url_parsed = parse_url( $site_url );
+		$site_url_parsed = wp_parse_url( $site_url );
 
 		// Translators: The domain of the site is appended to the subject.
 		$subject = sprintf( __( 'New UserFeedback Response - %s', 'wpask' ), $this->survey->title );
@@ -240,6 +240,7 @@ class ResponseNotification {
 		$args['header_image']  = $this->get_header_image();
 		$args['survey_id']     = $this->survey->id;
 		$args['survey_title']  = $this->survey->title;
+		/* translators: %s: survey title */
 		$args['title']         = sprintf(
 			esc_html__( 'New Response to <b>%s</b>', 'wpask' ),
 			$this->survey->title
@@ -248,6 +249,7 @@ class ResponseNotification {
 		$survey_id               = $this->survey->id;
 		$notification_config_url = admin_url( 'admin.php?page=wpask#surveys/edit/' . $survey_id );
 
+		/* translators: %1$s: blog name, %2$s: settings URL */
 		$args['description'] =
 			sprintf(
 				esc_html__( 'You are receiving this WPAsk survey notification from <b>%1$s</b>. <a href="%2$s">Adjust your settings here</a>.', 'wpask' ),
@@ -316,6 +318,7 @@ class ResponseNotification {
 
 		$found_answer = $this->get_question_answer( $q_id );
 
+		/* translators: %1$s: opening HTML tag, %2$s: closing HTML tag */
 		$skipped_content = sprintf(
 			__( '%1$sSkipped%2$s', 'wpask' ),
 			'<small><i>',
@@ -344,6 +347,7 @@ class ResponseNotification {
 		} elseif ( $q_type === 'checkbox' ) {
 			$value = is_array($value) ? implode( ', ', $value ) : $value;
 		} elseif ( $q_type === 'star-rating' || $q_type === 'rating' ) {
+			/* translators: %s: rating value */
 			$value = sprintf( __( '%s stars', 'wpask' ), $value );
 		}
 

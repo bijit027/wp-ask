@@ -36,14 +36,14 @@ class MetaRepository {
 		global $wpdb;
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$sql = $wpdb->prepare(
-			"SELECT meta_value FROM {$this->table} WHERE object_type = %s AND object_id = %d AND meta_key = %s LIMIT 1",
-			$object_type,
-			$object_id,
-			$meta_key
+		$value = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT meta_value FROM {$this->table} WHERE object_type = %s AND object_id = %d AND meta_key = %s LIMIT 1",
+				$object_type,
+				$object_id,
+				$meta_key
+			)
 		);
-
-		$value = $wpdb->get_var( $sql );
 
 		if ( null === $value ) {
 			return null;
@@ -76,14 +76,14 @@ class MetaRepository {
 
 		// Check if exists
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$sql = $wpdb->prepare(
-			"SELECT id FROM {$this->table} WHERE object_type = %s AND object_id = %d AND meta_key = %s LIMIT 1",
-			$object_type,
-			$object_id,
-			$meta_key
+		$id = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT id FROM {$this->table} WHERE object_type = %s AND object_id = %d AND meta_key = %s LIMIT 1",
+				$object_type,
+				$object_id,
+				$meta_key
+			)
 		);
-
-		$id = $wpdb->get_var( $sql );
 
 		if ( $id ) {
 			// Update

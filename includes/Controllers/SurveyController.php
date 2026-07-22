@@ -168,17 +168,15 @@ class SurveyController {
 		if ( 'all' === $status ) {
 			// "All" tab: show published + draft, but NOT trash
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$query = $wpdb->prepare( "SELECT * FROM {$table} WHERE status != 'trash' ORDER BY id DESC LIMIT %d OFFSET %d", $per_page, $offset );
+			$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE status != 'trash' ORDER BY id DESC LIMIT %d OFFSET %d", $per_page, $offset ) );
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$total = $wpdb->get_var( "SELECT COUNT(id) FROM {$table} WHERE status != 'trash'" );
 		} else {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$query = $wpdb->prepare( "SELECT * FROM {$table} WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d", $status, $per_page, $offset );
+			$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d", $status, $per_page, $offset ) );
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table} WHERE status = %s", $status ) );
 		}
-
-		$results = $wpdb->get_results( $query );
 
 		// Decode JSON fields
 		$items = [];

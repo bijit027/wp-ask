@@ -199,7 +199,7 @@ class ResultsController {
 		}
 
 		// Output CSV
-		$filename = 'survey-' . $survey_id . '-responses-' . date( 'Y-m-d' ) . '.csv';
+		$filename = 'survey-' . $survey_id . '-responses-' . gmdate( 'Y-m-d' ) . '.csv';
 
 		header( 'Content-Type: text/csv' );
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );

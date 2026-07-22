@@ -36,8 +36,7 @@ class SurveyRepository {
 		global $wpdb;
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$sql = $wpdb->prepare( "SELECT * FROM {$this->table} WHERE id = %d", $id );
-		$row = $wpdb->get_row( $sql );
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$this->table} WHERE id = %d", $id ) );
 
 		if ( ! $row ) {
 			return null;

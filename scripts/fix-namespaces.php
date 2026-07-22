@@ -3,6 +3,10 @@
  * Fix namespace inconsistencies from WPAsk to InsightPulse
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $rootDir = __DIR__ . '/..';
 $includesDir = $rootDir . '/includes';
 
@@ -27,9 +31,9 @@ foreach ($iterator as $file) {
         if ($content !== $original) {
             file_put_contents($file->getPathname(), $content);
             $count++;
-            echo "✓ Fixed: " . $file->getFilename() . "\n";
+            echo "✓ Fixed: " . esc_html( $file->getFilename() ) . "\n";
         }
     }
 }
 
-echo "\n✅ Fixed $count files\n";
+echo "\n✅ Fixed " . esc_html( (string) $count ) . " files\n";

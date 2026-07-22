@@ -33,6 +33,16 @@ const includeFiles = [
   'LICENSE',
 ];
 
+// Files/directories to exclude from distribution
+const excludePatterns = [
+  '.DS_Store',
+  '.gitignore',
+  'wpask.zip',
+  'test-db.php',
+  'scripts',
+  'BUILD_STATE.md',
+];
+
 // Copy files to dist/wpask/
 includeFiles.forEach(item => {
   const srcPath = path.join(rootDir, item);
@@ -89,6 +99,16 @@ function copyDirectory(src, dest) {
   const entries = fs.readdirSync(src, { withFileTypes: true });
 
   for (const entry of entries) {
+    // Skip hidden files (starting with .)
+    if (entry.name.startsWith('.')) {
+      continue;
+    }
+
+    // Skip excluded patterns
+    if (excludePatterns.includes(entry.name)) {
+      continue;
+    }
+
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
 

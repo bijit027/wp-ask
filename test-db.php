@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 require_once('../../../wp-load.php');
 global $wpdb;
 $table = $wpdb->prefix . 'ipulse_surveys';

@@ -142,15 +142,15 @@ class ResponseController {
 		$where_clause = implode( ' AND ', $where_conditions );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$query = $wpdb->prepare( 
-			"SELECT * FROM {$table} WHERE {$where_clause} ORDER BY id DESC LIMIT %d OFFSET %d", 
-			array_merge( $where_values, [ $per_page, $offset ] )
-		);
-
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$table} WHERE {$where_clause}", $where_values ) );
 		
-		$results = $wpdb->get_results( $query );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$results = $wpdb->get_results(
+			$wpdb->prepare( 
+				"SELECT * FROM {$table} WHERE {$where_clause} ORDER BY id DESC LIMIT %d OFFSET %d", 
+				array_merge( $where_values, [ $per_page, $offset ] )
+			)
+		);
 		
 		// Decode JSON fields and add gravatar
 		$items = [];
