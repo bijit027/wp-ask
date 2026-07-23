@@ -2,10 +2,10 @@
 /**
  * Frontend asset loader helper.
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Utils;
+namespace PollQuest\Utils;
 
 /**
  * Class AssetLoader
@@ -19,11 +19,11 @@ class AssetLoader {
 	 * @return bool
 	 */
 	public static function use_vite_dev( string $built_relative_path ): bool {
-		if ( defined( 'WPASK_VITE_DEV' ) ) {
-			return (bool) WPASK_VITE_DEV;
+		if ( defined( 'POLLQUEST_VITE_DEV' ) ) {
+			return (bool) POLLQUEST_VITE_DEV;
 		}
 
-		return ! file_exists( WPASK_PLUGIN_DIR . ltrim( $built_relative_path, '/' ) );
+		return ! file_exists( POLLQUEST_PLUGIN_DIR . ltrim( $built_relative_path, '/' ) );
 	}
 
 	/**
@@ -62,16 +62,16 @@ class AssetLoader {
 			return true;
 		}
 
-		$script_path = WPASK_PLUGIN_DIR . ltrim( $built_relative, '/' );
+		$script_path = POLLQUEST_PLUGIN_DIR . ltrim( $built_relative, '/' );
 		if ( ! file_exists( $script_path ) ) {
 			return false;
 		}
 
 		wp_enqueue_script(
 			$handle,
-			WPASK_PLUGIN_URL . ltrim( $built_relative, '/' ),
+			POLLQUEST_PLUGIN_URL . ltrim( $built_relative, '/' ),
 			[],
-			WPASK_VERSION,
+			POLLQUEST_VERSION,
 			true
 		);
 

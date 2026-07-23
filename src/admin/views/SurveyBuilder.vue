@@ -1,33 +1,33 @@
 <template>
-  <div class="wpask-editor-wrap">
+  <div class="pollquest-editor-wrap">
     <!-- Sub-header -->
-    <div class="wpask-editor-subheader">
-      <div class="wpask-editor-subheader-inner">
+    <div class="pollquest-editor-subheader">
+      <div class="pollquest-editor-subheader-inner">
         <!-- Left: back + title + status -->
-        <div class="wpask-editor-title-row">
-          <button class="wpask-editor-back-btn" @click="$router.push('/')" aria-label="Back to surveys">
+        <div class="pollquest-editor-title-row">
+          <button class="pollquest-editor-back-btn" @click="$router.push('/')" aria-label="Back to surveys">
             <ArrowLeft />
           </button>
           <input
             v-model="survey.title"
-            class="wpask-editor-title-input"
+            class="pollquest-editor-title-input"
             placeholder="Untitled survey"
           />
-          <span class="wpask-status-chip" :class="survey.status">
+          <span class="pollquest-status-chip" :class="survey.status">
             <Circle />
             {{ survey.status === 'publish' ? 'Published' : 'Draft' }}
           </span>
         </div>
 
         <!-- Right: actions -->
-        <div class="wpask-editor-actions">
-          <button class="wpask-btn wpask-btn-ghost wpask-btn-sm" @click="previewSurvey" v-if="route.params.id">
+        <div class="pollquest-editor-actions">
+          <button class="pollquest-btn pollquest-btn-ghost pollquest-btn-sm" @click="previewSurvey" v-if="route.params.id">
             Preview
           </button>
-          <button class="wpask-btn wpask-btn-secondary wpask-btn-sm" @click="saveDraft">
+          <button class="pollquest-btn pollquest-btn-secondary pollquest-btn-sm" @click="saveDraft">
             Save draft
           </button>
-          <button class="wpask-btn wpask-btn-primary wpask-btn-sm" @click="publishSurvey">
+          <button class="pollquest-btn pollquest-btn-primary pollquest-btn-sm" @click="publishSurvey">
             <Check />
             Publish
           </button>
@@ -35,11 +35,11 @@
       </div>
 
       <!-- Tabs -->
-      <div class="wpask-editor-tabs">
+      <div class="pollquest-editor-tabs">
         <button
           v-for="t in editorTabs"
           :key="t"
-          class="wpask-editor-tab"
+          class="pollquest-editor-tab"
           :class="{ active: activeTab === t }"
           @click="activeTab = t"
         >{{ t }}</button>
@@ -47,38 +47,38 @@
     </div>
 
     <!-- Editor body -->
-    <div class="wpask-editor-body">
+    <div class="pollquest-editor-body">
 
       <!-- ====== DESIGN TAB ====== -->
       <template v-if="activeTab === 'design'">
         <!-- Left: Questions list -->
-        <aside class="wpask-questions-panel">
-          <div class="wpask-questions-header">
+        <aside class="pollquest-questions-panel">
+          <div class="pollquest-questions-header">
             <div>
-              <div class="wpask-questions-title">Questions</div>
-              <p class="wpask-questions-subtitle">Drag to reorder</p>
+              <div class="pollquest-questions-title">Questions</div>
+              <p class="pollquest-questions-subtitle">Drag to reorder</p>
             </div>
-            <span class="wpask-q-count">{{ survey.questions.length }}</span>
+            <span class="pollquest-q-count">{{ survey.questions.length }}</span>
           </div>
 
-          <ul class="wpask-q-list">
+          <ul class="pollquest-q-list">
             <li
               v-for="(q, i) in survey.questions"
               :key="q.id"
-              class="wpask-q-item"
+              class="pollquest-q-item"
               :class="{ active: activeQuestionId === q.id }"
               @click="activeQuestionId = q.id"
             >
-              <GripVertical class="wpask-q-grip" />
-              <div class="wpask-q-type-icon">
+              <GripVertical class="pollquest-q-grip" />
+              <div class="pollquest-q-type-icon">
                 <component :is="questionIcon(q.type)" />
               </div>
               <div style="min-width:0">
-                <div class="wpask-q-label">{{ q.label || 'Untitled' }}</div>
-                <p class="wpask-q-meta">{{ q.type }} · #{{ i + 1 }}</p>
+                <div class="pollquest-q-label">{{ q.label || 'Untitled' }}</div>
+                <p class="pollquest-q-meta">{{ q.type }} · #{{ i + 1 }}</p>
               </div>
               <button
-                class="wpask-q-remove"
+                class="pollquest-q-remove"
                 @click.stop="removeQuestion(i)"
                 aria-label="Remove question"
               >
@@ -88,13 +88,13 @@
           </ul>
 
           <!-- Add question types -->
-          <div class="wpask-add-question-section">
-            <p class="wpask-add-q-label">Add question</p>
-            <div class="wpask-q-type-grid">
+          <div class="pollquest-add-question-section">
+            <p class="pollquest-add-q-label">Add question</p>
+            <div class="pollquest-q-type-grid">
               <button
                 v-for="qt in questionTypes"
                 :key="qt.type"
-                class="wpask-q-type-btn"
+                class="pollquest-q-type-btn"
                 @click="addQuestion(qt.type)"
               >
                 <component :is="qt.icon" />
@@ -105,12 +105,12 @@
         </aside>
 
         <!-- Center: Live preview -->
-        <section class="wpask-preview-panel">
-          <div class="wpask-preview-toolbar">
-            <span class="wpask-preview-label">Live preview</span>
-            <div class="wpask-device-toggle">
+        <section class="pollquest-preview-panel">
+          <div class="pollquest-preview-toolbar">
+            <span class="pollquest-preview-label">Live preview</span>
+            <div class="pollquest-device-toggle">
               <button
-                class="wpask-device-btn"
+                class="pollquest-device-btn"
                 :class="{ active: previewDevice === 'desktop' }"
                 @click="previewDevice = 'desktop'"
                 aria-label="Desktop"
@@ -118,7 +118,7 @@
                 <Monitor />
               </button>
               <button
-                class="wpask-device-btn"
+                class="pollquest-device-btn"
                 :class="{ active: previewDevice === 'mobile' }"
                 @click="previewDevice = 'mobile'"
                 aria-label="Mobile"
@@ -129,55 +129,55 @@
           </div>
 
           <div
-            class="wpask-browser-chrome-wrap"
+            class="pollquest-browser-chrome-wrap"
             :class="{ mobile: previewDevice === 'mobile' }"
           >
             <!-- Browser chrome -->
-            <div class="wpask-browser-bar">
-              <span class="wpask-browser-dot" style="background:#f87171;" />
-              <span class="wpask-browser-dot" style="background:#fbbf24;" />
-              <span class="wpask-browser-dot" style="background:#34d399;" />
-              <div class="wpask-browser-url">example.com</div>
+            <div class="pollquest-browser-bar">
+              <span class="pollquest-browser-dot" style="background:#f87171;" />
+              <span class="pollquest-browser-dot" style="background:#fbbf24;" />
+              <span class="pollquest-browser-dot" style="background:#34d399;" />
+              <div class="pollquest-browser-url">example.com</div>
             </div>
 
             <!-- Preview viewport -->
-            <div class="wpask-preview-viewport">
-              <div class="wpask-widget-preview">
-                <div class="wpask-widget-header" :style="{ backgroundColor: survey.settings?.color || '#6366f1' }">
-                  <span class="wpask-widget-header-title">{{ survey.title || 'Survey' }}</span>
+            <div class="pollquest-preview-viewport">
+              <div class="pollquest-widget-preview">
+                <div class="pollquest-widget-header" :style="{ backgroundColor: survey.settings?.color || '#6366f1' }">
+                  <span class="pollquest-widget-header-title">{{ survey.title || 'Survey' }}</span>
                   <X />
                 </div>
-                <div class="wpask-widget-body">
-                  <div class="wpask-widget-question">{{ activeQuestion?.label || 'New question' }}</div>
+                <div class="pollquest-widget-body">
+                  <div class="pollquest-widget-question">{{ activeQuestion?.label || 'New question' }}</div>
 
                   <!-- Rating -->
-                  <div class="wpask-preview-stars" v-if="activeQuestion?.type === 'rating'">
+                  <div class="pollquest-preview-stars" v-if="activeQuestion?.type === 'rating'">
                     <Star v-for="n in 5" :key="n" />
                   </div>
 
                   <!-- NPS -->
-                  <div class="wpask-nps-grid" v-else-if="activeQuestion?.type === 'nps'">
-                    <div class="wpask-nps-cell" v-for="n in 11" :key="n">{{ n - 1 }}</div>
+                  <div class="pollquest-nps-grid" v-else-if="activeQuestion?.type === 'nps'">
+                    <div class="pollquest-nps-cell" v-for="n in 11" :key="n">{{ n - 1 }}</div>
                   </div>
 
                   <!-- Text / Textarea -->
                   <textarea
                     v-else-if="activeQuestion?.type === 'textarea' || activeQuestion?.type === 'text'"
-                    class="wpask-preview-textarea"
+                    class="pollquest-preview-textarea"
                     placeholder="Type your answer…"
                     readonly
                   />
 
                   <!-- Yes/No -->
-                  <div class="wpask-yesno-grid" v-else-if="activeQuestion?.type === 'yesno'">
-                    <button class="wpask-yesno-btn">Yes</button>
-                    <button class="wpask-yesno-btn">No</button>
+                  <div class="pollquest-yesno-grid" v-else-if="activeQuestion?.type === 'yesno'">
+                    <button class="pollquest-yesno-btn">Yes</button>
+                    <button class="pollquest-yesno-btn">No</button>
                   </div>
 
                   <!-- Multiple choice -->
-                  <div class="wpask-choice-list" v-else-if="activeQuestion?.type === 'choice' || activeQuestion?.type === 'radio'">
+                  <div class="pollquest-choice-list" v-else-if="activeQuestion?.type === 'choice' || activeQuestion?.type === 'radio'">
                     <div
-                      class="wpask-choice-item"
+                      class="pollquest-choice-item"
                       v-for="(opt, i) in (activeQuestion.options || ['Option 1', 'Option 2'])"
                       :key="i"
                     >
@@ -187,9 +187,9 @@
                   </div>
 
                   <!-- Checkboxes -->
-                  <div class="wpask-choice-list" v-else-if="activeQuestion?.type === 'checkbox'">
+                  <div class="pollquest-choice-list" v-else-if="activeQuestion?.type === 'checkbox'">
                     <div
-                      class="wpask-choice-item"
+                      class="pollquest-choice-item"
                       v-for="(opt, i) in (activeQuestion.options || ['Option 1', 'Option 2'])"
                       :key="i"
                     >
@@ -231,7 +231,7 @@
                     <input type="number" placeholder="0" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:6px; font-size:14px;">
                   </div>
 
-                  <button class="wpask-widget-next-btn">Next</button>
+                  <button class="pollquest-widget-next-btn">Next</button>
                 </div>
               </div>
             </div>
@@ -239,20 +239,20 @@
         </section>
 
         <!-- Right: Inspector -->
-        <aside class="wpask-inspector-panel">
-          <div class="wpask-inspector-header">
-            <div class="wpask-inspector-icon">
+        <aside class="pollquest-inspector-panel">
+          <div class="pollquest-inspector-header">
+            <div class="pollquest-inspector-icon">
               <Hash />
             </div>
             <div>
-              <div class="wpask-inspector-label">Question</div>
-              <div class="wpask-inspector-title">Properties</div>
+              <div class="pollquest-inspector-label">Question</div>
+              <div class="pollquest-inspector-title">Properties</div>
             </div>
           </div>
 
-          <div class="wpask-inspector-fields" v-if="activeQuestion">
+          <div class="pollquest-inspector-fields" v-if="activeQuestion">
             <!-- Type -->
-            <div class="wpask-field">
+            <div class="pollquest-field">
               <label>Type</label>
               <select v-model="activeQuestion.type">
                 <option v-for="qt in questionTypes" :key="qt.type" :value="qt.type">{{ qt.label }}</option>
@@ -260,17 +260,17 @@
             </div>
 
             <!-- Question text -->
-            <div class="wpask-field">
+            <div class="pollquest-field">
               <label>Question</label>
               <input v-model="activeQuestion.label" placeholder="Enter your question..." />
             </div>
 
             <!-- Options for choice/checkbox/dropdown type -->
-            <div class="wpask-field" v-if="activeQuestion.type === 'choice' || activeQuestion.type === 'radio' || activeQuestion.type === 'checkbox' || activeQuestion.type === 'dropdown'">
+            <div class="pollquest-field" v-if="activeQuestion.type === 'choice' || activeQuestion.type === 'radio' || activeQuestion.type === 'checkbox' || activeQuestion.type === 'dropdown'">
               <label>Options</label>
-              <div class="wpask-options-list">
+              <div class="pollquest-options-list">
                 <div
-                  class="wpask-option-row"
+                  class="pollquest-option-row"
                   v-for="(opt, i) in (activeQuestion.options || [])"
                   :key="i"
                 >
@@ -279,12 +279,12 @@
                     @input="updateOption(i, $event.target.value)"
                     placeholder="Option text"
                   />
-                  <button class="wpask-icon-btn danger" @click="removeOption(i)">
+                  <button class="pollquest-icon-btn danger" @click="removeOption(i)">
                     <X />
                   </button>
                 </div>
                 <button
-                  class="wpask-add-rule-btn"
+                  class="pollquest-add-rule-btn"
                   @click="addOption"
                   style="margin-top:6px;"
                 >
@@ -294,36 +294,36 @@
             </div>
 
             <!-- File Upload Options -->
-            <div class="wpask-field" v-if="activeQuestion.type === 'file_upload'">
+            <div class="pollquest-field" v-if="activeQuestion.type === 'file_upload'">
               <label>Allowed File Types</label>
               <input v-model="activeQuestion.allowed_types" placeholder="e.g. jpg,png,pdf,doc (comma-separated)" />
-              <p class="wpask-field-hint">Leave empty to allow all file types.</p>
+              <p class="pollquest-field-hint">Leave empty to allow all file types.</p>
             </div>
 
-            <div class="wpask-field" v-if="activeQuestion.type === 'file_upload'">
+            <div class="pollquest-field" v-if="activeQuestion.type === 'file_upload'">
               <label>Max File Size (MB)</label>
               <input type="number" v-model="activeQuestion.max_file_size" placeholder="e.g. 5" />
-              <p class="wpask-field-hint">Maximum file size in megabytes. Default: 5MB.</p>
+              <p class="pollquest-field-hint">Maximum file size in megabytes. Default: 5MB.</p>
             </div>
 
             <!-- Required -->
-            <label class="wpask-toggle-row">
+            <label class="pollquest-toggle-row">
               <input type="checkbox" v-model="activeQuestion.required" />
               <div>
-                <div class="wpask-toggle-row-label">Required</div>
-                <p class="wpask-toggle-row-hint">Users must answer before moving on.</p>
+                <div class="pollquest-toggle-row-label">Required</div>
+                <p class="pollquest-toggle-row-hint">Users must answer before moving on.</p>
               </div>
             </label>
 
-            <hr class="wpask-inspector-divider" />
+            <hr class="pollquest-inspector-divider" />
 
             <!-- Conditional Logic -->
-            <div class="wpask-field">
-              <label class="wpask-toggle-row" style="margin-bottom:12px;">
+            <div class="pollquest-field">
+              <label class="pollquest-toggle-row" style="margin-bottom:12px;">
                 <input type="checkbox" :checked="activeQuestion.logic?.enabled" @change="toggleLogicEnabled" />
                 <div>
-                  <div class="wpask-toggle-row-label">Enable Conditional Logic</div>
-                  <p class="wpask-toggle-row-hint">Show/hide this question based on previous answers.</p>
+                  <div class="pollquest-toggle-row-label">Enable Conditional Logic</div>
+                  <p class="pollquest-toggle-row-hint">Show/hide this question based on previous answers.</p>
                 </div>
               </label>
 
@@ -340,7 +340,7 @@
                 <div style="margin-top:16px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                     <label style="font-size:13px; font-weight:500; color:var(--foreground); margin:0;">Conditions</label>
-                    <button class="wpask-add-rule-btn" @click="addLogicCondition" style="margin:0; padding:4px 8px; font-size:12px;">
+                    <button class="pollquest-add-rule-btn" @click="addLogicCondition" style="margin:0; padding:4px 8px; font-size:12px;">
                       <Plus style="width:14px; height:14px;" /> Add condition
                     </button>
                   </div>
@@ -349,7 +349,7 @@
                     No conditions added. Add at least one condition.
                   </div>
 
-                  <div v-for="(cond, idx) in (activeQuestion.logic.conditions || [])" :key="idx" class="wpask-rule-row" style="margin-top:8px;">
+                  <div v-for="(cond, idx) in (activeQuestion.logic.conditions || [])" :key="idx" class="pollquest-rule-row" style="margin-top:8px;">
                     <select v-model="cond.questionId" style="width:140px; font-size:12px;" @change="updateConditionOptions(idx)">
                       <option value="">Select question...</option>
                       <option v-for="q in getPreviousQuestions()" :key="q.id" :value="q.id">{{ q.label }}</option>
@@ -363,7 +363,7 @@
                       <option value="">Select value...</option>
                       <option v-for="opt in getConditionOptions(cond.questionId)" :key="opt" :value="opt">{{ opt }}</option>
                     </select>
-                    <button class="wpask-icon-btn danger" @click="removeLogicCondition(idx)" style="margin-left:8px;">
+                    <button class="pollquest-icon-btn danger" @click="removeLogicCondition(idx)" style="margin-left:8px;">
                       <X style="width:14px; height:14px;" />
                     </button>
                   </div>
@@ -371,10 +371,10 @@
               </template>
             </div>
 
-            <hr class="wpask-inspector-divider" />
+            <hr class="pollquest-inspector-divider" />
 
             <button
-              class="wpask-btn wpask-btn-danger"
+              class="pollquest-btn pollquest-btn-danger"
               style="font-size:13px; padding: 6px 0;"
               @click="removeQuestion(activeQuestionIndex)"
             >
@@ -392,39 +392,39 @@
       <!-- ====== SETTINGS TAB ====== -->
       <template v-if="activeTab === 'settings'">
         <div style="grid-column: 1 / -1;">
-          <div class="wpask-builder-tab-content">
-            <div class="wpask-field">
+          <div class="pollquest-builder-tab-content">
+            <div class="pollquest-field">
               <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Brand color</label>
               <p style="font-size:12px; color:var(--muted-foreground); margin-bottom:10px !important;">Used for accents on published surveys.</p>
-              <div class="wpask-color-row">
-                <label class="wpask-color-swatch">
-                  <div class="wpask-color-preview" :style="{ background: survey.settings?.color || '#6366f1' }"></div>
+              <div class="pollquest-color-row">
+                <label class="pollquest-color-swatch">
+                  <div class="pollquest-color-preview" :style="{ background: survey.settings?.color || '#6366f1' }"></div>
                   <input type="color" v-model="survey.settings.color" />
                 </label>
-                <code class="wpask-color-code">{{ (survey.settings?.color || '#6366f1').toUpperCase() }}</code>
+                <code class="pollquest-color-code">{{ (survey.settings?.color || '#6366f1').toUpperCase() }}</code>
               </div>
             </div>
 
-            <div class="wpask-field" style="margin-top:24px;">
+            <div class="pollquest-field" style="margin-top:24px;">
               <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Widget position</label>
               <p style="font-size:12px; color:var(--muted-foreground); margin-bottom:10px !important;">Where the survey widget appears on the page.</p>
-              <div class="wpask-position-toggle">
+              <div class="pollquest-position-toggle">
                 <button
                   v-for="pos in ['bottom-left', 'bottom-center', 'bottom-right']"
                   :key="pos"
-                  class="wpask-pos-btn"
+                  class="pollquest-pos-btn"
                   :class="{ active: survey.settings?.position === pos }"
                   @click="survey.settings.position = pos"
                 >{{ pos }}</button>
               </div>
             </div>
 
-            <div class="wpask-field" style="margin-top:24px;">
+            <div class="pollquest-field" style="margin-top:24px;">
               <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Confirmation message</label>
               <input v-model="survey.settings.confirmation.message" placeholder="Thank you for your feedback!" style="max-width:480px;" />
             </div>
 
-            <div class="wpask-field" style="margin-top:24px;">
+            <div class="pollquest-field" style="margin-top:24px;">
               <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Schedule Publish (Optional)</label>
               <p style="font-size:12px; color:var(--muted-foreground); margin-bottom:10px !important;">Set a future date and time for the survey to go live.</p>
               <input type="datetime-local" v-model="survey.publish_at" style="max-width:480px;" />
@@ -436,24 +436,24 @@
       <!-- ====== TARGETING TAB ====== -->
       <template v-if="activeTab === 'targeting'">
         <div style="grid-column: 1 / -1;">
-          <div class="wpask-builder-tab-content">
-            <div class="wpask-field">
+          <div class="pollquest-builder-tab-content">
+            <div class="pollquest-field">
               <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:8px !important; display:block;">Match type</label>
-              <div class="wpask-position-toggle">
+              <div class="pollquest-position-toggle">
                 <button
-                  class="wpask-pos-btn"
+                  class="pollquest-pos-btn"
                   :class="{ active: survey.targeting?.rule_match === 'all' }"
                   @click="survey.targeting.rule_match = 'all'"
                 >Match ALL rules</button>
                 <button
-                  class="wpask-pos-btn"
+                  class="pollquest-pos-btn"
                   :class="{ active: survey.targeting?.rule_match === 'any' }"
                   @click="survey.targeting.rule_match = 'any'"
                 >Match ANY rule</button>
               </div>
             </div>
 
-            <div v-for="(rule, index) in survey.targeting.rules" :key="index" class="wpask-rule-row" style="margin-top:10px;">
+            <div v-for="(rule, index) in survey.targeting.rules" :key="index" class="pollquest-rule-row" style="margin-top:10px;">
               <select v-model="rule.type" style="width:150px;" @change="rule.value = ''">
                 <option value="url">URL</option>
                 <option value="post_type">Post Type</option>
@@ -495,12 +495,12 @@
 
               <input v-else v-model="rule.value" placeholder="Value..." style="flex:1;" />
 
-              <button class="wpask-icon-btn danger" @click="removeRule(index)">
+              <button class="pollquest-icon-btn danger" @click="removeRule(index)">
                 <Trash2 />
               </button>
             </div>
 
-            <button class="wpask-add-rule-btn" @click="addRule" style="margin-top:12px;">
+            <button class="pollquest-add-rule-btn" @click="addRule" style="margin-top:12px;">
               <Plus /> Add Rule
             </button>
           </div>
@@ -510,28 +510,28 @@
       <!-- ====== NOTIFICATIONS TAB ====== -->
       <template v-if="activeTab === 'notifications'">
         <div style="grid-column: 1 / -1;">
-          <div class="wpask-builder-tab-content">
-            <div class="wpask-notif-alert">
+          <div class="pollquest-builder-tab-content">
+            <div class="pollquest-notif-alert">
               Send an email when someone fills out this survey.
             </div>
 
-            <div class="wpask-switch-row">
-              <span class="wpask-switch-label">Enable Email Notifications</span>
-              <label class="wpask-switch">
+            <div class="pollquest-switch-row">
+              <span class="pollquest-switch-label">Enable Email Notifications</span>
+              <label class="pollquest-switch">
                 <input type="checkbox" v-model="survey.notifications.email.active" />
-                <span class="wpask-switch-slider"></span>
+                <span class="pollquest-switch-slider"></span>
               </label>
             </div>
 
             <div v-if="survey.notifications.email.active" style="margin-top:20px;">
-              <div class="wpask-field">
+              <div class="pollquest-field">
                 <label style="font-size:13px; font-weight:500; color:var(--foreground); margin-bottom:6px !important; display:block;">Email Addresses</label>
                 <input
                   v-model="survey.notifications.email.addresses"
                   placeholder="admin@example.com, author@example.com"
                   style="max-width:480px;"
                 />
-                <p class="wpask-help-text">Comma-separated list of email addresses.</p>
+                <p class="pollquest-help-text">Comma-separated list of email addresses.</p>
               </div>
             </div>
           </div>
@@ -730,7 +730,7 @@ const removeRule = (index) => {
 };
 
 const loadPages = async (rule) => {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   try {
     const res = await fetch(`${config.api_url}/pages`, { headers: { 'X-WP-Nonce': config.nonce } });
     if (res.ok) {
@@ -745,7 +745,7 @@ const loadPages = async (rule) => {
 const previewSurvey = () => {
   if (route.params.id) {
     const previewUrl = new URL(window.location.origin);
-    previewUrl.searchParams.set('wpask_preview', route.params.id);
+    previewUrl.searchParams.set('pollquest_preview', route.params.id);
     window.open(previewUrl.toString(), '_blank');
   }
 };
@@ -761,7 +761,7 @@ const publishSurvey = async () => {
 };
 
 const saveSurvey = async () => {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   const isEdit = !!route.params.id;
   const url = isEdit
     ? `${config.api_url}/surveys/${route.params.id}`
@@ -793,7 +793,7 @@ const saveSurvey = async () => {
 
 // Load existing survey if editing, or apply template for new surveys
 onMounted(async () => {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
 
   // Fetch logic options
   try {

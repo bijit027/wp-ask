@@ -5,11 +5,11 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Services;
+namespace PollQuest\Services;
 
-use WPAsk\Models\Session;
-use WPAsk\Repositories\SessionRepository;
-use WPAsk\Utils\IpHelper;
+use PollQuest\Models\Session;
+use PollQuest\Repositories\SessionRepository;
+use PollQuest\Utils\IpHelper;
 
 /**
  * Class SessionService

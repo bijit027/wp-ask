@@ -4,10 +4,10 @@
  *
  * Mirrors the UserFeedback Lite upgrade-link pattern with UTM tracking.
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Utils;
+namespace PollQuest\Utils;
 
 /**
  * Class UpgradeLink
@@ -15,7 +15,7 @@ namespace WPAsk\Utils;
 class UpgradeLink {
 
 	/**
-	 * Build a tracked upgrade URL for WPAsk Pro.
+	 * Build a tracked upgrade URL for PollQuest Pro.
 	 *
 	 * @param string $medium   UTM medium (e.g. addons, floatbar).
 	 * @param string $campaign UTM campaign (e.g. heatmaps, upgrade).
@@ -23,14 +23,14 @@ class UpgradeLink {
 	 * @return string
 	 */
 	public static function get( string $medium = '', string $campaign = '', string $url = '' ): string {
-		$url = $url ?: 'https://wpask.io/pricing';
+		$url = $url ?: 'https://pollquest.io/pricing';
 
 		$url = add_query_arg(
 			[
-				'utm_source'   => apply_filters( 'wpask_upgrade_utm_source', 'liteplugin' ),
+				'utm_source'   => apply_filters( 'pollquest_upgrade_utm_source', 'liteplugin' ),
 				'utm_medium'   => sanitize_key( $medium ?: 'default' ),
 				'utm_campaign' => sanitize_key( $campaign ?: 'upgrade' ),
-				'utm_content'  => WPASK_VERSION,
+				'utm_content'  => POLLQUEST_VERSION,
 			],
 			trailingslashit( $url )
 		);

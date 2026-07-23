@@ -1,7 +1,7 @@
 {
-  "name": "wpask",
+  "name": "pollquest",
   "version": "1.0.0",
-  "description": "WPAsk Frontend and Admin Build System",
+  "description": "PollQuest Frontend and Admin Build System",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

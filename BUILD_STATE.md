@@ -1,4 +1,4 @@
-# WPAsk Plugin — Build State Tracker
+# PollQuest Plugin — Build State Tracker
 
 > **📌 Notice to AI models / developers picking this up:**
 > Read this entire file before touching any code. It defines the architecture, what is fully functional, what still needs building, and critical implementation rules. The plugin's namespace is `InsightPulse` (for historical reasons — do not rename).
@@ -9,7 +9,7 @@
 
 | Layer | Directory | Description |
 |-------|-----------|-------------|
-| Entry Point | `wpask.php` | Plugin header, PSR-4 autoloader, activation/deactivation hooks |
+| Entry Point | `pollquest.php` | Plugin header, PSR-4 autoloader, activation/deactivation hooks |
 | Bootstrap | `includes/Plugin.php` | Singleton. Registers all handlers and REST routes |
 | Controllers | `includes/Controllers/` | WordPress REST API controllers |
 | Services | `includes/Services/` | Business logic (Submission, Session, Analytics, Targeting) |
@@ -27,7 +27,7 @@
 
 **REST API Base:** `insightpulse/v1` (e.g. `GET /wp-json/insightpulse/v1/surveys`)
 
-**Vue Admin Config:** Passed via `window.WPAskAdminConfig = { api_url, nonce }` (injected by `AdminMenuHandler.php`)
+**Vue Admin Config:** Passed via `window.PollQuestAdminConfig = { api_url, nonce }` (injected by `AdminMenuHandler.php`)
 
 ---
 
@@ -40,7 +40,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 3. **Cards**: White, `border-radius: 12px`, subtle shadow
 4. **Color Palette**: Primary `#6366f1`, gradient `#6366f1 → #8b5cf6`, background `#f6f7fb`
 5. **Typography**: `Inter` from Google Fonts — titles `700`, labels `500`, body `400`
-6. **CSS Scoping**: Always scope inside `#wpask-admin-app` to avoid WordPress admin conflicts
+6. **CSS Scoping**: Always scope inside `#pollquest-admin-app` to avoid WordPress admin conflicts
 7. **Icons**: Use `lucide-vue-next` exclusively — no emoji, no dashicons
 8. **No `type="dashed"` on ElButton** — Element Plus only accepts: `default`, `primary`, `success`, `warning`, `info`, `danger`, `text`
 
@@ -49,7 +49,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 ## ✅ COMPLETED FEATURES
 
 ### Core Architecture
-- [x] PSR-4 Autoloader in `wpask.php`
+- [x] PSR-4 Autoloader in `pollquest.php`
 - [x] Plugin singleton `Plugin.php` wiring all handlers
 - [x] Database migrations (dbDelta via `Migrator.php`)
   - `ipulse_surveys` — id, title, status, type, questions, settings, targeting, notifications, impressions, **publish_at**, created_at
@@ -109,12 +109,12 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - [x] Session tracking via cookies
 
 ### WordPress Integration
-- [x] **FrontendHandler** — Conditionally enqueues widget, respects `publish_at` scheduling, `wpask_preview` query param for draft preview
+- [x] **FrontendHandler** — Conditionally enqueues widget, respects `publish_at` scheduling, `pollquest_preview` query param for draft preview
 - [x] **MetaboxHandler** — Per-post "Disable surveys" and "Force specific survey" meta boxes
-- [x] **ShortcodeHandler** — `[wpask id="X"]` shortcode embeds survey in post/page content; `[wpask_rating]` embeds per-post star/thumbs ratings
+- [x] **ShortcodeHandler** — `[pollquest id="X"]` shortcode embeds survey in post/page content; `[pollquest_rating]` embeds per-post star/thumbs ratings
 - [x] **ReviewNoticeHandler** — Dismissible WP admin notice after 14 days, prompts for 5-star review
 - [x] **ActivationHandler** — Redirects to onboarding on first activation
-- [x] **AdminMenuHandler** — Registers `wpask` admin page, injects `WPAskAdminConfig`
+- [x] **AdminMenuHandler** — Registers `pollquest` admin page, injects `PollQuestAdminConfig`
 - [x] **Email Notifications** — HTML email on new response, triggered via `insightpulse_response_saved` action
 - [x] **WP Dashboard Widget** — "Recent Activity" mount point widget
 
@@ -122,7 +122,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - [x] Full CSS variable system in `admin.css` using `oklch` color tokens
 - [x] Dark sidebar, card-based layout, Inter/Sora fonts
 - [x] Lucide icons throughout (no emoji)
-- [x] CSS specificity fixed: `#wpask-admin-app .wpask-survey-row` ensures padding isn't overridden by WP resets
+- [x] CSS specificity fixed: `#pollquest-admin-app .pollquest-survey-row` ensures padding isn't overridden by WP resets
 
 ---
 
@@ -163,7 +163,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 ### Priority 4 — Polish & Monetisation
 - [x] **Addons.vue** — Hook up real addon data (at minimum show 2–3 "Pro" addon cards with lock icons and a Stripe/pricing link)
 - [x] **Survey Templates** — `TemplateController` exists but templates aren't selectable in the "New Survey" flow. Add a template picker modal to `SurveysList.vue` / onboarding.
-- [x] **Post Ratings Widget** — `ipulse_post_ratings` table exists. Build a "thumbs up/down" or "star" per-post rating widget that can be embedded via shortcode `[wpask_rating]`
+- [x] **Post Ratings Widget** — `ipulse_post_ratings` table exists. Build a "thumbs up/down" or "star" per-post rating widget that can be embedded via shortcode `[pollquest_rating]`
 - [x] **Heatmap module** — `ipulse_heatmaps` table exists. This is a larger feature — defer to last.
 
 ---
@@ -173,9 +173,9 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - **Node:** NVM is required. When running npm commands, prepend: `export PATH="/Users/bijitdeb/.nvm/versions/node/v16.17.1/bin:$PATH" &&`
 - **Build command:** `npm run build` (Vite 4)
 - **Dev server:** `npm run dev` (Vite HMR on port 5173)
-- **In `FrontendHandler.php` and `ShortcodeHandler.php`:** assets auto-load from `assets/` when built. Set `define( 'WPASK_VITE_DEV', true );` in `wp-config.php` to use the Vite dev server on port 5173.
+- **In `FrontendHandler.php` and `ShortcodeHandler.php`:** assets auto-load from `assets/` when built. Set `define( 'POLLQUEST_VITE_DEV', true );` in `wp-config.php` to use the Vite dev server on port 5173.
 - **WordPress URL:** Local dev (standard MAMP/LocalWP setup assumed)
-- **REST Nonce:** Injected as `window.WPAskAdminConfig.nonce` by `AdminMenuHandler.php`
+- **REST Nonce:** Injected as `window.PollQuestAdminConfig.nonce` by `AdminMenuHandler.php`
 
 ---
 
@@ -183,10 +183,10 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 
 | File | Purpose |
 |------|---------|
-| `wpask.php` | Entry point, autoloader, hooks |
+| `pollquest.php` | Entry point, autoloader, hooks |
 | `includes/Plugin.php` | Central bootstrapper |
 | `includes/Handlers/FrontendHandler.php` | Widget injection, scheduling enforcement |
-| `includes/Handlers/ShortcodeHandler.php` | `[wpask id="X"]` shortcode |
+| `includes/Handlers/ShortcodeHandler.php` | `[pollquest id="X"]` shortcode |
 | `includes/Handlers/ReviewNoticeHandler.php` | 14-day review prompt |
 | `includes/Controllers/SurveyController.php` | Full survey CRUD + trash/restore/duplicate |
 | `includes/Controllers/ResultsController.php` | Per-survey results + global `/results-summary` |

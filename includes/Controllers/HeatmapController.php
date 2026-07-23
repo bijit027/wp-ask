@@ -2,13 +2,13 @@
 /**
  * Heatmap REST Controller
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Controllers;
+namespace PollQuest\Controllers;
 
-use WPAsk\Services\HeatmapService;
-use WPAsk\Utils\IpHelper;
+use PollQuest\Services\HeatmapService;
+use PollQuest\Utils\IpHelper;
 use WP_Error;
 use WP_REST_Request;
 
@@ -20,7 +20,7 @@ class HeatmapController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'wpask/v1';
+	private $namespace = 'pollquest/v1';
 
 	/**
 	 * @var string
@@ -98,7 +98,7 @@ class HeatmapController {
 	 * @return bool
 	 */
 	public function admin_check(): bool {
-		return current_user_can( 'wpask_view_results' );
+		return current_user_can( 'pollquest_view_results' );
 	}
 
 	/**
@@ -137,7 +137,7 @@ class HeatmapController {
 		$page_id = (int) ( $params['page_id'] ?? 0 );
 
 		if ( ! $page_id ) {
-			return new WP_Error( 'missing_page_id', __( 'Page ID is required.', 'wpask' ), [ 'status' => 400 ] );
+			return new WP_Error( 'missing_page_id', __( 'Page ID is required.', 'pollquest' ), [ 'status' => 400 ] );
 		}
 
 		$result = $this->service->create_heatmap( $page_id );
@@ -159,7 +159,7 @@ class HeatmapController {
 		$status = sanitize_text_field( $params['status'] ?? '' );
 
 		if ( ! $status ) {
-			return new WP_Error( 'missing_status', __( 'Status is required.', 'wpask' ), [ 'status' => 400 ] );
+			return new WP_Error( 'missing_status', __( 'Status is required.', 'pollquest' ), [ 'status' => 400 ] );
 		}
 
 		$result = $this->service->update_status( (int) $request['id'], $status );
@@ -197,15 +197,15 @@ class HeatmapController {
 		$clicks     = $params['clicks'] ?? [];
 
 		if ( ! $heatmap_id || ! is_array( $clicks ) ) {
-			return new WP_Error( 'invalid_payload', __( 'Invalid click payload.', 'wpask' ), [ 'status' => 400 ] );
+			return new WP_Error( 'invalid_payload', __( 'Invalid click payload.', 'pollquest' ), [ 'status' => 400 ] );
 		}
 
 		$ip            = IpHelper::get_ip();
-		$transient_key = 'wpask_hm_rl_' . md5( $ip . '_' . $heatmap_id );
+		$transient_key = 'pollquest_hm_rl_' . md5( $ip . '_' . $heatmap_id );
 		$attempts      = (int) get_transient( $transient_key );
 
 		if ( $attempts >= 30 ) {
-			return new WP_Error( 'rate_limited', __( 'Too many requests.', 'wpask' ), [ 'status' => 429 ] );
+			return new WP_Error( 'rate_limited', __( 'Too many requests.', 'pollquest' ), [ 'status' => 429 ] );
 		}
 
 		set_transient( $transient_key, $attempts + 1, HOUR_IN_SECONDS );

@@ -11,7 +11,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         admin: resolve(__dirname, 'src/admin/main.js'),
-        frontend: resolve(__dirname, 'src/frontend/wpask.js'),
+        frontend: resolve(__dirname, 'src/frontend/pollquest.js'),
         'post-rating': resolve(__dirname, 'src/frontend/post-rating.js'),
         heatmap: resolve(__dirname, 'src/frontend/heatmap.js')
       },

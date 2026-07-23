@@ -1,5 +1,5 @@
 /**
- * WPAsk Heatmap Click Tracker
+ * PollQuest Heatmap Click Tracker
  * Records normalized click coordinates for heatmap visualization.
  */
 
@@ -21,7 +21,7 @@ class HeatmapTracker {
   }
 
   handleClick(event) {
-    if (event.target.closest('.wpask-widget-root, .wpask-post-rating-root, #wpask-widget-root')) {
+    if (event.target.closest('.pollquest-widget-root, .pollquest-post-rating-root, #pollquest-widget-root')) {
       return;
     }
 
@@ -72,12 +72,12 @@ class HeatmapTracker {
         keepalive: true,
       });
     } catch (e) {
-      console.error('WPAsk heatmap: failed to send clicks', e);
+      console.error('PollQuest heatmap: failed to send clicks', e);
       this.queue.unshift(...clicks);
     }
   }
 }
 
-if (window.WPAskHeatmapConfig && window.WPAskHeatmapConfig.heatmap_id) {
-  new HeatmapTracker(window.WPAskHeatmapConfig);
+if (window.PollQuestHeatmapConfig && window.PollQuestHeatmapConfig.heatmap_id) {
+  new HeatmapTracker(window.PollQuestHeatmapConfig);
 }

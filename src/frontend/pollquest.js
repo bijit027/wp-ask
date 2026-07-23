@@ -1,5 +1,5 @@
 /**
- * WPAsk Frontend Entry Point
+ * PollQuest Frontend Entry Point
  * Lightweight Vanilla JS Widget using Shadow DOM
  */
 
@@ -17,7 +17,7 @@ class SurveyController {
   }
 
   init() {
-    console.log('WPAsk Widget initialized');
+    console.log('PollQuest Widget initialized');
     
     // Check frontend targeting rules before rendering
     if (!this.checkFrontendTargeting()) {
@@ -195,10 +195,10 @@ class SurveyController {
   }
 
   createShadowDom() {
-    this.host = document.getElementById('wpask-widget-root');
+    this.host = document.getElementById('pollquest-widget-root');
     if (!this.host) {
       this.host = document.createElement('div');
-      this.host.id = 'wpask-widget-root';
+      this.host.id = 'pollquest-widget-root';
       document.body.appendChild(this.host);
     }
     
@@ -210,14 +210,14 @@ class SurveyController {
     this.shadow.appendChild(style);
     
     this.widget = document.createElement('div');
-    this.widget.className = `wpask-widget ${this.survey.settings.position || 'bottom-right'}`;
+    this.widget.className = `pollquest-widget ${this.survey.settings.position || 'bottom-right'}`;
     this.shadow.appendChild(this.widget);
   }
 
   getStyles() {
     const color = this.survey.settings.color || '#4F46E5';
     return `
-      .wpask-widget {
+      .pollquest-widget {
         position: fixed;
         width: 340px;
         background: #fff;
@@ -230,14 +230,14 @@ class SurveyController {
         display: flex;
         flex-direction: column;
       }
-      .wpask-widget.visible {
+      .pollquest-widget.visible {
         transform: translateY(0);
       }
-      .wpask-widget.bottom-right { bottom: 0; right: 30px; }
-      .wpask-widget.bottom-left { bottom: 0; left: 30px; }
-      .wpask-widget.bottom-center { bottom: 0; left: 50%; margin-left: -170px; }
+      .pollquest-widget.bottom-right { bottom: 0; right: 30px; }
+      .pollquest-widget.bottom-left { bottom: 0; left: 30px; }
+      .pollquest-widget.bottom-center { bottom: 0; left: 50%; margin-left: -170px; }
       
-      .wpask-header {
+      .pollquest-header {
         background: ${color};
         color: #fff;
         padding: 15px 20px;
@@ -250,7 +250,7 @@ class SurveyController {
         cursor: pointer;
       }
       
-      .wpask-close {
+      .pollquest-close {
         background: none;
         border: none;
         color: rgba(255,255,255,0.8);
@@ -259,16 +259,16 @@ class SurveyController {
         padding: 0;
         line-height: 1;
       }
-      .wpask-close:hover { color: #fff; }
+      .pollquest-close:hover { color: #fff; }
       
-      .wpask-body {
+      .pollquest-body {
         padding: 20px;
         background: #fff;
         max-height: 400px;
         overflow-y: auto;
       }
       
-      .wpask-question-label {
+      .pollquest-question-label {
         font-size: 15px;
         font-weight: 500;
         color: #1a1d2b;
@@ -276,7 +276,7 @@ class SurveyController {
         line-height: 1.4;
       }
       
-      .wpask-input-text {
+      .pollquest-input-text {
         width: 100%;
         padding: 10px 12px;
         border: 1px solid #d1d5db;
@@ -287,20 +287,20 @@ class SurveyController {
         margin-bottom: 15px;
         resize: vertical;
       }
-      .wpask-input-text:focus {
+      .pollquest-input-text:focus {
         outline: none;
         border-color: ${color};
         box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
       }
       
-      .wpask-radio-group {
+      .pollquest-radio-group {
         display: flex;
         flex-direction: column;
         gap: 10px;
         margin-bottom: 15px;
       }
       
-      .wpask-radio-label {
+      .pollquest-radio-label {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -309,14 +309,14 @@ class SurveyController {
         cursor: pointer;
       }
       
-      .wpask-checkbox-group {
+      .pollquest-checkbox-group {
         display: flex;
         flex-direction: column;
         gap: 10px;
         margin-bottom: 15px;
       }
       
-      .wpask-checkbox-label {
+      .pollquest-checkbox-label {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -325,7 +325,7 @@ class SurveyController {
         cursor: pointer;
       }
       
-      .wpask-select {
+      .pollquest-select {
         width: 100%;
         padding: 10px 12px;
         border: 1px solid #d1d5db;
@@ -336,13 +336,13 @@ class SurveyController {
         margin-bottom: 15px;
         background: #fff;
       }
-      .wpask-select:focus {
+      .pollquest-select:focus {
         outline: none;
         border-color: ${color};
         box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
       }
       
-      .wpask-date {
+      .pollquest-date {
         width: 100%;
         padding: 10px 12px;
         border: 1px solid #d1d5db;
@@ -352,13 +352,13 @@ class SurveyController {
         box-sizing: border-box;
         margin-bottom: 15px;
       }
-      .wpask-date:focus {
+      .pollquest-date:focus {
         outline: none;
         border-color: ${color};
         box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
       }
       
-      .wpask-email {
+      .pollquest-email {
         width: 100%;
         padding: 10px 12px;
         border: 1px solid #d1d5db;
@@ -368,13 +368,13 @@ class SurveyController {
         box-sizing: border-box;
         margin-bottom: 15px;
       }
-      .wpask-email:focus {
+      .pollquest-email:focus {
         outline: none;
         border-color: ${color};
         box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
       }
       
-      .wpask-number {
+      .pollquest-number {
         width: 100%;
         padding: 10px 12px;
         border: 1px solid #d1d5db;
@@ -384,19 +384,19 @@ class SurveyController {
         box-sizing: border-box;
         margin-bottom: 15px;
       }
-      .wpask-number:focus {
+      .pollquest-number:focus {
         outline: none;
         border-color: ${color};
         box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
       }
       
-      .wpask-file-upload {
+      .pollquest-file-upload {
         margin-bottom: 15px;
       }
-      .wpask-file-input {
+      .pollquest-file-input {
         display: none;
       }
-      .wpask-file-dropzone {
+      .pollquest-file-dropzone {
         padding: 20px;
         border: 2px dashed #d1d5db;
         border-radius: 6px;
@@ -404,23 +404,23 @@ class SurveyController {
         cursor: pointer;
         transition: border-color 0.2s;
       }
-      .wpask-file-dropzone:hover {
+      .pollquest-file-dropzone:hover {
         border-color: ${color};
       }
-      .wpask-file-icon {
+      .pollquest-file-icon {
         font-size: 24px;
         margin-bottom: 8px;
       }
-      .wpask-file-text {
+      .pollquest-file-text {
         font-size: 14px;
         color: #374151;
         margin-bottom: 4px;
       }
-      .wpask-file-hint {
+      .pollquest-file-hint {
         font-size: 12px;
         color: #6b7280;
       }
-      .wpask-file-preview {
+      .pollquest-file-preview {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -429,7 +429,7 @@ class SurveyController {
         border-radius: 6px;
         margin-top: 10px;
       }
-      .wpask-file-name {
+      .pollquest-file-name {
         font-size: 13px;
         color: #374151;
         overflow: hidden;
@@ -437,7 +437,7 @@ class SurveyController {
         white-space: nowrap;
         max-width: 200px;
       }
-      .wpask-file-remove {
+      .pollquest-file-remove {
         background: none;
         border: none;
         font-size: 20px;
@@ -445,11 +445,11 @@ class SurveyController {
         cursor: pointer;
         padding: 0 5px;
       }
-      .wpask-file-remove:hover {
+      .pollquest-file-remove:hover {
         color: #ef4444;
       }
       
-      .wpask-btn {
+      .pollquest-btn {
         width: 100%;
         background: ${color};
         color: #fff;
@@ -461,10 +461,10 @@ class SurveyController {
         cursor: pointer;
         transition: opacity 0.2s;
       }
-      .wpask-btn:hover { opacity: 0.9; }
-      .wpask-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .pollquest-btn:hover { opacity: 0.9; }
+      .pollquest-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       
-      .wpask-footer {
+      .pollquest-footer {
         padding: 10px 20px;
         text-align: center;
         font-size: 11px;
@@ -472,26 +472,26 @@ class SurveyController {
         background: #f9fafb;
         border-top: 1px solid #f3f4f6;
       }
-      .wpask-footer a { color: #6b7280; text-decoration: none; }
+      .pollquest-footer a { color: #6b7280; text-decoration: none; }
       
-      .wpask-rating {
+      .pollquest-rating {
         display: flex;
         justify-content: space-between;
         margin-bottom: 15px;
       }
-      .wpask-star {
+      .pollquest-star {
         font-size: 28px;
         color: #d1d5db;
         cursor: pointer;
         transition: color 0.2s;
       }
-      .wpask-star.active { color: #fbbf24; }
+      .pollquest-star.active { color: #fbbf24; }
       
-      .wpask-success {
+      .pollquest-success {
         text-align: center;
         padding: 20px 0;
       }
-      .wpask-success-icon {
+      .pollquest-success-icon {
         font-size: 40px;
         color: #10b981;
         margin-bottom: 10px;
@@ -503,21 +503,18 @@ class SurveyController {
     const title = this.survey.title || 'Survey';
     
     this.widget.innerHTML = `
-      <div class="wpask-header">
-        <span class="wpask-title">${title}</span>
-        <button class="wpask-close">&times;</button>
+      <div class="pollquest-header">
+        <span class="pollquest-title">${title}</span>
+        <button class="pollquest-close">&times;</button>
       </div>
-      <div class="wpask-body" id="wpask-body"></div>
-      <div class="wpask-footer">
-        Powered by <a href="https://wpask.io" target="_blank">WPAsk</a>
-      </div>
+      <div class="pollquest-body" id="pollquest-body"></div>
     `;
     
     this.renderStep();
   }
 
   renderStep() {
-    const body = this.widget.querySelector('#wpask-body');
+    const body = this.widget.querySelector('#pollquest-body');
     
     // Check if we should skip this question based on logic
     if (this.shouldSkipQuestion(this.currentStep)) {
@@ -533,8 +530,8 @@ class SurveyController {
     if (this.currentStep >= this.survey.questions.length) {
       // Completed
       body.innerHTML = `
-        <div class="wpask-success">
-          <div class="wpask-success-icon">✓</div>
+        <div class="pollquest-success">
+          <div class="pollquest-success-icon">✓</div>
           <h3>${this.survey.settings?.confirmation?.message || 'Thank you!'}</h3>
         </div>
       `;
@@ -543,17 +540,17 @@ class SurveyController {
     }
     
     const question = this.survey.questions[this.currentStep];
-    let html = `<p class="wpask-question-label">${question.label}</p>`;
+    let html = `<p class="pollquest-question-label">${question.label}</p>`;
     
     if (question.type === 'textarea') {
-      html += `<textarea class="wpask-input-text wpask-answer-input" rows="3" placeholder="Your answer..."></textarea>`;
+      html += `<textarea class="pollquest-input-text pollquest-answer-input" rows="3" placeholder="Your answer..."></textarea>`;
     } else if (question.type === 'radio') {
       const options = question.options || ['Yes', 'No']; // Fallback
-      html += `<div class="wpask-radio-group">`;
+      html += `<div class="pollquest-radio-group">`;
       options.forEach(opt => {
         html += `
-          <label class="wpask-radio-label">
-            <input type="radio" name="wpask_q_${question.id}" value="${opt}" class="wpask-answer-input">
+          <label class="pollquest-radio-label">
+            <input type="radio" name="pollquest_q_${question.id}" value="${opt}" class="pollquest-answer-input">
             ${opt}
           </label>
         `;
@@ -561,11 +558,11 @@ class SurveyController {
       html += `</div>`;
     } else if (question.type === 'checkbox') {
       const options = question.options || ['Option 1', 'Option 2'];
-      html += `<div class="wpask-checkbox-group">`;
+      html += `<div class="pollquest-checkbox-group">`;
       options.forEach(opt => {
         html += `
-          <label class="wpask-checkbox-label">
-            <input type="checkbox" name="wpask_q_${question.id}" value="${opt}" class="wpask-answer-input">
+          <label class="pollquest-checkbox-label">
+            <input type="checkbox" name="pollquest_q_${question.id}" value="${opt}" class="pollquest-answer-input">
             ${opt}
           </label>
         `;
@@ -573,63 +570,63 @@ class SurveyController {
       html += `</div>`;
     } else if (question.type === 'dropdown') {
       const options = question.options || ['Option 1', 'Option 2'];
-      html += `<select class="wpask-select wpask-answer-input">`;
+      html += `<select class="pollquest-select pollquest-answer-input">`;
       html += `<option value="">Select an option...</option>`;
       options.forEach(opt => {
         html += `<option value="${opt}">${opt}</option>`;
       });
       html += `</select>`;
     } else if (question.type === 'date') {
-      html += `<input type="date" class="wpask-date wpask-answer-input">`;
+      html += `<input type="date" class="pollquest-date pollquest-answer-input">`;
     } else if (question.type === 'email') {
-      html += `<input type="email" class="wpask-email wpask-answer-input" placeholder="user@example.com">`;
+      html += `<input type="email" class="pollquest-email pollquest-answer-input" placeholder="user@example.com">`;
     } else if (question.type === 'number') {
-      html += `<input type="number" class="wpask-number wpask-answer-input" placeholder="0">`;
+      html += `<input type="number" class="pollquest-number pollquest-answer-input" placeholder="0">`;
     } else if (question.type === 'file_upload') {
       const allowedTypes = question.allowed_types || '';
       const maxSize = question.max_file_size || 5;
       html += `
-        <div class="wpask-file-upload" id="wpask-file-upload-container">
-          <input type="file" class="wpask-answer-input wpask-file-input" 
+        <div class="pollquest-file-upload" id="pollquest-file-upload-container">
+          <input type="file" class="pollquest-answer-input pollquest-file-input" 
                  ${allowedTypes ? `accept=".${allowedTypes.split(',').join(',.')}"` : ''} 
                  data-max-size="${maxSize}">
-          <div class="wpask-file-dropzone">
-            <div class="wpask-file-icon">📁</div>
-            <div class="wpask-file-text">Click or drag file to upload</div>
-            <div class="wpask-file-hint">Max ${maxSize}MB${allowedTypes ? ` (${allowedTypes})` : ''}</div>
+          <div class="pollquest-file-dropzone">
+            <div class="pollquest-file-icon">📁</div>
+            <div class="pollquest-file-text">Click or drag file to upload</div>
+            <div class="pollquest-file-hint">Max ${maxSize}MB${allowedTypes ? ` (${allowedTypes})` : ''}</div>
           </div>
-          <div class="wpask-file-preview" style="display:none;">
-            <div class="wpask-file-name"></div>
-            <button type="button" class="wpask-file-remove">×</button>
+          <div class="pollquest-file-preview" style="display:none;">
+            <div class="pollquest-file-name"></div>
+            <button type="button" class="pollquest-file-remove">×</button>
           </div>
         </div>
       `;
     } else if (question.type === 'rating') {
       html += `
-        <div class="wpask-rating" id="wpask-rating-container">
-          <span class="wpask-star" data-val="1">★</span>
-          <span class="wpask-star" data-val="2">★</span>
-          <span class="wpask-star" data-val="3">★</span>
-          <span class="wpask-star" data-val="4">★</span>
-          <span class="wpask-star" data-val="5">★</span>
+        <div class="pollquest-rating" id="pollquest-rating-container">
+          <span class="pollquest-star" data-val="1">★</span>
+          <span class="pollquest-star" data-val="2">★</span>
+          <span class="pollquest-star" data-val="3">★</span>
+          <span class="pollquest-star" data-val="4">★</span>
+          <span class="pollquest-star" data-val="5">★</span>
         </div>
-        <input type="hidden" class="wpask-answer-input" id="wpask-rating-input">
+        <input type="hidden" class="pollquest-answer-input" id="pollquest-rating-input">
       `;
     }
     
     const btnText = this.currentStep === this.survey.questions.length - 1 ? 'Submit' : 'Next';
-    html += `<button class="wpask-btn" id="wpask-next-btn">${btnText}</button>`;
+    html += `<button class="pollquest-btn" id="pollquest-next-btn">${btnText}</button>`;
     
     body.innerHTML = html;
     
     // Bind step events
-    const nextBtn = body.querySelector('#wpask-next-btn');
+    const nextBtn = body.querySelector('#pollquest-next-btn');
     nextBtn.addEventListener('click', () => this.handleNext(question));
     
     // Rating logic
     if (question.type === 'rating') {
-      const stars = body.querySelectorAll('.wpask-star');
-      const input = body.querySelector('#wpask-rating-input');
+      const stars = body.querySelectorAll('.pollquest-star');
+      const input = body.querySelector('#pollquest-rating-input');
       stars.forEach(star => {
         star.addEventListener('click', (e) => {
           const val = parseInt(e.target.dataset.val, 10);
@@ -647,11 +644,11 @@ class SurveyController {
 
     // File upload logic
     if (question.type === 'file_upload') {
-      const fileInput = body.querySelector('.wpask-file-input');
-      const dropzone = body.querySelector('.wpask-file-dropzone');
-      const preview = body.querySelector('.wpask-file-preview');
-      const fileName = body.querySelector('.wpask-file-name');
-      const removeBtn = body.querySelector('.wpask-file-remove');
+      const fileInput = body.querySelector('.pollquest-file-input');
+      const dropzone = body.querySelector('.pollquest-file-dropzone');
+      const preview = body.querySelector('.pollquest-file-preview');
+      const fileName = body.querySelector('.pollquest-file-name');
+      const removeBtn = body.querySelector('.pollquest-file-remove');
       const maxSizeMB = parseInt(fileInput.dataset.maxSize, 10) || 5;
 
       // Click to upload
@@ -710,33 +707,33 @@ class SurveyController {
   }
 
   handleNext(question) {
-    const body = this.widget.querySelector('#wpask-body');
+    const body = this.widget.querySelector('#pollquest-body');
     let value = null;
     
     if (question.type === 'textarea') {
-      value = body.querySelector('.wpask-answer-input').value;
+      value = body.querySelector('.pollquest-answer-input').value;
     } else if (question.type === 'radio') {
-      const checked = body.querySelector('.wpask-answer-input:checked');
+      const checked = body.querySelector('.pollquest-answer-input:checked');
       if (checked) value = checked.value;
     } else if (question.type === 'checkbox') {
-      const checked = body.querySelectorAll('.wpask-answer-input:checked');
+      const checked = body.querySelectorAll('.pollquest-answer-input:checked');
       value = Array.from(checked).map(cb => cb.value);
     } else if (question.type === 'dropdown') {
-      const select = body.querySelector('.wpask-answer-input');
+      const select = body.querySelector('.pollquest-answer-input');
       if (select) value = select.value;
     } else if (question.type === 'date') {
-      const dateInput = body.querySelector('.wpask-answer-input');
+      const dateInput = body.querySelector('.pollquest-answer-input');
       if (dateInput) value = dateInput.value;
     } else if (question.type === 'email') {
-      const emailInput = body.querySelector('.wpask-answer-input');
+      const emailInput = body.querySelector('.pollquest-answer-input');
       if (emailInput) value = emailInput.value;
     } else if (question.type === 'number') {
-      const numberInput = body.querySelector('.wpask-answer-input');
+      const numberInput = body.querySelector('.pollquest-answer-input');
       if (numberInput) value = numberInput.value;
     } else if (question.type === 'rating') {
-      value = body.querySelector('#wpask-rating-input').value;
+      value = body.querySelector('#pollquest-rating-input').value;
     } else if (question.type === 'file_upload') {
-      const fileInput = body.querySelector('.wpask-answer-input');
+      const fileInput = body.querySelector('.pollquest-answer-input');
       if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
         // Convert file to base64 for submission
@@ -773,7 +770,7 @@ class SurveyController {
           return;
         }
       } else if (question.type === 'file_upload') {
-        const fileInput = body.querySelector('.wpask-answer-input');
+        const fileInput = body.querySelector('.pollquest-answer-input');
         if (fileInput.files.length === 0) {
           alert('Please upload a file before continuing.');
           return;
@@ -882,10 +879,10 @@ class SurveyController {
       console.log('Survey submitted successfully:', data);
       
       // Show success message
-      const body = this.widget.querySelector('#wpask-body');
+      const body = this.widget.querySelector('#pollquest-body');
       body.innerHTML = `
-        <div class="wpask-success">
-          <div class="wpask-success-icon">✓</div>
+        <div class="pollquest-success">
+          <div class="pollquest-success-icon">✓</div>
           <h3>${this.survey.settings?.confirmation?.message || 'Thank you!'}</h3>
         </div>
       `;
@@ -897,8 +894,8 @@ class SurveyController {
   }
 
   bindEvents() {
-    const closeBtn = this.widget.querySelector('.wpask-close');
-    const header = this.widget.querySelector('.wpask-header');
+    const closeBtn = this.widget.querySelector('.pollquest-close');
+    const header = this.widget.querySelector('.pollquest-header');
     
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -907,8 +904,8 @@ class SurveyController {
     
     // Toggle minimize
     header.addEventListener('click', () => {
-      const body = this.widget.querySelector('.wpask-body');
-      const footer = this.widget.querySelector('.wpask-footer');
+      const body = this.widget.querySelector('.pollquest-body');
+      const footer = this.widget.querySelector('.pollquest-footer');
       if (body.style.display === 'none') {
         body.style.display = 'block';
         footer.style.display = 'block';
@@ -928,10 +925,10 @@ class SurveyController {
 }
 
 // Boot up if config exists
-if (window.WPAskConfig && window.WPAskConfig.survey) {
+if (window.PollQuestConfig && window.PollQuestConfig.survey) {
   // Check if we need to load tracking/analytics impression
-  if (window.WPAskConfig.api_url) {
-      fetch(`${window.WPAskConfig.api_url}/surveys/${window.WPAskConfig.survey.id}/impression`, {
+  if (window.PollQuestConfig.api_url) {
+      fetch(`${window.PollQuestConfig.api_url}/surveys/${window.PollQuestConfig.survey.id}/impression`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -939,5 +936,5 @@ if (window.WPAskConfig && window.WPAskConfig.survey) {
       }).catch(e => console.error(e));
   }
   
-  new SurveyController(window.WPAskConfig);
+  new SurveyController(window.PollQuestConfig);
 }

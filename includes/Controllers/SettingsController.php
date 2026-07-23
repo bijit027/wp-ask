@@ -2,10 +2,10 @@
 /**
  * Settings REST Controller
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Controllers;
+namespace PollQuest\Controllers;
 
 use WP_REST_Request;
 use WP_REST_Response;
@@ -18,7 +18,7 @@ class SettingsController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'wpask/v1';
+	private $namespace = 'pollquest/v1';
 
 	/**
 	 * @var string
@@ -51,14 +51,14 @@ class SettingsController {
 	 * Check permissions.
 	 */
 	public function permissions_check( $request ): bool {
-		return current_user_can( 'wpask_save_settings' );
+		return current_user_can( 'pollquest_save_settings' );
 	}
 
 	/**
 	 * Get settings.
 	 */
 	public function get_settings( $request ) {
-		$settings = get_option( 'wpask_settings', [] );
+		$settings = get_option( 'pollquest_settings', [] );
 		return rest_ensure_response( $settings );
 	}
 
@@ -69,9 +69,9 @@ class SettingsController {
 		$params = $request->get_json_params() ?: $request->get_body_params();
 		
 		// Sanitize settings deeply
-		$sanitized = \WPAsk\Utils\Sanitizer::sanitize_array( $params );
+		$sanitized = \PollQuest\Utils\Sanitizer::sanitize_array( $params );
 		
-		update_option( 'wpask_settings', $sanitized );
+		update_option( 'pollquest_settings', $sanitized );
 
 		return rest_ensure_response( [ 'success' => true, 'settings' => $sanitized ] );
 	}

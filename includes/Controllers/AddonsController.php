@@ -2,12 +2,12 @@
 /**
  * Add-ons REST Controller
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Controllers;
+namespace PollQuest\Controllers;
 
-use WPAsk\Addons\Registry;
+use PollQuest\Addons\Registry;
 use WP_REST_Request;
 
 /**
@@ -18,7 +18,7 @@ class AddonsController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'wpask/v1';
+	private $namespace = 'pollquest/v1';
 
 	/**
 	 * @var string
@@ -49,7 +49,7 @@ class AddonsController {
 	 * @return bool
 	 */
 	public function permissions_check( $request ): bool {
-		return current_user_can( 'wpask_save_settings' );
+		return current_user_can( 'pollquest_save_settings' );
 	}
 
 	/**

@@ -1,34 +1,34 @@
 <template>
-  <div class="wpask-template-picker">
-    <div v-if="loading" class="wpask-template-loading">Loading templates…</div>
+  <div class="pollquest-template-picker">
+    <div v-if="loading" class="pollquest-template-loading">Loading templates…</div>
 
-    <div v-else class="wpask-template-grid">
+    <div v-else class="pollquest-template-grid">
       <button
         v-for="template in templates"
         :key="template.id"
         type="button"
-        class="wpask-template-card"
+        class="pollquest-template-card"
         :class="{
-          'wpask-template-card--selected': selectedId === template.id,
-          'wpask-template-card--locked': !template.is_available,
+          'pollquest-template-card--selected': selectedId === template.id,
+          'pollquest-template-card--locked': !template.is_available,
         }"
         :disabled="!template.is_available"
         @click="selectTemplate(template)"
       >
-        <div class="wpask-template-card-icon" :class="{ 'wpask-template-card-icon--locked': !template.is_available }">
+        <div class="pollquest-template-card-icon" :class="{ 'pollquest-template-card-icon--locked': !template.is_available }">
           <component :is="iconFor(template.icon)" />
-          <span v-if="!template.is_available" class="wpask-template-lock-badge">
+          <span v-if="!template.is_available" class="pollquest-template-lock-badge">
             <Lock />
           </span>
         </div>
 
-        <div class="wpask-template-card-body">
-          <div class="wpask-template-card-title-row">
-            <span class="wpask-template-card-title">{{ template.title }}</span>
-            <span v-if="template.is_pro" class="wpask-template-pro-badge">Pro</span>
+        <div class="pollquest-template-card-body">
+          <div class="pollquest-template-card-title-row">
+            <span class="pollquest-template-card-title">{{ template.title }}</span>
+            <span v-if="template.is_pro" class="pollquest-template-pro-badge">Pro</span>
           </div>
-          <p class="wpask-template-card-desc">{{ template.description }}</p>
-          <span class="wpask-template-card-meta">
+          <p class="pollquest-template-card-desc">{{ template.description }}</p>
+          <span class="pollquest-template-card-meta">
             {{ template.questions?.length || 0 }} questions
           </span>
         </div>
@@ -86,7 +86,7 @@ function selectTemplate(template) {
 }
 
 async function fetchTemplates() {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
 
   try {
     const res = await fetch(`${config.api_url}/survey-templates`, {

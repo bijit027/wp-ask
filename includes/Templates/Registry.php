@@ -2,10 +2,10 @@
 /**
  * Template Registry
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Templates;
+namespace PollQuest\Templates;
 
 /**
  * Class Registry
@@ -47,9 +47,9 @@ class Registry {
 	public static function get_all(): array {
 		if ( empty( self::$templates ) ) {
 			DefaultTemplates::register();
-			do_action( 'wpask_register_templates' );
+			do_action( 'pollquest_register_templates' );
 		}
 
-		return apply_filters( 'wpask_survey_templates', array_values( self::$templates ) );
+		return apply_filters( 'pollquest_survey_templates', array_values( self::$templates ) );
 	}
 }

@@ -2,15 +2,15 @@
 /**
  * Frontend Handler
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Handlers;
+namespace PollQuest\Handlers;
 
-use WPAsk\Models\Survey;
-use WPAsk\Services\TargetingService;
-use WPAsk\Services\SessionService;
-use WPAsk\Utils\AssetLoader;
+use PollQuest\Models\Survey;
+use PollQuest\Services\TargetingService;
+use PollQuest\Services\SessionService;
+use PollQuest\Utils\AssetLoader;
 
 /**
  * Class FrontendHandler
@@ -59,8 +59,8 @@ class FrontendHandler {
 		$matched_survey = null;
 
 		// 1. Check for Preview Mode
-		if ( isset( $_GET['wpask_preview'] ) && current_user_can( 'wpask_manage_surveys' ) ) {
-			$preview_id = (int) $_GET['wpask_preview'];
+		if ( isset( $_GET['pollquest_preview'] ) && current_user_can( 'pollquest_manage_surveys' ) ) {
+			$preview_id = (int) $_GET['pollquest_preview'];
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $preview_id ) );
 			if ( $row ) {
@@ -109,8 +109,8 @@ class FrontendHandler {
 
 		// 4. Enqueue Assets (Compiled via Vite in Phase 9/10)
 		if ( ! AssetLoader::enqueue_frontend_script(
-			'wpask-frontend',
-			'src/frontend/wpask.js',
+			'pollquest-frontend',
+			'src/frontend/pollquest.js',
 			'assets/frontend/frontend.js',
 			'frontend'
 		) ) {
@@ -119,7 +119,7 @@ class FrontendHandler {
 
 		// Inline config avoids page cache issues better than wp_localize_script
 		$this->current_config = [
-			'api_url'   => esc_url_raw( rest_url( 'wpask/v1' ) ),
+			'api_url'   => esc_url_raw( rest_url( 'pollquest/v1' ) ),
 			'survey'    => [
 				'id'        => $matched_survey->id,
 				'title'     => $matched_survey->title,
@@ -137,14 +137,14 @@ class FrontendHandler {
 	 */
 	public function inject_widget_container(): void {
 		// Only inject if script was enqueued (meaning a survey matched)
-		if ( wp_script_is( 'wpask-frontend', 'enqueued' ) ) {
+		if ( wp_script_is( 'pollquest-frontend', 'enqueued' ) ) {
 			// Get matched survey from class property if we stored it, or just refetch it (simplified)
 			// Wait, we need the config. Let's build it here by storing it in a class property.
 			if ( ! empty( $this->current_config ) ) {
-				echo '<script>window.WPAskConfig = ' . wp_json_encode( $this->current_config ) . ';</script>';
+				wp_add_inline_script('pollquest-frontend', 'window.PollQuestConfig = ' . wp_json_encode($this->current_config) . ';', 'before');
 			}
-			echo '<!-- WPAsk Widget Container -->';
-			echo '<div id="wpask-widget-root"></div>';
+			echo '<!-- PollQuest Widget Container -->';
+			echo '<div id="pollquest-widget-root"></div>';
 		}
 	}
 

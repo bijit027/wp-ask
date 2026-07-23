@@ -2,12 +2,12 @@
 /**
  * Frontend REST Controller
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Controllers;
+namespace PollQuest\Controllers;
 
-use WPAsk\Services\SubmissionService;
+use PollQuest\Services\SubmissionService;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -22,7 +22,7 @@ class FrontendController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'wpask/v1';
+	private $namespace = 'pollquest/v1';
 
 	/**
 	 * @var SubmissionService
@@ -68,8 +68,8 @@ class FrontendController {
 		// A nonce check `wp_verify_nonce( $request->get_header('X-WP-Nonce'), 'wp_rest' )` could go here if strict.
 		
 		// Rate limiting: 5 submissions per IP per hour.
-		$ip       = \WPAsk\Utils\IpHelper::get_ip();
-		$transient_key = 'wpask_rl_' . md5( $ip . '_' . $survey_id );
+		$ip       = \PollQuest\Utils\IpHelper::get_ip();
+		$transient_key = 'pollquest_rl_' . md5( $ip . '_' . $survey_id );
 		$attempts = get_transient( $transient_key ) ?: 0;
 
 		if ( $attempts >= 5 ) {

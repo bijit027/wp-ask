@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Utils;
+namespace PollQuest\Utils;
 
 /**
  * Class IpHelper

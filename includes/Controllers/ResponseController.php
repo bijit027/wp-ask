@@ -2,12 +2,12 @@
 /**
  * Response REST Controller
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Controllers;
+namespace PollQuest\Controllers;
 
-use WPAsk\Repositories\ResponseRepository;
+use PollQuest\Repositories\ResponseRepository;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -20,7 +20,7 @@ class ResponseController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'wpask/v1';
+	private $namespace = 'pollquest/v1';
 
 	/**
 	 * @var string
@@ -93,14 +93,14 @@ class ResponseController {
 	 * Check if a given request has access to read results.
 	 */
 	public function permissions_check( $request ): bool {
-		return current_user_can( 'wpask_view_results' );
+		return current_user_can( 'pollquest_view_results' );
 	}
     
 	/**
 	 * Check if a given request has access to delete results.
 	 */
 	public function delete_permissions_check( $request ): bool {
-		return current_user_can( 'wpask_delete_surveys' );
+		return current_user_can( 'pollquest_delete_surveys' );
 	}
 
 	/**
@@ -161,7 +161,7 @@ class ResponseController {
 			
 			$email = $item['email'] ?: ( $item['context']['email'] ?? '' );
 			$name  = $item['full_name'] ?: ( $item['context']['name'] ?? '' );
-			$item['avatar_url'] = \WPAsk\Utils\GravatarHelper::get_url( $email, $name );
+			$item['avatar_url'] = \PollQuest\Utils\GravatarHelper::get_url( $email, $name );
 			
 			$items[] = $item;
 		}

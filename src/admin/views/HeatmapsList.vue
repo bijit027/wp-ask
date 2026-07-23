@@ -1,35 +1,35 @@
 <template>
-  <div class="wpask-content-inner">
-    <div class="wpask-page-header">
+  <div class="pollquest-content-inner">
+    <div class="pollquest-page-header">
       <div>
-        <h1 class="wpask-page-title">Heatmaps</h1>
-        <p class="wpask-page-subtitle">Track where visitors click on your pages.</p>
+        <h1 class="pollquest-page-title">Heatmaps</h1>
+        <p class="pollquest-page-subtitle">Track where visitors click on your pages.</p>
       </div>
       <div>
-        <button type="button" class="wpask-btn wpask-btn-primary" @click="showCreate = true">
+        <button type="button" class="pollquest-btn pollquest-btn-primary" @click="showCreate = true">
           <Plus />
           New heatmap
         </button>
       </div>
     </div>
 
-    <div class="wpask-stats-grid" style="grid-template-columns: repeat(3, 1fr);">
-      <div class="wpask-stat-card">
-        <div class="wpask-stat-label">Active</div>
-        <div class="wpask-stat-value">{{ activeCount }}</div>
+    <div class="pollquest-stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="pollquest-stat-card">
+        <div class="pollquest-stat-label">Active</div>
+        <div class="pollquest-stat-value">{{ activeCount }}</div>
       </div>
-      <div class="wpask-stat-card">
-        <div class="wpask-stat-label">Total clicks</div>
-        <div class="wpask-stat-value">{{ totalClicks }}</div>
+      <div class="pollquest-stat-card">
+        <div class="pollquest-stat-label">Total clicks</div>
+        <div class="pollquest-stat-value">{{ totalClicks }}</div>
       </div>
-      <div class="wpask-stat-card">
-        <div class="wpask-stat-label">Pages tracked</div>
-        <div class="wpask-stat-value">{{ heatmaps.length }}</div>
+      <div class="pollquest-stat-card">
+        <div class="pollquest-stat-label">Pages tracked</div>
+        <div class="pollquest-stat-value">{{ heatmaps.length }}</div>
       </div>
     </div>
 
-    <div class="wpask-surveys-panel">
-      <div class="wpask-table-header" style="grid-template-columns: minmax(0,2fr) 100px 100px 120px auto;">
+    <div class="pollquest-surveys-panel">
+      <div class="pollquest-table-header" style="grid-template-columns: minmax(0,2fr) 100px 100px 120px auto;">
         <div>Page</div>
         <div>Status</div>
         <div style="text-align:right">Clicks</div>
@@ -41,72 +41,72 @@
         <li
           v-for="item in heatmaps"
           :key="item.id"
-          class="wpask-survey-row"
+          class="pollquest-survey-row"
           style="grid-template-columns: minmax(0,2fr) 100px 100px 120px auto;"
         >
           <div style="min-width:0;">
-            <div class="wpask-survey-name truncate">{{ item.page_title }}</div>
-            <a :href="item.page_url" target="_blank" rel="noopener" class="wpask-survey-type">{{ item.page_url }}</a>
+            <div class="pollquest-survey-name truncate">{{ item.page_title }}</div>
+            <a :href="item.page_url" target="_blank" rel="noopener" class="pollquest-survey-type">{{ item.page_url }}</a>
           </div>
-          <div class="wpask-status-dot-wrap">
-            <span class="wpask-ping-wrap">
-              <span class="wpask-ping-ring" :class="item.status !== 'publish' ? 'draft' : ''" />
-              <span class="wpask-ping-dot" :class="item.status !== 'publish' ? 'draft' : ''" />
+          <div class="pollquest-status-dot-wrap">
+            <span class="pollquest-ping-wrap">
+              <span class="pollquest-ping-ring" :class="item.status !== 'publish' ? 'draft' : ''" />
+              <span class="pollquest-ping-dot" :class="item.status !== 'publish' ? 'draft' : ''" />
             </span>
-            <span class="wpask-status-text">{{ statusLabel(item.status) }}</span>
+            <span class="pollquest-status-text">{{ statusLabel(item.status) }}</span>
           </div>
-          <div class="wpask-stat-cell right">{{ item.click_count || 0 }}</div>
-          <div class="wpask-stat-cell muted">{{ item.session_count || 0 }}</div>
-          <div class="wpask-survey-actions">
+          <div class="pollquest-stat-cell right">{{ item.click_count || 0 }}</div>
+          <div class="pollquest-stat-cell muted">{{ item.session_count || 0 }}</div>
+          <div class="pollquest-survey-actions">
             <router-link :to="`/heatmaps/${item.id}`">
-              <button class="wpask-results-btn">View</button>
+              <button class="pollquest-results-btn">View</button>
             </router-link>
             <button
-              class="wpask-icon-btn"
+              class="pollquest-icon-btn"
               :title="item.status === 'publish' ? 'Pause' : 'Activate'"
               @click="toggleStatus(item)"
             >
               <Pause v-if="item.status === 'publish'" />
               <Play v-else />
             </button>
-            <button class="wpask-icon-btn danger" title="Delete" @click="deleteHeatmap(item.id)">
+            <button class="pollquest-icon-btn danger" title="Delete" @click="deleteHeatmap(item.id)">
               <Trash2 />
             </button>
           </div>
         </li>
       </ul>
 
-      <div v-else class="wpask-empty-row">
+      <div v-else class="pollquest-empty-row">
         No heatmaps yet. Create one to start tracking clicks on a page.
       </div>
     </div>
 
     <Teleport to="body">
-      <div v-if="showCreate" class="wpask-modal-overlay" @click.self="showCreate = false">
-        <div class="wpask-modal" role="dialog" aria-modal="true">
-          <div class="wpask-modal-header">
+      <div v-if="showCreate" class="pollquest-modal-overlay" @click.self="showCreate = false">
+        <div class="pollquest-modal" role="dialog" aria-modal="true">
+          <div class="pollquest-modal-header">
             <div>
-              <h2 class="wpask-modal-title">Create heatmap</h2>
-              <p class="wpask-modal-subtitle">Select a page to start tracking visitor clicks.</p>
+              <h2 class="pollquest-modal-title">Create heatmap</h2>
+              <p class="pollquest-modal-subtitle">Select a page to start tracking visitor clicks.</p>
             </div>
-            <button type="button" class="wpask-icon-btn" @click="showCreate = false">
+            <button type="button" class="pollquest-icon-btn" @click="showCreate = false">
               <X />
             </button>
           </div>
-          <div class="wpask-modal-body">
-            <div class="wpask-field-label">Page</div>
-            <select v-model="selectedPageId" class="wpask-select" style="width:100%; margin-top:8px;">
+          <div class="pollquest-modal-body">
+            <div class="pollquest-field-label">Page</div>
+            <select v-model="selectedPageId" class="pollquest-select" style="width:100%; margin-top:8px;">
               <option value="">Select a page…</option>
               <option v-for="page in pages" :key="page.id" :value="page.id">
                 {{ page.title }} ({{ page.type }})
               </option>
             </select>
           </div>
-          <div class="wpask-modal-footer">
-            <button type="button" class="wpask-btn wpask-btn-secondary" @click="showCreate = false">Cancel</button>
+          <div class="pollquest-modal-footer">
+            <button type="button" class="pollquest-btn pollquest-btn-secondary" @click="showCreate = false">Cancel</button>
             <button
               type="button"
-              class="wpask-btn wpask-btn-primary"
+              class="pollquest-btn pollquest-btn-primary"
               :disabled="!selectedPageId || creating"
               @click="createHeatmap"
             >
@@ -137,7 +137,7 @@ const totalClicks = computed(() => heatmaps.value.reduce((sum, h) => sum + (h.cl
 const statusLabel = (s) => ({ publish: 'Active', draft: 'Paused', trash: 'Trashed' }[s] || s);
 
 async function api(path, method = 'GET', body = null) {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   const opts = {
     method,
     headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': config.nonce },
@@ -154,7 +154,7 @@ async function loadHeatmaps() {
 }
 
 async function loadPages() {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   const res = await fetch(`${config.api_url}/pages?per_page=100`, {
     headers: { 'X-WP-Nonce': config.nonce },
   });

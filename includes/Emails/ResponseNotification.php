@@ -5,10 +5,10 @@
  *
  * @since 1.0.0
  */
-namespace WPAsk\Emails;
+namespace PollQuest\Emails;
 
-use WPAsk\Models\Survey;
-use WPAsk\Models\Response;
+use PollQuest\Models\Survey;
+use PollQuest\Models\Response;
 
 class ResponseNotification {
 
@@ -144,7 +144,7 @@ class ResponseNotification {
 				$submitted_value = $answer->value;
 				$compare_to      = $condition->value;
 
-				$send = $send && wpask_check_logic( $symbol, $submitted_value, $compare_to );
+				$send = $send && pollquest_check_logic( $symbol, $submitted_value, $compare_to );
 			}
 
 			if ( ! $send ) {
@@ -166,8 +166,8 @@ class ResponseNotification {
 	public function get_header_image() {
 		// set default header image
 		$img = array(
-			'url' => plugins_url( 'assets/img/emails/userfeedback-logo.png', WPASK_PLUGIN_FILE ),
-			'2x'  => '', // plugins_url( "assets/img/emails/logo-MonsterInsights@2x.png", WPASK_PLUGIN_FILE ),
+			'url' => plugins_url( 'assets/img/emails/userfeedback-logo.png', POLLQUEST_PLUGIN_FILE ),
+			'2x'  => '', // plugins_url( "assets/img/emails/logo-MonsterInsights@2x.png", POLLQUEST_PLUGIN_FILE ),
 		);
 
 		if ( ! empty( $this->email_options['header_image'] ) ) {
@@ -175,7 +175,7 @@ class ResponseNotification {
 			$img['2x']  = '';
 		}
 
-		return apply_filters( 'wpask_email_header_image', $img );
+		return apply_filters( 'pollquest_email_header_image', $img );
 	}
 
 	/**
@@ -189,9 +189,9 @@ class ResponseNotification {
 		$site_url_parsed = wp_parse_url( $site_url );
 
 		// Translators: The domain of the site is appended to the subject.
-		$subject = sprintf( __( 'New UserFeedback Response - %s', 'wpask' ), $this->survey->title );
+		$subject = sprintf( __( 'New UserFeedback Response - %s', 'pollquest' ), $this->survey->title );
 
-		return apply_filters( 'wpask_emails_new_response_subject', $subject, $this->survey, $this->response );
+		return apply_filters( 'pollquest_emails_new_response_subject', $subject, $this->survey, $this->response );
 	}
 
 	/**
@@ -211,7 +211,7 @@ class ResponseNotification {
 			}
 		}
 
-		return apply_filters( 'wpask_email_notification_addresses', $emails, $this->survey, $this->response );
+		return apply_filters( 'pollquest_email_notification_addresses', $emails, $this->survey, $this->response );
 	}
 
 	/**
@@ -226,7 +226,7 @@ class ResponseNotification {
 		if ( false === $this->email_options['html_template'] ) {
 			$value = false;
 		}
-		return apply_filters( 'wpask_email_html_template', $value, $this );
+		return apply_filters( 'pollquest_email_html_template', $value, $this );
 	}
 
 	/**
@@ -242,17 +242,17 @@ class ResponseNotification {
 		$args['survey_title']  = $this->survey->title;
 		/* translators: %s: survey title */
 		$args['title']         = sprintf(
-			esc_html__( 'New Response to <b>%s</b>', 'wpask' ),
+			esc_html__( 'New Response to <b>%s</b>', 'pollquest' ),
 			$this->survey->title
 		);
 
 		$survey_id               = $this->survey->id;
-		$notification_config_url = admin_url( 'admin.php?page=wpask#surveys/edit/' . $survey_id );
+		$notification_config_url = admin_url( 'admin.php?page=pollquest#surveys/edit/' . $survey_id );
 
 		/* translators: %1$s: blog name, %2$s: settings URL */
 		$args['description'] =
 			sprintf(
-				esc_html__( 'You are receiving this WPAsk survey notification from <b>%1$s</b>. <a href="%2$s">Adjust your settings here</a>.', 'wpask' ),
+				esc_html__( 'You are receiving this PollQuest survey notification from <b>%1$s</b>. <a href="%2$s">Adjust your settings here</a>.', 'pollquest' ),
 				get_bloginfo( 'name' ),
 				$notification_config_url
 			);
@@ -260,7 +260,7 @@ class ResponseNotification {
 		$args['answers']          = $this->get_answers();
 		$args['settings_tab_url'] = $notification_config_url;
 
-		return apply_filters( 'wpask_email_notification_template_args', $args );
+		return apply_filters( 'pollquest_email_notification_template_args', $args );
 	}
 
 	/**
@@ -320,7 +320,7 @@ class ResponseNotification {
 
 		/* translators: %1$s: opening HTML tag, %2$s: closing HTML tag */
 		$skipped_content = sprintf(
-			__( '%1$sSkipped%2$s', 'wpask' ),
+			__( '%1$sSkipped%2$s', 'pollquest' ),
 			'<small><i>',
 			'</i></small>'
 		);
@@ -348,7 +348,7 @@ class ResponseNotification {
 			$value = is_array($value) ? implode( ', ', $value ) : $value;
 		} elseif ( $q_type === 'star-rating' || $q_type === 'rating' ) {
 			/* translators: %s: rating value */
-			$value = sprintf( __( '%s stars', 'wpask' ), $value );
+			$value = sprintf( __( '%s stars', 'pollquest' ), $value );
 		}
 
 		if ( ! empty( $found_answer['extra'] ) ) {

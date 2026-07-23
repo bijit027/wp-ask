@@ -5,10 +5,10 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Services;
+namespace PollQuest\Services;
 
-use WPAsk\Repositories\PostRatingRepository;
-use WPAsk\Utils\IpHelper;
+use PollQuest\Repositories\PostRatingRepository;
+use PollQuest\Utils\IpHelper;
 use WP_Error;
 
 /**
@@ -34,7 +34,7 @@ class PostRatingService {
 	 */
 	public function get_summary( int $post_id, string $type = 'stars' ) {
 		if ( ! get_post( $post_id ) ) {
-			return new WP_Error( 'invalid_post', __( 'Post not found.', 'wpask' ), [ 'status' => 404 ] );
+			return new WP_Error( 'invalid_post', __( 'Post not found.', 'pollquest' ), [ 'status' => 404 ] );
 		}
 
 		$stats        = $this->repository->get_stats( $post_id );
@@ -76,22 +76,22 @@ class PostRatingService {
 	 */
 	public function submit( int $post_id, int $rating, string $type = 'stars' ) {
 		if ( ! get_post( $post_id ) ) {
-			return new WP_Error( 'invalid_post', __( 'Post not found.', 'wpask' ), [ 'status' => 404 ] );
+			return new WP_Error( 'invalid_post', __( 'Post not found.', 'pollquest' ), [ 'status' => 404 ] );
 		}
 
 		if ( ! $this->is_valid_rating( $rating, $type ) ) {
-			return new WP_Error( 'invalid_rating', __( 'Invalid rating value.', 'wpask' ), [ 'status' => 400 ] );
+			return new WP_Error( 'invalid_rating', __( 'Invalid rating value.', 'pollquest' ), [ 'status' => 400 ] );
 		}
 
 		$user_id = get_current_user_id();
 
 		if ( ! $user_id ) {
 			$ip            = IpHelper::get_ip();
-			$transient_key = 'wpask_post_rating_' . md5( $ip . '_' . $post_id );
+			$transient_key = 'pollquest_post_rating_' . md5( $ip . '_' . $post_id );
 			if ( get_transient( $transient_key ) ) {
 				return new WP_Error(
 					'already_rated',
-					__( 'You have already rated this post.', 'wpask' ),
+					__( 'You have already rated this post.', 'pollquest' ),
 					[ 'status' => 429 ]
 				);
 			}
@@ -119,7 +119,7 @@ class PostRatingService {
 				);
 
 				if ( ! $result ) {
-					return new WP_Error( 'db_error', __( 'Could not save rating.', 'wpask' ), [ 'status' => 500 ] );
+					return new WP_Error( 'db_error', __( 'Could not save rating.', 'pollquest' ), [ 'status' => 500 ] );
 				}
 			}
 		} else {
@@ -133,11 +133,11 @@ class PostRatingService {
 			);
 
 			if ( ! $result ) {
-				return new WP_Error( 'db_error', __( 'Could not save rating.', 'wpask' ), [ 'status' => 500 ] );
+				return new WP_Error( 'db_error', __( 'Could not save rating.', 'pollquest' ), [ 'status' => 500 ] );
 			}
 
 			$ip            = IpHelper::get_ip();
-			$transient_key = 'wpask_post_rating_' . md5( $ip . '_' . $post_id );
+			$transient_key = 'pollquest_post_rating_' . md5( $ip . '_' . $post_id );
 			set_transient( $transient_key, 1, YEAR_IN_SECONDS );
 		}
 

@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Repositories;
+namespace PollQuest\Repositories;
 
-use WPAsk\Models\PostRating;
+use PollQuest\Models\PostRating;
 
 /**
  * Class PostRatingRepository

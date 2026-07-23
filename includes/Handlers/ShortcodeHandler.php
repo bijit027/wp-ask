@@ -2,13 +2,13 @@
 /**
  * Shortcode Handler
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Handlers;
+namespace PollQuest\Handlers;
 
-use WPAsk\Models\Survey;
-use WPAsk\Utils\AssetLoader;
+use PollQuest\Models\Survey;
+use PollQuest\Utils\AssetLoader;
 
 /**
  * Class ShortcodeHandler
@@ -21,8 +21,8 @@ class ShortcodeHandler {
 	 * Register shortcode hooks.
 	 */
 	public function register(): void {
-		add_shortcode( 'wpask', [ $this, 'render_shortcode' ] );
-		add_shortcode( 'wpask_rating', [ $this, 'render_rating_shortcode' ] );
+		add_shortcode( 'pollquest', [ $this, 'render_shortcode' ] );
+		add_shortcode( 'pollquest_rating', [ $this, 'render_rating_shortcode' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_shortcode_assets' ] );
 	}
 
@@ -39,19 +39,19 @@ class ShortcodeHandler {
 			return;
 		}
 
-		if ( has_shortcode( $post->post_content, 'wpask_rating' ) ) {
+		if ( has_shortcode( $post->post_content, 'pollquest_rating' ) ) {
 			$this->enqueue_post_rating_script();
 		}
 	}
 
 	/**
-	 * Render the [wpask id="X"] shortcode.
+	 * Render the [pollquest id="X"] shortcode.
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output.
 	 */
 	public function render_shortcode( $atts ): string {
-		$atts = shortcode_atts( [ 'id' => 0 ], $atts, 'wpask' );
+		$atts = shortcode_atts( [ 'id' => 0 ], $atts, 'pollquest' );
 		$id   = (int) $atts['id'];
 
 		if ( ! $id ) {
@@ -78,14 +78,14 @@ class ShortcodeHandler {
 		$survey = new Survey( $row );
 
 		AssetLoader::enqueue_frontend_script(
-			'wpask-frontend',
-			'src/frontend/wpask.js',
+			'pollquest-frontend',
+			'src/frontend/pollquest.js',
 			'assets/frontend/frontend.js',
 			'shortcode'
 		);
 
 		$config = [
-			'api_url' => esc_url_raw( rest_url( 'wpask/v1' ) ),
+			'api_url' => esc_url_raw( rest_url( 'pollquest/v1' ) ),
 			'survey'  => [
 				'id'        => $survey->id,
 				'title'     => $survey->title,
@@ -96,10 +96,10 @@ class ShortcodeHandler {
 			],
 		];
 
-		$container_id = 'wpask-widget-' . $id;
+		$container_id = 'pollquest-widget-' . $id;
 
 		return sprintf(
-			'<div id="%1$s" class="wpask-shortcode-widget" data-survey-id="%2$d" data-wpask-config="%3$s"></div>',
+			'<div id="%1$s" class="pollquest-shortcode-widget" data-survey-id="%2$d" data-pollquest-config="%3$s"></div>',
 			esc_attr( $container_id ),
 			$id,
 			esc_attr( wp_json_encode( $config ) )
@@ -107,7 +107,7 @@ class ShortcodeHandler {
 	}
 
 	/**
-	 * Render the [wpask_rating] shortcode.
+	 * Render the [pollquest_rating] shortcode.
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output.
@@ -117,11 +117,11 @@ class ShortcodeHandler {
 			[
 				'id'    => 0,
 				'type'  => 'stars',
-				'label' => __( 'Rate this post', 'wpask' ),
+				'label' => __( 'Rate this post', 'pollquest' ),
 				'color' => '#6366f1',
 			],
 			$atts,
-			'wpask_rating'
+			'pollquest_rating'
 		);
 
 		$post_id = $this->resolve_post_id( (int) $atts['id'] );
@@ -134,17 +134,17 @@ class ShortcodeHandler {
 		$this->enqueue_post_rating_script();
 
 		$config = [
-			'api_url' => esc_url_raw( rest_url( 'wpask/v1' ) ),
+			'api_url' => esc_url_raw( rest_url( 'pollquest/v1' ) ),
 			'post_id' => $post_id,
 			'type'    => $type,
 			'label'   => sanitize_text_field( $atts['label'] ),
 			'color'   => sanitize_hex_color( $atts['color'] ) ?: '#6366f1',
 		];
 
-		$container_id = 'wpask-rating-' . $post_id . '-' . wp_unique_id();
+		$container_id = 'pollquest-rating-' . $post_id . '-' . wp_unique_id();
 
 		return sprintf(
-			'<div id="%1$s" class="wpask-post-rating" data-post-id="%2$d" data-type="%3$s" data-wpask-config="%4$s"><span class="wpask-post-rating-fallback">%5$s</span></div>',
+			'<div id="%1$s" class="pollquest-post-rating" data-post-id="%2$d" data-type="%3$s" data-pollquest-config="%4$s"><span class="pollquest-post-rating-fallback">%5$s</span></div>',
 			esc_attr( $container_id ),
 			$post_id,
 			esc_attr( $type ),
@@ -190,7 +190,7 @@ class ShortcodeHandler {
 		$this->enqueue_post_rating_styles();
 
 		AssetLoader::enqueue_frontend_script(
-			'wpask-post-rating',
+			'pollquest-post-rating',
 			'src/frontend/post-rating.js',
 			'assets/post-rating/post-rating.js',
 			'rating'
@@ -209,11 +209,11 @@ class ShortcodeHandler {
 			return;
 		}
 
-		wp_register_style( 'wpask-post-rating', false, [], WPASK_VERSION );
-		wp_enqueue_style( 'wpask-post-rating' );
+		wp_register_style( 'pollquest-post-rating', false, [], POLLQUEST_VERSION );
+		wp_enqueue_style( 'pollquest-post-rating' );
 		wp_add_inline_style(
-			'wpask-post-rating',
-			'.wpask-post-rating{display:block;margin:16px 0;font-family:Inter,system-ui,sans-serif}.wpask-post-rating-fallback{font-size:14px;font-weight:600;color:#1a1d2b}'
+			'pollquest-post-rating',
+			'.pollquest-post-rating{display:block;margin:16px 0;font-family:Inter,system-ui,sans-serif}.pollquest-post-rating-fallback{font-size:14px;font-weight:600;color:#1a1d2b}'
 		);
 
 		$styled = true;

@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Repositories;
+namespace PollQuest\Repositories;
 
-use WPAsk\Models\Heatmap;
+use PollQuest\Models\Heatmap;
 
 /**
  * Class HeatmapRepository

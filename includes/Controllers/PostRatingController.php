@@ -2,13 +2,13 @@
 /**
  * Post Rating REST Controller
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Controllers;
+namespace PollQuest\Controllers;
 
-use WPAsk\Services\PostRatingService;
-use WPAsk\Utils\IpHelper;
+use PollQuest\Services\PostRatingService;
+use PollQuest\Utils\IpHelper;
 use WP_Error;
 use WP_REST_Request;
 
@@ -20,7 +20,7 @@ class PostRatingController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'wpask/v1';
+	private $namespace = 'pollquest/v1';
 
 	/**
 	 * @var string
@@ -47,7 +47,10 @@ class PostRatingController {
 				[
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => [ $this, 'get_item' ],
-					'permission_callback' => '__return_true',
+					'permission_callback' => function($request) {
+						$post = get_post(absint($request['post_id']));
+						return $post && $post->post_status === 'publish';
+					},
 					'args'                => [
 						'post_id' => [
 							'type'              => 'integer',
@@ -71,7 +74,12 @@ class PostRatingController {
 				[
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => [ $this, 'create_item' ],
-					'permission_callback' => '__return_true',
+					'permission_callback' => function($request) {
+						$params = $request->get_json_params() ?: $request->get_body_params();
+						$post_id = (int) ($params['post_id'] ?? 0);
+						$post = get_post($post_id);
+						return $post && $post->post_status === 'publish';
+					},
 				],
 			]
 		);
@@ -118,15 +126,15 @@ class PostRatingController {
 		$type    = $this->sanitize_type( (string) ( $params['type'] ?? 'stars' ) );
 
 		if ( ! $post_id ) {
-			return new WP_Error( 'missing_post_id', __( 'Post ID is required.', 'wpask' ), [ 'status' => 400 ] );
+			return new WP_Error( 'missing_post_id', __( 'Post ID is required.', 'pollquest' ), [ 'status' => 400 ] );
 		}
 
 		$ip            = IpHelper::get_ip();
-		$transient_key = 'wpask_post_rating_rl_' . md5( $ip . '_' . $post_id );
+		$transient_key = 'pollquest_post_rating_rl_' . md5( $ip . '_' . $post_id );
 		$attempts      = (int) get_transient( $transient_key );
 
 		if ( $attempts >= 10 ) {
-			return new WP_Error( 'rate_limited', __( 'Too many rating attempts. Please try again later.', 'wpask' ), [ 'status' => 429 ] );
+			return new WP_Error( 'rate_limited', __( 'Too many rating attempts. Please try again later.', 'pollquest' ), [ 'status' => 429 ] );
 		}
 
 		set_transient( $transient_key, $attempts + 1, HOUR_IN_SECONDS );

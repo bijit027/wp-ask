@@ -1,6 +1,6 @@
 <?php
 /**
- * Fix namespace inconsistencies from WPAsk to InsightPulse
+ * Fix namespace inconsistencies from PollQuest to InsightPulse
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,11 +22,11 @@ foreach ($iterator as $file) {
         $content = file_get_contents($file->getPathname());
         $original = $content;
         
-        // Replace namespace WPAsk with namespace InsightPulse
-        $content = preg_replace('/^namespace WPask\b/m', 'namespace InsightPulse', $content);
+        // Replace namespace PollQuest with namespace InsightPulse
+        $content = preg_replace('/^namespace PollQuest\b/m', 'namespace InsightPulse', $content);
         
-        // Replace use WPAsk with use InsightPulse
-        $content = preg_replace('/^use WPask\\\\/m', 'use InsightPulse\\', $content);
+        // Replace use PollQuest with use InsightPulse
+        $content = preg_replace('/^use PollQuest\\\\/m', 'use InsightPulse\\', $content);
         
         if ($content !== $original) {
             file_put_contents($file->getPathname(), $content);

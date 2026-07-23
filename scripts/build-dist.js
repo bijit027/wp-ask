@@ -4,12 +4,12 @@ const { execSync } = require('child_process');
 
 const rootDir = path.resolve(__dirname, '..');
 const distDir = path.join(rootDir, 'dist');
-const pluginSlug = 'wpask';
+const pluginSlug = 'pollquest';
 const pluginDistDir = path.join(distDir, pluginSlug);
 const zipFileName = `${pluginSlug}.zip`;
 const zipFilePath = path.join(distDir, zipFileName);
 
-console.log('🚀 Building WPAsk for WordPress.org distribution...');
+console.log('🚀 Building PollQuest for WordPress.org distribution...');
 
 // Clean dist directory
 if (fs.existsSync(distDir)) {
@@ -24,7 +24,7 @@ if (fs.existsSync(zipFilePath)) {
 
 // Files/directories to include
 const includeFiles = [
-  'wpask.php',
+  'pollquest.php',
   'includes',
   'assets',
   'languages',
@@ -37,13 +37,13 @@ const includeFiles = [
 const excludePatterns = [
   '.DS_Store',
   '.gitignore',
-  'wpask.zip',
+  'pollquest.zip',
   'test-db.php',
   'scripts',
   'BUILD_STATE.md',
 ];
 
-// Copy files to dist/wpask/
+// Copy files to dist/pollquest/
 includeFiles.forEach(item => {
   const srcPath = path.join(rootDir, item);
   const destPath = path.join(pluginDistDir, item);

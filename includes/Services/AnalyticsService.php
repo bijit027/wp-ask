@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Services;
+namespace PollQuest\Services;
 
-use WPAsk\Repositories\MetaRepository;
+use PollQuest\Repositories\MetaRepository;
 
 /**
  * Class AnalyticsService

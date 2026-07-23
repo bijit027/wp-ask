@@ -5,12 +5,12 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Config;
+namespace PollQuest\Config;
 
 return [
 	'slug'      => 'insightpulse',
 	'rest'      => [
-		'namespace' => 'wpask/v1',
+		'namespace' => 'pollquest/v1',
 	],
 	'admin'     => [
 		'menu_slug' => 'insightpulse',

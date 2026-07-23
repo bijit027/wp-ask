@@ -1,19 +1,19 @@
 <template>
-  <div class="wpask-content-inner">
+  <div class="pollquest-content-inner">
     <!-- Back Link -->
-    <button class="wpask-back-link" @click="$router.push('/')">
+    <button class="pollquest-back-link" @click="$router.push('/')">
       <ArrowLeft />
       Back to surveys
     </button>
 
     <!-- Page Header -->
-    <div class="wpask-page-header">
+    <div class="pollquest-page-header">
       <div>
-        <h1 class="wpask-page-title">{{ survey?.title || 'Loading...' }}</h1>
-        <p class="wpask-page-subtitle">Response overview and question breakdown.</p>
+        <h1 class="pollquest-page-title">{{ survey?.title || 'Loading...' }}</h1>
+        <p class="pollquest-page-subtitle">Response overview and question breakdown.</p>
       </div>
       <div>
-        <button class="wpask-btn wpask-btn-secondary" @click="exportCSV">
+        <button class="pollquest-btn pollquest-btn-secondary" @click="exportCSV">
           <Download />
           Export CSV
         </button>
@@ -22,43 +22,43 @@
 
     <template v-if="survey">
       <!-- Top Metrics -->
-      <div class="wpask-metrics-grid">
-        <div class="wpask-metric-card">
-          <div class="wpask-metric-label">
+      <div class="pollquest-metrics-grid">
+        <div class="pollquest-metric-card">
+          <div class="pollquest-metric-label">
             <Eye /> Impressions
           </div>
-          <div class="wpask-metric-value">{{ resultsData?.total_impressions || survey?.impressions || 0 }}</div>
+          <div class="pollquest-metric-value">{{ resultsData?.total_impressions || survey?.impressions || 0 }}</div>
         </div>
-        <div class="wpask-metric-card">
-          <div class="wpask-metric-label">
+        <div class="pollquest-metric-card">
+          <div class="pollquest-metric-label">
             <MessageSquare /> Responses
           </div>
-          <div class="wpask-metric-value">{{ resultsData?.total_responses || responses.length }}</div>
+          <div class="pollquest-metric-value">{{ resultsData?.total_responses || responses.length }}</div>
         </div>
-        <div class="wpask-metric-card">
-          <div class="wpask-metric-label">
+        <div class="pollquest-metric-card">
+          <div class="pollquest-metric-label">
             <TrendingUp /> Completion rate
           </div>
-          <div class="wpask-metric-value">{{ completionRate }}%</div>
+          <div class="pollquest-metric-value">{{ completionRate }}%</div>
         </div>
       </div>
 
       <!-- Question Breakdown -->
-      <div class="wpask-q-breakdown">
-        <h2 class="wpask-section-title">Question breakdown</h2>
-        <div class="wpask-q-cards-grid">
-          <div class="wpask-q-card" v-for="q in survey.questions" :key="q.id">
-            <div class="wpask-q-card-header">
-              <h3 class="wpask-q-card-title">{{ q.label }}</h3>
-              <span class="wpask-q-card-type-badge">{{ q.type }}</span>
+      <div class="pollquest-q-breakdown">
+        <h2 class="pollquest-section-title">Question breakdown</h2>
+        <div class="pollquest-q-cards-grid">
+          <div class="pollquest-q-card" v-for="q in survey.questions" :key="q.id">
+            <div class="pollquest-q-card-header">
+              <h3 class="pollquest-q-card-title">{{ q.label }}</h3>
+              <span class="pollquest-q-card-type-badge">{{ q.type }}</span>
             </div>
-            <div class="wpask-q-card-body">
+            <div class="pollquest-q-card-body">
               <template v-if="q.type === 'rating'">
                 <div style="display:flex; align-items:baseline;">
-                  <span class="wpask-avg-score">{{ getAverageRating(q.id) }}</span>
-                  <span class="wpask-avg-sub">/ 5 average</span>
+                  <span class="pollquest-avg-score">{{ getAverageRating(q.id) }}</span>
+                  <span class="pollquest-avg-sub">/ 5 average</span>
                 </div>
-                <div class="wpask-stars-row">
+                <div class="pollquest-stars-row">
                   <Star
                     v-for="n in 5"
                     :key="n"
@@ -80,8 +80,8 @@
               
               <template v-else-if="q.type === 'nps'">
                 <div style="display:flex; align-items:baseline;">
-                  <span class="wpask-avg-score">{{ getAverageRating(q.id) }}</span>
-                  <span class="wpask-avg-sub">/ 10 average</span>
+                  <span class="pollquest-avg-score">{{ getAverageRating(q.id) }}</span>
+                  <span class="pollquest-avg-sub">/ 10 average</span>
                 </div>
                 <div style="margin-top:12px;">
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px; color:var(--muted-foreground);">
@@ -117,8 +117,8 @@
               </template>
 
               <template v-else>
-                <div class="wpask-avg-score">{{ getAnswerCount(q.id) }}</div>
-                <div class="wpask-avg-sub" style="margin-left:0; margin-top:4px;">Responses received</div>
+                <div class="pollquest-avg-score">{{ getAnswerCount(q.id) }}</div>
+                <div class="pollquest-avg-sub" style="margin-left:0; margin-top:4px;">Responses received</div>
               </template>
             </div>
           </div>
@@ -128,7 +128,7 @@
       <!-- Individual Responses Table -->
       <div style="margin-top: 40px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-          <h2 class="wpask-section-title" style="margin:0;">Individual responses</h2>
+          <h2 class="pollquest-section-title" style="margin:0;">Individual responses</h2>
           <div style="display:flex; gap:12px; align-items:center;">
             <div style="display:flex; align-items:center; gap:8px;">
               <label style="font-size:13px; color:var(--muted-foreground);">From:</label>
@@ -138,27 +138,27 @@
               <label style="font-size:13px; color:var(--muted-foreground);">To:</label>
               <input type="date" v-model="dateRange.to" style="padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px;" />
             </div>
-            <button @click="applyDateFilter" class="wpask-btn wpask-btn-secondary" style="padding:6px 12px; font-size:13px;">Apply Filter</button>
-            <button @click="clearDateFilter" class="wpask-btn" style="padding:6px 12px; font-size:13px; background:var(--muted); color:var(--foreground);">Clear</button>
+            <button @click="applyDateFilter" class="pollquest-btn pollquest-btn-secondary" style="padding:6px 12px; font-size:13px;">Apply Filter</button>
+            <button @click="clearDateFilter" class="pollquest-btn" style="padding:6px 12px; font-size:13px; background:var(--muted); color:var(--foreground);">Clear</button>
           </div>
         </div>
-        <div class="wpask-responses-panel">
-          <div class="wpask-responses-header">
+        <div class="pollquest-responses-panel">
+          <div class="pollquest-responses-header">
             <div>Date</div>
             <div v-for="q in survey.questions" :key="q.id" class="truncate" :title="q.label">{{ q.label }}</div>
             <div style="text-align:right">Actions</div>
           </div>
           
           <div v-if="responses.length > 0">
-            <div class="wpask-response-row" v-for="res in responses" :key="res.id">
-              <div class="wpask-response-date">
+            <div class="pollquest-response-row" v-for="res in responses" :key="res.id">
+              <div class="pollquest-response-date">
                 {{ new Date(res.created_at).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' }) }}
               </div>
               
               <div v-for="q in survey.questions" :key="q.id" style="min-width:0;">
                 <div v-if="res.answers[q.id]" class="truncate" style="font-size:13px; color:var(--foreground);">
                   <template v-if="q.type === 'rating'">
-                    <div class="wpask-stars-row" style="margin-top:0;">
+                    <div class="pollquest-stars-row" style="margin-top:0;">
                       <Star
                         v-for="n in 5"
                         :key="n"
@@ -207,14 +207,14 @@
               </div>
               
               <div style="text-align:right;">
-                <button class="wpask-icon-btn danger" @click="deleteResponse(res.id)" title="Permanently Delete Response">
+                <button class="pollquest-icon-btn danger" @click="deleteResponse(res.id)" title="Permanently Delete Response">
                   <Trash2 />
                 </button>
               </div>
             </div>
           </div>
           
-          <div class="wpask-empty-row" v-else>
+          <div class="pollquest-empty-row" v-else>
             No responses yet.
           </div>
         </div>
@@ -309,7 +309,7 @@ const getRatingDistribution = (questionId, rating) => {
 };
 
 onMounted(async () => {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   const id = route.params.id;
   
   try {
@@ -340,7 +340,7 @@ onMounted(async () => {
 const deleteResponse = async (responseId) => {
   if (!confirm('Are you sure you want to permanently delete this response?')) return;
   
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   try {
     const res = await fetch(`${config.api_url}/responses/${responseId}`, {
       method: 'DELETE',
@@ -359,14 +359,14 @@ const deleteResponse = async (responseId) => {
 };
 
 const exportCSV = () => {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   const id = route.params.id;
   const exportUrl = `${config.api_url}/surveys/${id}/export?_wpnonce=${config.nonce}`;
   window.open(exportUrl, '_blank');
 };
 
 const applyDateFilter = async () => {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   const id = route.params.id;
   
   let url = `${config.api_url}/surveys/${id}/responses`;
@@ -399,7 +399,7 @@ const applyDateFilter = async () => {
 
 const clearDateFilter = async () => {
   dateRange.value = { from: '', to: '' };
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   const id = route.params.id;
   
   try {

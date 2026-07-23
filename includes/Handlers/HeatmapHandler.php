@@ -2,13 +2,13 @@
 /**
  * Heatmap Frontend Handler
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Handlers;
+namespace PollQuest\Handlers;
 
-use WPAsk\Services\HeatmapService;
-use WPAsk\Utils\AssetLoader;
+use PollQuest\Services\HeatmapService;
+use PollQuest\Utils\AssetLoader;
 
 /**
  * Class HeatmapHandler
@@ -64,7 +64,7 @@ class HeatmapHandler {
 		$this->tracking_config = $config;
 
 		AssetLoader::enqueue_frontend_script(
-			'wpask-heatmap',
+			'pollquest-heatmap',
 			'src/frontend/heatmap.js',
 			'assets/heatmap/heatmap.js',
 			'heatmap'
@@ -75,10 +75,10 @@ class HeatmapHandler {
 	 * Inject tracking config in footer.
 	 */
 	public function inject_config(): void {
-		if ( empty( $this->tracking_config ) || ! wp_script_is( 'wpask-heatmap', 'enqueued' ) ) {
+		if ( empty( $this->tracking_config ) || ! wp_script_is( 'pollquest-heatmap', 'enqueued' ) ) {
 			return;
 		}
 
-		echo '<script>window.WPAskHeatmapConfig = ' . wp_json_encode( $this->tracking_config ) . ';</script>';
+		wp_add_inline_script('pollquest-heatmap', 'window.PollQuestHeatmapConfig = ' . wp_json_encode($this->tracking_config) . ';', 'before');
 	}
 }

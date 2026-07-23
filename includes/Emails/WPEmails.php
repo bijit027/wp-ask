@@ -10,7 +10,7 @@
  *
  * @since 1.0.0
  */
-namespace WPAsk\Emails;
+namespace PollQuest\Emails;
 
 class WPEmails {
 
@@ -105,8 +105,8 @@ class WPEmails {
 
 		$this->set_initial_args();
 
-		add_action( 'wpask_email_send_before', array( $this, 'send_before' ) );
-		add_action( 'wpask_email_send_after', array( $this, 'send_after' ) );
+		add_action( 'pollquest_email_send_before', array( $this, 'send_before' ) );
+		add_action( 'pollquest_email_send_after', array( $this, 'send_after' ) );
 	}
 
 	/**
@@ -136,7 +136,7 @@ class WPEmails {
 			$this->from_name = get_bloginfo( 'name' );
 		}
 
-		return apply_filters( 'wpask_email_from_name', wp_specialchars_decode( $this->from_name ), $this );
+		return apply_filters( 'pollquest_email_from_name', wp_specialchars_decode( $this->from_name ), $this );
 	}
 
 	/**
@@ -154,7 +154,7 @@ class WPEmails {
 			$this->from_address = get_option( 'admin_email' );
 		}
 
-		return apply_filters( 'wpask_email_from_address', $this->from_address, $this );
+		return apply_filters( 'pollquest_email_from_address', $this->from_address, $this );
 	}
 
 	/**
@@ -175,7 +175,7 @@ class WPEmails {
 			}
 		}
 
-		return apply_filters( 'wpask_email_reply_to', $this->reply_to, $this );
+		return apply_filters( 'pollquest_email_reply_to', $this->reply_to, $this );
 	}
 
 	/**
@@ -202,7 +202,7 @@ class WPEmails {
 			$this->cc = implode( ',', $addresses );
 		}
 
-		return apply_filters( 'wpask_email_cc', $this->cc, $this );
+		return apply_filters( 'pollquest_email_cc', $this->cc, $this );
 	}
 
 	/**
@@ -215,12 +215,12 @@ class WPEmails {
 	public function get_content_type() {
 
 		if ( ! $this->content_type && $this->html ) {
-			$this->content_type = apply_filters( 'wpask_email_default_content_type', 'text/html', $this );
+			$this->content_type = apply_filters( 'pollquest_email_default_content_type', 'text/html', $this );
 		} elseif ( ! $this->html ) {
 			$this->content_type = 'text/plain';
 		}
 
-		return apply_filters( 'wpask_email_content_type', $this->content_type, $this );
+		return apply_filters( 'pollquest_email_content_type', $this->content_type, $this );
 	}
 
 	/**
@@ -243,7 +243,7 @@ class WPEmails {
 			$this->headers .= "Content-Type: {$this->get_content_type()}; charset=utf-8\r\n";
 		}
 
-		return apply_filters( 'wpask_email_headers', $this->headers, $this );
+		return apply_filters( 'pollquest_email_headers', $this->headers, $this );
 	}
 
 	/**
@@ -262,7 +262,7 @@ class WPEmails {
 			$args['footer']['from_address'] = $from_address;
 		}
 
-		$args = apply_filters( 'wpask_emails_templates_set_initial_args', $args, $this );
+		$args = apply_filters( 'pollquest_emails_templates_set_initial_args', $args, $this );
 
 		$this->set_args( $args );
 	}
@@ -279,7 +279,7 @@ class WPEmails {
 	 */
 	public function set_args( $args, $merge = true ) {
 
-		$args = apply_filters( 'wpask_emails_templates_set_args', $args, $this );
+		$args = apply_filters( 'pollquest_emails_templates_set_args', $args, $this );
 
 		if ( empty( $args ) || ! is_array( $args ) ) {
 			return $this;
@@ -312,10 +312,10 @@ class WPEmails {
 	 */
 	public function get_args( $type ) {
 		if ( ! empty( $type ) ) {
-			return isset( $this->args[ $type ] ) ? apply_filters( 'wpask_emails_templates_get_args_' . $type, $this->args[ $type ], $this ) : array();
+			return isset( $this->args[ $type ] ) ? apply_filters( 'pollquest_emails_templates_get_args_' . $type, $this->args[ $type ], $this ) : array();
 		}
 
-		return apply_filters( 'wpask_emails_templates_get_args', $this->args, $this );
+		return apply_filters( 'pollquest_emails_templates_get_args', $this->args, $this );
 	}
 
 	/**
@@ -334,14 +334,14 @@ class WPEmails {
 			$body    = wp_strip_all_tags( $body );
 			$message = str_replace( '{email}', $message, $body );
 
-			return apply_filters( 'wpask_email_message', $message, $this );
+			return apply_filters( 'pollquest_email_message', $message, $this );
 		}
 
 		// process html email template
 		$email_parts['body'] = $this->get_template_part( 'body', $this->get_template(), true );
 
 		// Hooks into the email body.
-		do_action( 'wpask_email_body', $email_parts['body'] );
+		do_action( 'pollquest_email_body', $email_parts['body'] );
 
 		$body    = implode( $email_parts );
 		$message = $this->process_tag( $message, false );
@@ -349,7 +349,7 @@ class WPEmails {
 		$message = str_replace( '{email}', $message, $body );
 		// $message = make_clickable( $message );
 
-		return apply_filters( 'wpask_email_message', $message, $this );
+		return apply_filters( 'pollquest_email_message', $message, $this );
 	}
 
 	/**
@@ -367,7 +367,7 @@ class WPEmails {
 	public function send( $to, $subject, $message = null, $attachments = array() ) {
 
 		if ( ! did_action( 'init' ) && ! did_action( 'admin_init' ) ) {
-			_doing_it_wrong( __FUNCTION__, esc_html__( 'You cannot send emails with WPEmails() until init/admin_init has been reached.', 'wpask' ), null );
+			_doing_it_wrong( __FUNCTION__, esc_html__( 'You cannot send emails with WPEmails() until init/admin_init has been reached.', 'pollquest' ), null );
 
 			return false;
 		}
@@ -383,7 +383,7 @@ class WPEmails {
 		}
 
 		// Hooks before email is sent.
-		do_action( 'wpask_email_send_before', $this );
+		do_action( 'pollquest_email_send_before', $this );
 
 		/*
 		 * Allow to filter data on per-email basis,
@@ -391,7 +391,7 @@ class WPEmails {
 		 * or for specific notifications - whatever available in WPEmails class.
 		 */
 		$data = apply_filters(
-			'wpask_emails_send_email_data',
+			'pollquest_emails_send_email_data',
 			array(
 				'to'          => $to,
 				'subject'     => $subject,
@@ -412,7 +412,7 @@ class WPEmails {
 		);
 
 		// Hooks after the email is sent.
-		do_action( 'wpask_email_send_after', $this );
+		do_action( 'pollquest_email_send_after', $this );
 
 		return $sent;
 	}
@@ -454,7 +454,7 @@ class WPEmails {
 	 */
 	public function process_tag( $string = '', $sanitize = true, $linebreaks = false ) {
 
-		$tag = apply_filters( 'wpask_process_smart_tags', $string );
+		$tag = apply_filters( 'pollquest_process_smart_tags', $string );
 
 		$tag = wp_specialchars_decode( $tag );
 
@@ -477,7 +477,7 @@ class WPEmails {
 	 * @return bool
 	 */
 	public function is_email_disabled() {
-		return (bool) apply_filters( 'wpask_disable_all_emails', false, $this );
+		return (bool) apply_filters( 'pollquest_disable_all_emails', false, $this );
 	}
 
 	/**
@@ -495,7 +495,7 @@ class WPEmails {
 			$this->template = 'default';
 		}
 
-		return apply_filters( 'wpask_email_template', $this->template );
+		return apply_filters( 'pollquest_email_template', $this->template );
 	}
 
 	/**
@@ -524,7 +524,7 @@ class WPEmails {
 				true
 			);
 
-			return apply_filters( 'wpask_emails_templates_get_content_part', $html, $template, $this );
+			return apply_filters( 'pollquest_emails_templates_get_content_part', $html, $template, $this );
 		}
 
 	}
@@ -563,8 +563,8 @@ class WPEmails {
 		$template_name .= '.php';
 
 		// Allow 3rd party plugins to filter template file from their plugin.
-		$located = apply_filters( 'wpask_helpers_templates_include_html_located', self::locate_template( $template_name ), $template_name, $args, $extract );
-		$args    = apply_filters( 'wpask_helpers_templates_include_html_args', $args, $template_name, $extract );
+		$located = apply_filters( 'pollquest_helpers_templates_include_html_located', self::locate_template( $template_name ), $template_name, $args, $extract );
+		$args    = apply_filters( 'pollquest_helpers_templates_include_html_args', $args, $template_name, $extract );
 
 		if ( empty( $located ) || ! is_readable( $located ) ) {
 			return;
@@ -576,7 +576,7 @@ class WPEmails {
 			return;
 		}
 
-		$extract = apply_filters( 'wpask_helpers_templates_include_html_extract_args', $extract, $template_name, $args );
+		$extract = apply_filters( 'pollquest_helpers_templates_include_html_extract_args', $extract, $template_name, $args );
 
 		if ( $extract && is_array( $args ) ) {
 
@@ -606,7 +606,7 @@ class WPEmails {
 		$template_name = ltrim( $template_name, '/' );
 
 		if ( empty( $template_name ) ) {
-			return apply_filters( 'wpask_helpers_templates_locate', '', $template_name );
+			return apply_filters( 'pollquest_helpers_templates_locate', '', $template_name );
 		}
 
 		$located = '';
@@ -619,7 +619,7 @@ class WPEmails {
 			}
 		}
 
-		return apply_filters( 'wpask_helpers_templates_locate', $located, $template_name );
+		return apply_filters( 'pollquest_helpers_templates_locate', $located, $template_name );
 	}
 
 	/**
@@ -636,10 +636,10 @@ class WPEmails {
 		$file_paths = array(
 			1   => trailingslashit( get_stylesheet_directory() ) . $template_dir,
 			10  => trailingslashit( get_template_directory() ) . $template_dir,
-			100 => trailingslashit( WPASK_PLUGIN_DIR ) . 'includes/emails/templates',
+			100 => trailingslashit( POLLQUEST_PLUGIN_DIR ) . 'includes/emails/templates',
 		);
 
-		$file_paths = apply_filters( 'wpask_email_template_paths', $file_paths );
+		$file_paths = apply_filters( 'pollquest_email_template_paths', $file_paths );
 
 		// Sort the file paths based on priority.
 		ksort( $file_paths, SORT_NUMERIC );

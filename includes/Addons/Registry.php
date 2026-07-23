@@ -5,14 +5,14 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Addons;
+namespace PollQuest\Addons;
 
-use WPAsk\Utils\UpgradeLink;
+use PollQuest\Utils\UpgradeLink;
 
 /**
  * Class Registry
  *
- * Defines available WPAsk add-ons and their availability state.
+ * Defines available PollQuest add-ons and their availability state.
  */
 class Registry {
 
@@ -22,7 +22,7 @@ class Registry {
 	 * @return bool
 	 */
 	public static function is_pro(): bool {
-		return (bool) apply_filters( 'wpask_is_pro', defined( 'WPASK_PRO_VERSION' ) );
+		return (bool) apply_filters( 'pollquest_is_pro', defined( 'POLLQUEST_PRO_VERSION' ) );
 	}
 
 	/**
@@ -39,7 +39,7 @@ class Registry {
 		}
 		unset( $addon );
 
-		return apply_filters( 'wpask_addons', $addons );
+		return apply_filters( 'pollquest_addons', $addons );
 	}
 
 	/**
@@ -51,8 +51,8 @@ class Registry {
 		return [
 			[
 				'id'          => 'email-notifications',
-				'name'        => __( 'Email notifications', 'wpask' ),
-				'description' => __( 'Get emailed when a new survey response comes in.', 'wpask' ),
+				'name'        => __( 'Email notifications', 'pollquest' ),
+				'description' => __( 'Get emailed when a new survey response comes in.', 'pollquest' ),
 				'icon'        => 'mail',
 				'installed'  => true,
 				'active'     => true,
@@ -60,8 +60,8 @@ class Registry {
 			],
 			[
 				'id'          => 'conditional-logic',
-				'name'        => __( 'Conditional logic', 'wpask' ),
-				'description' => __( 'Show or skip questions based on previous answers.', 'wpask' ),
+				'name'        => __( 'Conditional logic', 'pollquest' ),
+				'description' => __( 'Show or skip questions based on previous answers.', 'pollquest' ),
 				'icon'        => 'git-branch',
 				'installed'  => true,
 				'active'     => true,
@@ -69,8 +69,8 @@ class Registry {
 			],
 			[
 				'id'          => 'csv-export',
-				'name'        => __( 'CSV export', 'wpask' ),
-				'description' => __( 'Download all survey responses as a CSV file.', 'wpask' ),
+				'name'        => __( 'CSV export', 'pollquest' ),
+				'description' => __( 'Download all survey responses as a CSV file.', 'pollquest' ),
 				'icon'        => 'download',
 				'installed'  => true,
 				'active'     => true,
@@ -78,8 +78,8 @@ class Registry {
 			],
 			[
 				'id'          => 'heatmaps',
-				'name'        => __( 'Heatmaps', 'wpask' ),
-				'description' => __( 'Visualize where visitors click and how they interact with your pages.', 'wpask' ),
+				'name'        => __( 'Heatmaps', 'pollquest' ),
+				'description' => __( 'Visualize where visitors click and how they interact with your pages.', 'pollquest' ),
 				'icon'        => 'mouse-pointer-click',
 				'installed'  => true,
 				'active'     => true,
@@ -87,8 +87,8 @@ class Registry {
 			],
 			[
 				'id'          => 'post-ratings',
-				'name'        => __( 'Post ratings', 'wpask' ),
-				'description' => __( 'Embed star or thumbs ratings on posts via shortcode.', 'wpask' ),
+				'name'        => __( 'Post ratings', 'pollquest' ),
+				'description' => __( 'Embed star or thumbs ratings on posts via shortcode.', 'pollquest' ),
 				'icon'        => 'star',
 				'installed'  => true,
 				'active'     => true,

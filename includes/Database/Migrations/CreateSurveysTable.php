@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Database\Migrations;
+namespace PollQuest\Database\Migrations;
 
 /**
  * Class CreateSurveysTable

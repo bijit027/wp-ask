@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Models;
+namespace PollQuest\Models;
 
 /**
  * Class Meta

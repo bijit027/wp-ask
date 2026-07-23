@@ -1,17 +1,17 @@
 <template>
-  <div class="wpask-onboarding-wrapper">
-    <div class="wpask-onboarding-card">
-      <div class="wpask-onboarding-header">
-        <div class="wpask-onboarding-logo">
+  <div class="pollquest-onboarding-wrapper">
+    <div class="pollquest-onboarding-card">
+      <div class="pollquest-onboarding-header">
+        <div class="pollquest-onboarding-logo">
           <MessageSquare />
         </div>
-        <h1 class="wpask-page-title">Welcome to WPAsk</h1>
-        <p class="wpask-onboarding-subtitle">Let's get your first survey set up in seconds.</p>
+        <h1 class="pollquest-page-title">Welcome to PollQuest</h1>
+        <p class="pollquest-onboarding-subtitle">Let's get your first survey set up in seconds.</p>
       </div>
 
-      <div class="wpask-onboarding-body">
+      <div class="pollquest-onboarding-body">
         <div v-if="step === 1" class="step-content fade-in">
-          <h3 class="wpask-onboarding-step-title">What's your primary goal?</h3>
+          <h3 class="pollquest-onboarding-step-title">What's your primary goal?</h3>
           <div class="goal-grid">
             <div class="goal-card" :class="{ active: goal === 'feedback' }" @click="goal = 'feedback'">
               <div class="goal-icon"><ClipboardList /></div>
@@ -29,39 +29,39 @@
               <p>Grow your email list</p>
             </div>
           </div>
-          <div class="wpask-onboarding-actions wpask-onboarding-actions--end">
-            <button class="wpask-btn wpask-btn-primary" @click="step = 2" :disabled="!goal">
+          <div class="pollquest-onboarding-actions pollquest-onboarding-actions--end">
+            <button class="pollquest-btn pollquest-btn-primary" @click="step = 2" :disabled="!goal">
               Continue
             </button>
           </div>
         </div>
 
         <div v-if="step === 2" class="step-content fade-in">
-          <h3 class="wpask-onboarding-step-title">Choose a template</h3>
-          <p class="wpask-onboarding-step-desc">We picked suggestions based on your goal. Select one to continue.</p>
+          <h3 class="pollquest-onboarding-step-title">Choose a template</h3>
+          <p class="pollquest-onboarding-step-desc">We picked suggestions based on your goal. Select one to continue.</p>
           <TemplatePickerGrid
             :selected-id="selectedTemplateId"
             :highlight-ids="suggestedTemplateIds"
             @select="onTemplateSelect"
             @loaded="onTemplatesLoaded"
           />
-          <div class="wpask-onboarding-actions">
-            <button class="wpask-btn wpask-btn-secondary" @click="step = 1">Back</button>
-            <button class="wpask-btn wpask-btn-primary" @click="step = 3" :disabled="!selectedTemplateId">
+          <div class="pollquest-onboarding-actions">
+            <button class="pollquest-btn pollquest-btn-secondary" @click="step = 1">Back</button>
+            <button class="pollquest-btn pollquest-btn-primary" @click="step = 3" :disabled="!selectedTemplateId">
               Continue
             </button>
           </div>
         </div>
 
         <div v-if="step === 3" class="step-content fade-in">
-          <h3 class="wpask-onboarding-step-title">Choose your brand color</h3>
-          <p class="wpask-onboarding-step-desc">This will be used for your widget buttons and accents.</p>
-          <div class="wpask-onboarding-color-picker">
+          <h3 class="pollquest-onboarding-step-title">Choose your brand color</h3>
+          <p class="pollquest-onboarding-step-desc">This will be used for your widget buttons and accents.</p>
+          <div class="pollquest-onboarding-color-picker">
             <el-color-picker v-model="brandColor" size="large" />
           </div>
-          <div class="wpask-onboarding-actions">
-            <button class="wpask-btn wpask-btn-secondary" @click="step = 2">Back</button>
-            <button class="wpask-btn wpask-btn-primary" @click="finishOnboarding">
+          <div class="pollquest-onboarding-actions">
+            <button class="pollquest-btn pollquest-btn-secondary" @click="step = 2">Back</button>
+            <button class="pollquest-btn pollquest-btn-primary" @click="finishOnboarding">
               Complete setup
             </button>
           </div>
@@ -106,7 +106,7 @@ function onTemplatesLoaded(templates) {
 }
 
 const finishOnboarding = async () => {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
 
   try {
     await fetch(`${config.api_url}/settings`, {
@@ -130,7 +130,7 @@ const finishOnboarding = async () => {
 </script>
 
 <style scoped>
-.wpask-onboarding-wrapper {
+.pollquest-onboarding-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,7 +139,7 @@ const finishOnboarding = async () => {
   padding: 20px;
 }
 
-.wpask-onboarding-card {
+.pollquest-onboarding-card {
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
@@ -148,13 +148,13 @@ const finishOnboarding = async () => {
   overflow: hidden;
 }
 
-.wpask-onboarding-header {
+.pollquest-onboarding-header {
   text-align: center;
   padding: 40px 40px 20px;
   border-bottom: 1px solid #f0f0f5;
 }
 
-.wpask-onboarding-logo {
+.pollquest-onboarding-logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -166,45 +166,45 @@ const finishOnboarding = async () => {
   margin-bottom: 16px;
 }
 
-.wpask-onboarding-logo svg {
+.pollquest-onboarding-logo svg {
   width: 28px;
   height: 28px;
 }
 
-.wpask-onboarding-subtitle {
+.pollquest-onboarding-subtitle {
   color: #6b7280;
   margin-top: 5px;
 }
 
-.wpask-onboarding-body {
+.pollquest-onboarding-body {
   padding: 32px 40px 40px;
   min-height: 300px;
 }
 
-.wpask-onboarding-step-title {
+.pollquest-onboarding-step-title {
   margin-bottom: 8px;
   font-size: 18px;
 }
 
-.wpask-onboarding-step-desc {
+.pollquest-onboarding-step-desc {
   color: #6b7280;
   margin-bottom: 20px;
   font-size: 13px;
 }
 
-.wpask-onboarding-color-picker {
+.pollquest-onboarding-color-picker {
   display: flex;
   justify-content: center;
   margin: 30px 0;
 }
 
-.wpask-onboarding-actions {
+.pollquest-onboarding-actions {
   display: flex;
   justify-content: space-between;
   margin-top: 30px;
 }
 
-.wpask-onboarding-actions--end {
+.pollquest-onboarding-actions--end {
   justify-content: flex-end;
 }
 
@@ -277,7 +277,7 @@ const finishOnboarding = async () => {
     grid-template-columns: 1fr;
   }
 
-  .wpask-onboarding-body {
+  .pollquest-onboarding-body {
     padding: 24px;
   }
 }

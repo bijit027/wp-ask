@@ -2,13 +2,13 @@
 /**
  * Results REST Controller
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Controllers;
+namespace PollQuest\Controllers;
 
-use WPAsk\Services\AnalyticsService;
-use WPAsk\Repositories\SurveyRepository;
+use PollQuest\Services\AnalyticsService;
+use PollQuest\Repositories\SurveyRepository;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -21,7 +21,7 @@ class ResultsController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'wpask/v1';
+	private $namespace = 'pollquest/v1';
 
 	/**
 	 * @var AnalyticsService
@@ -83,7 +83,7 @@ class ResultsController {
 	 * Check permissions.
 	 */
 	public function permissions_check( $request ): bool {
-		return current_user_can( 'wpask_view_results' );
+		return current_user_can( 'pollquest_view_results' );
 	}
 
 	/**

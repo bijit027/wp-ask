@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Utils;
+namespace PollQuest\Utils;
 
 /**
  * Class GravatarHelper
@@ -24,6 +24,11 @@ class GravatarHelper {
 	public static function get_url( string $email, string $name = '', int $size = 128 ): string {
 		if ( empty( $email ) ) {
 			return '';
+		}
+
+		// Privacy opt-in: only load external avatars if enabled
+		if ( ! get_option( 'pollquest_enable_gravatar', false ) ) {
+			return ''; // empty — use local default avatar fallback
 		}
 
 		$fallback = '';

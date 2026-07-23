@@ -2,18 +2,18 @@
 /**
  * Database Migrator.
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Database;
+namespace PollQuest\Database;
 
-use WPAsk\Database\Migrations\CreateEmailSurveysTable;
-use WPAsk\Database\Migrations\CreateHeatmapsTable;
-use WPAsk\Database\Migrations\CreateMetaTable;
-use WPAsk\Database\Migrations\CreatePostRatingsTable;
-use WPAsk\Database\Migrations\CreateResponsesTable;
-use WPAsk\Database\Migrations\CreateSessionsTable;
-use WPAsk\Database\Migrations\CreateSurveysTable;
+use PollQuest\Database\Migrations\CreateEmailSurveysTable;
+use PollQuest\Database\Migrations\CreateHeatmapsTable;
+use PollQuest\Database\Migrations\CreateMetaTable;
+use PollQuest\Database\Migrations\CreatePostRatingsTable;
+use PollQuest\Database\Migrations\CreateResponsesTable;
+use PollQuest\Database\Migrations\CreateSessionsTable;
+use PollQuest\Database\Migrations\CreateSurveysTable;
 
 /**
  * Class Migrator
@@ -40,6 +40,6 @@ class Migrator {
 			$migration->up();
 		}
 
-		update_option( 'wpask_db_version', WPASK_DB_VERSION );
+		update_option( 'pollquest_db_version', POLLQUEST_DB_VERSION );
 	}
 }

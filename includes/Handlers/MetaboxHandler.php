@@ -2,10 +2,10 @@
 /**
  * Metabox Handler
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Handlers;
+namespace PollQuest\Handlers;
 
 /**
  * Class MetaboxHandler

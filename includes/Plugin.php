@@ -2,29 +2,29 @@
 /**
  * Main Plugin bootstrap class. Binds all handlers and registers REST routes.
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk;
+namespace PollQuest;
 
-use WPAsk\Handlers\AdminMenuHandler;
-use WPAsk\Handlers\ActivationHandler;
-use WPAsk\Handlers\FrontendHandler;
-use WPAsk\Handlers\MetaboxHandler;
-use WPAsk\Handlers\ShortcodeHandler;
-use WPAsk\Handlers\ReviewNoticeHandler;
-use WPAsk\Handlers\HeatmapHandler;
-use WPAsk\Controllers\SurveyController;
-use WPAsk\Controllers\ResponseController;
-use WPAsk\Controllers\ResultsController;
-use WPAsk\Controllers\SettingsController;
-use WPAsk\Controllers\TemplateController;
-use WPAsk\Controllers\FrontendController;
-use WPAsk\Controllers\LogicController;
-use WPAsk\Controllers\AddonsController;
-use WPAsk\Controllers\PostRatingController;
-use WPAsk\Controllers\HeatmapController;
-use WPAsk\Database\Migrator;
+use PollQuest\Handlers\AdminMenuHandler;
+use PollQuest\Handlers\ActivationHandler;
+use PollQuest\Handlers\FrontendHandler;
+use PollQuest\Handlers\MetaboxHandler;
+use PollQuest\Handlers\ShortcodeHandler;
+use PollQuest\Handlers\ReviewNoticeHandler;
+use PollQuest\Handlers\HeatmapHandler;
+use PollQuest\Controllers\SurveyController;
+use PollQuest\Controllers\ResponseController;
+use PollQuest\Controllers\ResultsController;
+use PollQuest\Controllers\SettingsController;
+use PollQuest\Controllers\TemplateController;
+use PollQuest\Controllers\FrontendController;
+use PollQuest\Controllers\LogicController;
+use PollQuest\Controllers\AddonsController;
+use PollQuest\Controllers\PostRatingController;
+use PollQuest\Controllers\HeatmapController;
+use PollQuest\Database\Migrator;
 
 /**
  * Class Plugin
@@ -60,14 +60,11 @@ final class Plugin {
 	private function __construct() {}
 
 	/**
-	 * Run migrations (incremental), load textdomain, register all hooks.
+	 * Run migrations (incremental), register all hooks.
 	 */
 	private function init(): void {
 		// Run DB upgrades if version changed.
 		$this->maybe_run_migrations();
-
-		// Load translations.
-		add_action( 'init', [ $this, 'load_textdomain' ] );
 
 		// Register REST API routes.
 		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
@@ -95,18 +92,18 @@ final class Plugin {
 		}
 
 		// Email Notifications.
-		add_action( 'wpask_response_saved', [ $this, 'trigger_email_notifications' ], 10, 4 );
+		add_action( 'pollquest_response_saved', [ $this, 'trigger_email_notifications' ], 10, 4 );
 	}
 
 	/**
 	 * Trigger email notifications on new response.
 	 */
 	public function trigger_email_notifications( $response_id, $survey_id, $answers, $context ): void {
-		$survey   = ( new \WPAsk\Repositories\SurveyRepository() )->find( $survey_id );
-		$response = ( new \WPAsk\Repositories\ResponseRepository() )->find( $response_id );
+		$survey   = ( new \PollQuest\Repositories\SurveyRepository() )->find( $survey_id );
+		$response = ( new \PollQuest\Repositories\ResponseRepository() )->find( $response_id );
 
 		if ( $survey && $response && ! empty( $survey->notifications->email->active ) ) {
-			$notification = new \WPAsk\Emails\ResponseNotification( $survey, $response );
+			$notification = new \PollQuest\Emails\ResponseNotification( $survey, $response );
 			$notification->maybe_send();
 		}
 	}
@@ -115,21 +112,10 @@ final class Plugin {
 	 * Run DB migrations if DB version is behind.
 	 */
 	private function maybe_run_migrations(): void {
-		$current = get_option( 'wpask_db_version', '0.0.0' );
-		if ( version_compare( $current, WPASK_DB_VERSION, '<' ) ) {
+		$current = get_option( 'pollquest_db_version', '0.0.0' );
+		if ( version_compare( $current, POLLQUEST_DB_VERSION, '<' ) ) {
 			Migrator::run();
 		}
-	}
-
-	/**
-	 * Load plugin textdomain.
-	 */
-	public function load_textdomain(): void {
-		load_plugin_textdomain(
-			'wpask',
-			false,
-			dirname( WPASK_PLUGIN_BASENAME ) . '/languages'
-		);
 	}
 
 	/**
@@ -153,8 +139,8 @@ final class Plugin {
 	 */
 	public function register_dashboard_widget(): void {
 		wp_add_dashboard_widget(
-			'wpask_dashboard_widget',
-			__( 'WPAsk — Recent Activity', 'wpask' ),
+			'pollquest_dashboard_widget',
+			__( 'PollQuest — Recent Activity', 'pollquest' ),
 			[ $this, 'render_dashboard_widget' ]
 		);
 	}
@@ -163,7 +149,7 @@ final class Plugin {
 	 * Render the dashboard widget content.
 	 */
 	public function render_dashboard_widget(): void {
-		$builder_url = admin_url( 'admin.php?page=wpask#/surveys/new' );
-		echo '<div id="wpask-dashboard-widget" data-builder-url="' . esc_url( $builder_url ) . '"></div>';
+		$builder_url = admin_url( 'admin.php?page=pollquest#/surveys/new' );
+		echo '<div id="pollquest-dashboard-widget" data-builder-url="' . esc_url( $builder_url ) . '"></div>';
 	}
 }

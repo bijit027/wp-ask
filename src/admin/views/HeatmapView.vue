@@ -1,14 +1,14 @@
 <template>
-  <div class="wpask-content-inner">
-    <div class="wpask-page-header">
+  <div class="pollquest-content-inner">
+    <div class="pollquest-page-header">
       <div>
-        <button class="wpask-editor-back-btn" @click="$router.push('/heatmaps')" aria-label="Back">
+        <button class="pollquest-editor-back-btn" @click="$router.push('/heatmaps')" aria-label="Back">
           <ArrowLeft />
         </button>
-        <h1 class="wpask-page-title" style="display:inline; margin-left:8px;">
+        <h1 class="pollquest-page-title" style="display:inline; margin-left:8px;">
           {{ heatmap.page_title || 'Heatmap' }}
         </h1>
-        <p class="wpask-page-subtitle">
+        <p class="pollquest-page-subtitle">
           <a v-if="heatmap.page_url" :href="heatmap.page_url" target="_blank" rel="noopener">
             {{ heatmap.page_url }}
           </a>
@@ -16,7 +16,7 @@
       </div>
       <div style="display:flex; gap:8px;">
         <button
-          class="wpask-btn wpask-btn-secondary"
+          class="pollquest-btn pollquest-btn-secondary"
           @click="toggleStatus"
         >
           {{ heatmap.status === 'publish' ? 'Pause tracking' : 'Resume tracking' }}
@@ -24,41 +24,41 @@
       </div>
     </div>
 
-    <div v-if="loading" class="wpask-addons-loading">Loading heatmap data…</div>
+    <div v-if="loading" class="pollquest-addons-loading">Loading heatmap data…</div>
 
     <template v-else-if="heatmap.id">
-      <div class="wpask-stats-grid" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="wpask-stat-card">
-          <div class="wpask-stat-label">Total clicks</div>
-          <div class="wpask-stat-value">{{ heatmap.points?.total_clicks || 0 }}</div>
+      <div class="pollquest-stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="pollquest-stat-card">
+          <div class="pollquest-stat-label">Total clicks</div>
+          <div class="pollquest-stat-value">{{ heatmap.points?.total_clicks || 0 }}</div>
         </div>
-        <div class="wpask-stat-card">
-          <div class="wpask-stat-label">Sessions</div>
-          <div class="wpask-stat-value">{{ heatmap.session_count || 0 }}</div>
+        <div class="pollquest-stat-card">
+          <div class="pollquest-stat-label">Sessions</div>
+          <div class="pollquest-stat-value">{{ heatmap.session_count || 0 }}</div>
         </div>
-        <div class="wpask-stat-card">
-          <div class="wpask-stat-label">Status</div>
-          <div class="wpask-stat-value" style="font-size:18px;">{{ heatmap.status === 'publish' ? 'Active' : 'Paused' }}</div>
+        <div class="pollquest-stat-card">
+          <div class="pollquest-stat-label">Status</div>
+          <div class="pollquest-stat-value" style="font-size:18px;">{{ heatmap.status === 'publish' ? 'Active' : 'Paused' }}</div>
         </div>
       </div>
 
-      <div class="wpask-settings-section">
+      <div class="pollquest-settings-section">
         <div>
-          <h2 class="wpask-settings-section-title">Click heatmap</h2>
-          <p class="wpask-settings-section-desc">
+          <h2 class="pollquest-settings-section-title">Click heatmap</h2>
+          <p class="pollquest-settings-section-desc">
             Warmer areas show where visitors click most. Coordinates are normalized to page scroll height.
           </p>
         </div>
 
-        <div class="wpask-heatmap-canvas-wrap">
-          <div class="wpask-heatmap-canvas" ref="canvasRef">
+        <div class="pollquest-heatmap-canvas-wrap">
+          <div class="pollquest-heatmap-canvas" ref="canvasRef">
             <div
               v-for="(cell, index) in gridCells"
               :key="index"
-              class="wpask-heatmap-cell"
+              class="pollquest-heatmap-cell"
               :style="cellStyle(cell)"
             />
-            <div v-if="!gridCells.length" class="wpask-heatmap-empty">
+            <div v-if="!gridCells.length" class="pollquest-heatmap-empty">
               No click data yet. Visit the page on the frontend to start collecting clicks.
             </div>
           </div>
@@ -96,7 +96,7 @@ function cellStyle(cell) {
 }
 
 async function api(path, method = 'GET', body = null) {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
   const opts = {
     method,
     headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': config.nonce },
@@ -129,11 +129,11 @@ onMounted(loadHeatmap);
 </script>
 
 <style scoped>
-.wpask-heatmap-canvas-wrap {
+.pollquest-heatmap-canvas-wrap {
   margin-top: 16px;
 }
 
-.wpask-heatmap-canvas {
+.pollquest-heatmap-canvas {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 10;
@@ -143,14 +143,14 @@ onMounted(loadHeatmap);
   overflow: hidden;
 }
 
-.wpask-heatmap-cell {
+.pollquest-heatmap-cell {
   position: absolute;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   pointer-events: none;
 }
 
-.wpask-heatmap-empty {
+.pollquest-heatmap-empty {
   position: absolute;
   inset: 0;
   display: flex;

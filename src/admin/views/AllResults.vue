@@ -1,59 +1,59 @@
 <template>
-  <div class="wpask-content-inner">
+  <div class="pollquest-content-inner">
     <!-- Page Header -->
-    <div class="wpask-page-header">
+    <div class="pollquest-page-header">
       <div>
-        <h1 class="wpask-page-title">Results &amp; Analytics</h1>
-        <p class="wpask-page-subtitle">Global performance across all your surveys.</p>
+        <h1 class="pollquest-page-title">Results &amp; Analytics</h1>
+        <p class="pollquest-page-subtitle">Global performance across all your surveys.</p>
       </div>
     </div>
 
     <!-- Loading state -->
     <div v-if="loading" style="text-align:center; padding: 60px 0; color: var(--muted-foreground);">
-      <div class="wpask-spinner" style="margin: 0 auto 16px;"></div>
+      <div class="pollquest-spinner" style="margin: 0 auto 16px;"></div>
       Loading analytics...
     </div>
 
     <template v-else>
       <!-- Global Metric Cards -->
-      <div class="wpask-metrics-grid">
-        <div class="wpask-metric-card">
-          <div class="wpask-metric-label">
+      <div class="pollquest-metrics-grid">
+        <div class="pollquest-metric-card">
+          <div class="pollquest-metric-label">
             <ClipboardList /> Total Surveys
           </div>
-          <div class="wpask-metric-value">{{ summary.total_surveys }}</div>
+          <div class="pollquest-metric-value">{{ summary.total_surveys }}</div>
         </div>
-        <div class="wpask-metric-card">
-          <div class="wpask-metric-label">
+        <div class="pollquest-metric-card">
+          <div class="pollquest-metric-label">
             <Eye /> Total Impressions
           </div>
-          <div class="wpask-metric-value">{{ summary.total_impressions.toLocaleString() }}</div>
+          <div class="pollquest-metric-value">{{ summary.total_impressions.toLocaleString() }}</div>
         </div>
-        <div class="wpask-metric-card">
-          <div class="wpask-metric-label">
+        <div class="pollquest-metric-card">
+          <div class="pollquest-metric-label">
             <MessageSquare /> Total Responses
           </div>
-          <div class="wpask-metric-value">{{ summary.total_responses.toLocaleString() }}</div>
+          <div class="pollquest-metric-value">{{ summary.total_responses.toLocaleString() }}</div>
         </div>
-        <div class="wpask-metric-card">
-          <div class="wpask-metric-label">
+        <div class="pollquest-metric-card">
+          <div class="pollquest-metric-label">
             <TrendingUp /> Avg. Completion Rate
           </div>
-          <div class="wpask-metric-value">{{ summary.completion_rate }}%</div>
+          <div class="pollquest-metric-value">{{ summary.completion_rate }}%</div>
         </div>
       </div>
 
       <!-- Per-survey breakdown table -->
       <div style="margin-top: 40px;">
-        <h2 class="wpask-section-title">Survey breakdown</h2>
+        <h2 class="pollquest-section-title">Survey breakdown</h2>
 
-        <div v-if="surveys.length === 0" class="wpask-empty-state">
+        <div v-if="surveys.length === 0" class="pollquest-empty-state">
           <BarChart3 style="width:48px;height:48px;color:var(--muted-foreground);margin-bottom:12px;" />
-          <p>No surveys yet. <router-link to="/surveys/new" class="wpask-link">Create your first survey</router-link>.</p>
+          <p>No surveys yet. <router-link to="/surveys/new" class="pollquest-link">Create your first survey</router-link>.</p>
         </div>
 
-        <div v-else class="wpask-responses-panel">
-          <div class="wpask-responses-header" style="grid-template-columns: 2fr 1fr 1fr 1fr 120px;">
+        <div v-else class="pollquest-responses-panel">
+          <div class="pollquest-responses-header" style="grid-template-columns: 2fr 1fr 1fr 1fr 120px;">
             <div>Survey</div>
             <div>Status</div>
             <div>Impressions</div>
@@ -64,7 +64,7 @@
           <div
             v-for="s in surveys"
             :key="s.id"
-            class="wpask-response-row"
+            class="pollquest-response-row"
             style="grid-template-columns: 2fr 1fr 1fr 1fr 120px; align-items: center;"
           >
             <div style="font-weight:500; color:var(--foreground); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
@@ -72,8 +72,8 @@
             </div>
 
             <div>
-              <span class="wpask-status-badge" :class="s.status">
-                <span class="wpask-status-dot"></span>
+              <span class="pollquest-status-badge" :class="s.status">
+                <span class="pollquest-status-dot"></span>
                 {{ s.status }}
               </span>
             </div>
@@ -89,7 +89,7 @@
             <div style="text-align:right;">
               <router-link
                 :to="`/surveys/${s.id}/results`"
-                class="wpask-btn wpask-btn-secondary"
+                class="pollquest-btn pollquest-btn-secondary"
                 style="font-size:12px; padding:5px 12px;"
               >
                 <BarChart3 style="width:12px;height:12px;" /> View
@@ -112,7 +112,7 @@ const surveys = ref([]);
 const surveyCounts = ref({});
 
 onMounted(async () => {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
 
   try {
     // 1. Load global summary

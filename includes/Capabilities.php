@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace WPAsk;
+namespace PollQuest;
 
 /**
  * Class Capabilities
@@ -23,10 +23,10 @@ class Capabilities {
 		}
 
 		$caps = [
-			'wpask_create_edit_surveys',
-			'wpask_delete_surveys',
-			'wpask_view_results',
-			'wpask_save_settings',
+			'pollquest_create_edit_surveys',
+			'pollquest_delete_surveys',
+			'pollquest_view_results',
+			'pollquest_save_settings',
 		];
 
 		foreach ( $caps as $cap ) {
@@ -34,6 +34,6 @@ class Capabilities {
 		}
 		
 		// Update option to track that capabilities were added.
-		update_option( 'wpask_capabilities_added', true );
+		update_option( 'pollquest_capabilities_added', true );
 	}
 }

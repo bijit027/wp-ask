@@ -2,10 +2,10 @@
 /**
  * Review Notice Handler
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Handlers;
+namespace PollQuest\Handlers;
 
 /**
  * Class ReviewNoticeHandler
@@ -17,12 +17,12 @@ class ReviewNoticeHandler {
 	/**
 	 * Transient key for the activation timestamp.
 	 */
-	const ACTIVATION_KEY = 'wpask_activation_date';
+	const ACTIVATION_KEY = 'pollquest_activation_date';
 
 	/**
 	 * Option key to track if notice was dismissed.
 	 */
-	const DISMISSED_KEY = 'wpask_review_dismissed';
+	const DISMISSED_KEY = 'pollquest_review_dismissed';
 
 	/**
 	 * Register hooks.
@@ -68,15 +68,15 @@ class ReviewNoticeHandler {
 		}
 
 		$dismiss_url = wp_nonce_url(
-			add_query_arg( 'wpask_dismiss_review', '1' ),
-			'wpask_dismiss_review'
+			add_query_arg( 'pollquest_dismiss_review', '1' ),
+			'pollquest_dismiss_review'
 		);
 
-		$review_url = 'https://wordpress.org/support/plugin/wpask/reviews/#new-post';
+		$review_url = 'https://wordpress.org/support/plugin/pollquest/reviews/#new-post';
 
-		echo '<div class="notice notice-info is-dismissible wpask-review-notice">';
+		echo '<div class="notice notice-info is-dismissible pollquest-review-notice">';
 		echo '<p>';
-		echo '<strong>Enjoying WPAsk?</strong> You\'ve been using it for 14 days — we\'d love a ⭐⭐⭐⭐⭐ review to help others discover it!';
+		echo '<strong>Enjoying PollQuest?</strong> You\'ve been using it for 14 days — we\'d love a ⭐⭐⭐⭐⭐ review to help others discover it!';
 		echo '</p>';
 		echo '<p>';
 		printf( '<a href="%s" target="_blank" rel="noopener noreferrer" class="button button-primary">Leave a Review 🎉</a>&nbsp;&nbsp;', esc_url( $review_url ) );
@@ -89,9 +89,9 @@ class ReviewNoticeHandler {
 	 * Handle the dismissal action.
 	 */
 	public function handle_dismissal(): void {
-		if ( isset( $_GET['wpask_dismiss_review'] ) && check_admin_referer( 'wpask_dismiss_review' ) ) {
+		if ( isset( $_GET['pollquest_dismiss_review'] ) && check_admin_referer( 'pollquest_dismiss_review' ) ) {
 			update_option( self::DISMISSED_KEY, true );
-			wp_safe_redirect( remove_query_arg( 'wpask_dismiss_review' ) );
+			wp_safe_redirect( remove_query_arg( 'pollquest_dismiss_review' ) );
 			exit;
 		}
 	}

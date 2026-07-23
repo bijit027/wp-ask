@@ -5,7 +5,7 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Validators;
+namespace PollQuest\Validators;
 
 /**
  * Class SurveyValidator
@@ -27,10 +27,10 @@ class SurveyValidator {
 			'title'         => sanitize_text_field( $data['title'] ),
 			'status'        => in_array( $data['status'] ?? '', [ 'publish', 'draft', 'trash' ] ) ? $data['status'] : 'draft',
 			'type'          => sanitize_text_field( $data['type'] ?? 'floating' ),
-			'questions'     => isset( $data['questions'] ) ? wp_json_encode( \WPAsk\Utils\Sanitizer::sanitize_array( $data['questions'] ) ) : '[]',
-			'settings'      => isset( $data['settings'] ) ? wp_json_encode( \WPAsk\Utils\Sanitizer::sanitize_array( $data['settings'] ) ) : '{}',
-			'targeting'     => isset( $data['targeting'] ) ? wp_json_encode( \WPAsk\Utils\Sanitizer::sanitize_array( $data['targeting'] ) ) : '{}',
-			'notifications' => isset( $data['notifications'] ) ? wp_json_encode( \WPAsk\Utils\Sanitizer::sanitize_array( $data['notifications'] ) ) : '{}',
+			'questions'     => isset( $data['questions'] ) ? wp_json_encode( \PollQuest\Utils\Sanitizer::sanitize_array( $data['questions'] ) ) : '[]',
+			'settings'      => isset( $data['settings'] ) ? wp_json_encode( \PollQuest\Utils\Sanitizer::sanitize_array( $data['settings'] ) ) : '{}',
+			'targeting'     => isset( $data['targeting'] ) ? wp_json_encode( \PollQuest\Utils\Sanitizer::sanitize_array( $data['targeting'] ) ) : '{}',
+			'notifications' => isset( $data['notifications'] ) ? wp_json_encode( \PollQuest\Utils\Sanitizer::sanitize_array( $data['notifications'] ) ) : '{}',
 		];
 
 		if ( ! empty( $data['publish_at'] ) ) {

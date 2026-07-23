@@ -1,45 +1,45 @@
 <template>
-  <div id="wpask-app-root">
+  <div id="pollquest-app-root">
     <!-- Top Header -->
-    <header class="wpask-app-header">
-      <div class="wpask-app-header-left">
+    <header class="pollquest-app-header">
+      <div class="pollquest-app-header-left">
         <!-- Logo -->
-        <div class="wpask-logo">
-          <div class="wpask-logo-icon">
+        <div class="pollquest-logo">
+          <div class="pollquest-logo-icon">
             <MessageSquare />
           </div>
           <div style="display:flex; align-items: baseline; gap: 8px;">
-            <span class="wpask-logo-text">WPAsk</span>
-            <span class="wpask-logo-badge">Pro</span>
+            <span class="pollquest-logo-text">PollQuest</span>
+            <span class="pollquest-logo-badge">Pro</span>
           </div>
         </div>
 
         <!-- Nav Tabs -->
-        <nav class="wpask-nav-tabs">
-          <router-link to="/" class="wpask-nav-tab" exact-active-class="active">
+        <nav class="pollquest-nav-tabs">
+          <router-link to="/" class="pollquest-nav-tab" exact-active-class="active">
             <ClipboardList /> Surveys
           </router-link>
-          <router-link to="/results" class="wpask-nav-tab" active-class="active">
+          <router-link to="/results" class="pollquest-nav-tab" active-class="active">
             <BarChart3 /> Results
           </router-link>
-          <router-link to="/heatmaps" class="wpask-nav-tab" active-class="active">
+          <router-link to="/heatmaps" class="pollquest-nav-tab" active-class="active">
             <MousePointerClick /> Heatmaps
           </router-link>
-          <router-link to="/settings" class="wpask-nav-tab" active-class="active">
+          <router-link to="/settings" class="pollquest-nav-tab" active-class="active">
             <SettingsIcon /> Settings
           </router-link>
-          <router-link to="/addons" class="wpask-nav-tab" active-class="active">
+          <router-link to="/addons" class="pollquest-nav-tab" active-class="active">
             <Puzzle /> Add-ons
           </router-link>
         </nav>
       </div>
 
-      <div class="wpask-app-header-right">
-        <a href="https://wpask.io/docs" target="_blank" class="wpask-btn wpask-btn-secondary wpask-btn-sm">
+      <div class="pollquest-app-header-right">
+        <a href="https://pollquest.io/docs" target="_blank" class="pollquest-btn pollquest-btn-secondary pollquest-btn-sm">
           <BookOpen />
           Docs
         </a>
-        <button type="button" class="wpask-btn wpask-btn-primary wpask-btn-sm" @click="showTemplatePicker = true">
+        <button type="button" class="pollquest-btn pollquest-btn-primary pollquest-btn-sm" @click="showTemplatePicker = true">
           <Plus />
           New survey
         </button>
@@ -47,7 +47,7 @@
     </header>
 
     <!-- Router View -->
-    <div class="wpask-page-content">
+    <div class="pollquest-page-content">
       <router-view></router-view>
     </div>
 
@@ -96,5 +96,5 @@ watch(
 #wpcontent { padding-left: 0 !important; }
 #wpbody-content { padding-bottom: 0 !important; }
 #wpbody-content .wrap { margin: 0 !important; padding: 0 !important; }
-#wpask-admin-app { margin: 0 !important; }
+#pollquest-admin-app { margin: 0 !important; }
 </style>

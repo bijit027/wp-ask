@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Repositories;
+namespace PollQuest\Repositories;
 
-use WPAsk\Models\Response;
+use PollQuest\Models\Response;
 
 /**
  * Class ResponseRepository

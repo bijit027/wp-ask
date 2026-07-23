@@ -5,10 +5,10 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Services;
+namespace PollQuest\Services;
 
-use WPAsk\Repositories\HeatmapRecordingRepository;
-use WPAsk\Repositories\HeatmapRepository;
+use PollQuest\Repositories\HeatmapRecordingRepository;
+use PollQuest\Repositories\HeatmapRepository;
 use WP_Error;
 
 /**
@@ -57,7 +57,7 @@ class HeatmapService {
 	public function get_heatmap( int $id ) {
 		$heatmap = $this->heatmaps->find( $id );
 		if ( ! $heatmap ) {
-			return new WP_Error( 'not_found', __( 'Heatmap not found.', 'wpask' ), [ 'status' => 404 ] );
+			return new WP_Error( 'not_found', __( 'Heatmap not found.', 'pollquest' ), [ 'status' => 404 ] );
 		}
 
 		$data = $this->format_heatmap( $heatmap );
@@ -74,14 +74,14 @@ class HeatmapService {
 	 */
 	public function create_heatmap( int $page_id ) {
 		if ( ! get_post( $page_id ) ) {
-			return new WP_Error( 'invalid_page', __( 'Page not found.', 'wpask' ), [ 'status' => 404 ] );
+			return new WP_Error( 'invalid_page', __( 'Page not found.', 'pollquest' ), [ 'status' => 404 ] );
 		}
 
 		$existing = $this->heatmaps->find_by_page( $page_id );
 		if ( $existing ) {
 			return new WP_Error(
 				'duplicate',
-				__( 'A heatmap already exists for this page.', 'wpask' ),
+				__( 'A heatmap already exists for this page.', 'pollquest' ),
 				[ 'status' => 409, 'heatmap_id' => (int) $existing->id ]
 			);
 		}
@@ -95,7 +95,7 @@ class HeatmapService {
 		);
 
 		if ( ! $id ) {
-			return new WP_Error( 'db_error', __( 'Could not create heatmap.', 'wpask' ), [ 'status' => 500 ] );
+			return new WP_Error( 'db_error', __( 'Could not create heatmap.', 'pollquest' ), [ 'status' => 500 ] );
 		}
 
 		$heatmap = $this->heatmaps->find( $id );
@@ -112,12 +112,12 @@ class HeatmapService {
 	public function update_status( int $id, string $status ) {
 		$allowed = [ 'publish', 'draft', 'trash' ];
 		if ( ! in_array( $status, $allowed, true ) ) {
-			return new WP_Error( 'invalid_status', __( 'Invalid status.', 'wpask' ), [ 'status' => 400 ] );
+			return new WP_Error( 'invalid_status', __( 'Invalid status.', 'pollquest' ), [ 'status' => 400 ] );
 		}
 
 		$heatmap = $this->heatmaps->find( $id );
 		if ( ! $heatmap ) {
-			return new WP_Error( 'not_found', __( 'Heatmap not found.', 'wpask' ), [ 'status' => 404 ] );
+			return new WP_Error( 'not_found', __( 'Heatmap not found.', 'pollquest' ), [ 'status' => 404 ] );
 		}
 
 		$this->heatmaps->update( $id, [ 'status' => $status ] );
@@ -135,7 +135,7 @@ class HeatmapService {
 	public function delete_heatmap( int $id ) {
 		$heatmap = $this->heatmaps->find( $id );
 		if ( ! $heatmap ) {
-			return new WP_Error( 'not_found', __( 'Heatmap not found.', 'wpask' ), [ 'status' => 404 ] );
+			return new WP_Error( 'not_found', __( 'Heatmap not found.', 'pollquest' ), [ 'status' => 404 ] );
 		}
 
 		$this->recordings->delete_by_heatmap( $id );
@@ -154,7 +154,7 @@ class HeatmapService {
 	public function record_clicks( int $heatmap_id, array $clicks ) {
 		$heatmap = $this->heatmaps->find( $heatmap_id );
 		if ( ! $heatmap || 'publish' !== $heatmap->status ) {
-			return new WP_Error( 'not_found', __( 'Heatmap not active.', 'wpask' ), [ 'status' => 404 ] );
+			return new WP_Error( 'not_found', __( 'Heatmap not active.', 'pollquest' ), [ 'status' => 404 ] );
 		}
 
 		$sanitized = [];
@@ -180,7 +180,7 @@ class HeatmapService {
 		}
 
 		if ( empty( $sanitized ) ) {
-			return new WP_Error( 'no_clicks', __( 'No valid clicks provided.', 'wpask' ), [ 'status' => 400 ] );
+			return new WP_Error( 'no_clicks', __( 'No valid clicks provided.', 'pollquest' ), [ 'status' => 400 ] );
 		}
 
 		$result = $this->recordings->create(
@@ -192,7 +192,7 @@ class HeatmapService {
 		);
 
 		if ( ! $result ) {
-			return new WP_Error( 'db_error', __( 'Could not save clicks.', 'wpask' ), [ 'status' => 500 ] );
+			return new WP_Error( 'db_error', __( 'Could not save clicks.', 'pollquest' ), [ 'status' => 500 ] );
 		}
 
 		return true;
@@ -213,14 +213,14 @@ class HeatmapService {
 		return [
 			'heatmap_id' => (int) $heatmap->id,
 			'page_id'    => (int) $heatmap->page_id,
-			'api_url'    => esc_url_raw( rest_url( 'wpask/v1' ) ),
+			'api_url'    => esc_url_raw( rest_url( 'pollquest/v1' ) ),
 		];
 	}
 
 	/**
 	 * Format heatmap with page info and stats.
 	 *
-	 * @param \WPAsk\Models\Heatmap $heatmap Heatmap model.
+	 * @param \PollQuest\Models\Heatmap $heatmap Heatmap model.
 	 * @return array<string, mixed>
 	 */
 	private function format_heatmap( $heatmap ): array {
@@ -228,7 +228,7 @@ class HeatmapService {
 		$data  = $heatmap->to_array();
 		$stats = $this->aggregate_clicks( (int) $heatmap->id );
 
-		$data['page_title']   = $post ? $post->post_title : __( 'Unknown page', 'wpask' );
+		$data['page_title']   = $post ? $post->post_title : __( 'Unknown page', 'pollquest' );
 		$data['page_url']     = $post ? get_permalink( $post ) : '';
 		$data['page_type']    = $post ? $post->post_type : '';
 		$data['click_count']  = $stats['total_clicks'];

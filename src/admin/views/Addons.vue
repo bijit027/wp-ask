@@ -1,37 +1,37 @@
 <template>
-  <div class="wpask-content-inner">
+  <div class="pollquest-content-inner">
     <!-- Page Header -->
-    <div class="wpask-page-header">
+    <div class="pollquest-page-header">
       <div>
-        <h1 class="wpask-page-title">Add-ons</h1>
-        <p class="wpask-page-subtitle">Extend WPAsk with integrations and advanced features.</p>
+        <h1 class="pollquest-page-title">Add-ons</h1>
+        <p class="pollquest-page-subtitle">Extend PollQuest with integrations and advanced features.</p>
       </div>
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="wpask-addons-loading">Loading add-ons…</div>
+    <div v-if="loading" class="pollquest-addons-loading">Loading add-ons…</div>
 
     <!-- Addons Grid -->
-    <div v-else class="wpask-addons-grid">
+    <div v-else class="pollquest-addons-grid">
       <div
         v-for="addon in addons"
         :key="addon.id"
-        class="wpask-addon-card"
+        class="pollquest-addon-card"
       >
-        <div class="wpask-addon-card-top">
-          <div class="wpask-addon-icon">
+        <div class="pollquest-addon-card-top">
+          <div class="pollquest-addon-icon">
             <component :is="iconFor(addon.icon)" />
           </div>
-          <span v-if="addon.tier === 'pro'" class="wpask-addon-pro-badge">Pro</span>
+          <span v-if="addon.tier === 'pro'" class="pollquest-addon-pro-badge">Pro</span>
         </div>
 
-        <div class="wpask-addon-card-inner">
+        <div class="pollquest-addon-card-inner">
           <div style="min-width:0;">
-            <div class="wpask-addon-name">{{ addon.name }}</div>
-            <p class="wpask-addon-desc">{{ addon.description }}</p>
+            <div class="pollquest-addon-name">{{ addon.name }}</div>
+            <p class="pollquest-addon-desc">{{ addon.description }}</p>
           </div>
-          <div class="wpask-addon-action" style="flex-shrink:0;">
-            <span class="wpask-installed-badge" v-if="addon.active">
+          <div class="pollquest-addon-action" style="flex-shrink:0;">
+            <span class="pollquest-installed-badge" v-if="addon.active">
               <CircleCheck />
               Active
             </span>
@@ -70,7 +70,7 @@ function iconFor(name) {
 }
 
 async function fetchAddons() {
-  const config = window.WPAskAdminConfig || {};
+  const config = window.PollQuestAdminConfig || {};
 
   try {
     const res = await fetch(`${config.api_url}/addons`, {

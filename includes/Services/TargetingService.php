@@ -5,9 +5,9 @@
  * @package InsightPulse
  */
 
-namespace WPAsk\Services;
+namespace PollQuest\Services;
 
-use WPAsk\Models\Survey;
+use PollQuest\Models\Survey;
 
 /**
  * Class TargetingService

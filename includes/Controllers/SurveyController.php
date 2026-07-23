@@ -2,13 +2,13 @@
 /**
  * Survey REST Controller
  *
- * @package WPAsk
+ * @package PollQuest
  */
 
-namespace WPAsk\Controllers;
+namespace PollQuest\Controllers;
 
-use WPAsk\Repositories\SurveyRepository;
-use WPAsk\Validators\SurveyValidator;
+use PollQuest\Repositories\SurveyRepository;
+use PollQuest\Validators\SurveyValidator;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -21,7 +21,7 @@ class SurveyController {
 	/**
 	 * @var string
 	 */
-	private $namespace = 'wpask/v1';
+	private $namespace = 'pollquest/v1';
 
 	/**
 	 * @var string
@@ -122,7 +122,10 @@ class SurveyController {
 			[
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => [ $this, 'record_impression' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => function($request) {
+					$survey = $this->repository->find(absint($request['id']));
+					return $survey && $survey->status === 'publish';
+				},
 			]
 		);
 
@@ -146,7 +149,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function get_items_permissions_check( $request ): bool {
-		return current_user_can( 'wpask_create_edit_surveys' );
+		return current_user_can( 'pollquest_create_edit_surveys' );
 	}
 
 	/**
@@ -213,7 +216,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function create_item_permissions_check( $request ): bool {
-		return current_user_can( 'wpask_create_edit_surveys' );
+		return current_user_can( 'pollquest_create_edit_surveys' );
 	}
 
 	/**
@@ -247,7 +250,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function get_item_permissions_check( $request ): bool {
-		return current_user_can( 'wpask_create_edit_surveys' );
+		return current_user_can( 'pollquest_create_edit_surveys' );
 	}
 
 	/**
@@ -274,7 +277,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function update_item_permissions_check( $request ): bool {
-		return current_user_can( 'wpask_create_edit_surveys' );
+		return current_user_can( 'pollquest_create_edit_surveys' );
 	}
 
 	/**
@@ -310,7 +313,7 @@ class SurveyController {
 	 * @return bool
 	 */
 	public function delete_item_permissions_check( $request ): bool {
-		return current_user_can( 'wpask_delete_surveys' );
+		return current_user_can( 'pollquest_delete_surveys' );
 	}
 
 	/**
