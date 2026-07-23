@@ -6,6 +6,8 @@
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Bijit Deb
+ * Author URI: https://github.com/bijit027
+ * Plugin URI: https://github.com/bijit027/pollquest
  * License: GPL-2.0+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: pollquest

@@ -240,7 +240,7 @@ class ResponseNotification {
 		$args['header_image']  = $this->get_header_image();
 		$args['survey_id']     = $this->survey->id;
 		$args['survey_title']  = $this->survey->title;
-		/* translators: %s: survey title */
+		/* translators: %s: survey title (HTML tags are allowed) */
 		$args['title']         = sprintf(
 			esc_html__( 'New Response to <b>%s</b>', 'pollquest' ),
 			$this->survey->title
@@ -249,7 +249,7 @@ class ResponseNotification {
 		$survey_id               = $this->survey->id;
 		$notification_config_url = admin_url( 'admin.php?page=pollquest#surveys/edit/' . $survey_id );
 
-		/* translators: %1$s: blog name, %2$s: settings URL */
+		/* translators: %1$s: blog name, %2$s: settings URL (HTML tags are allowed) */
 		$args['description'] =
 			sprintf(
 				esc_html__( 'You are receiving this PollQuest survey notification from <b>%1$s</b>. <a href="%2$s">Adjust your settings here</a>.', 'pollquest' ),

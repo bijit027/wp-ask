@@ -42,7 +42,7 @@ class AdminMenuHandler {
 				// Add type="module" to these scripts
 				add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
 					if ( in_array( $handle, [ 'pollquest-admin-vite', 'pollquest-admin-app' ] ) ) {
-						return '<script type="module" src="' . esc_url( $src ) . '"></script>';
+						$tag = str_replace( ' src=', ' type="module" src=', $tag );
 					}
 					return $tag;
 				}, 10, 3 );
@@ -55,7 +55,7 @@ class AdminMenuHandler {
 					// Add type="module" to the script
 					add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
 						if ( $handle === 'pollquest-admin-app' ) {
-							return '<script type="module" src="' . esc_url( $src ) . '"></script>';
+							$tag = str_replace( ' src=', ' type="module" src=', $tag );
 						}
 						return $tag;
 					}, 10, 3 );

@@ -210,7 +210,7 @@ class ResultsController {
 		foreach ( $rows as $row ) {
 			fputcsv( $output, $row );
 		}
-		fclose( $output );
+		// php://output doesn't need to be closed
 
 		exit;
 	}

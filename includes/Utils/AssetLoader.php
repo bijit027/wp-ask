@@ -51,7 +51,7 @@ class AssetLoader {
 				'script_loader_tag',
 				function ( $tag, $script_handle, $src ) use ( $handle, $vite_handle ) {
 					if ( in_array( $script_handle, [ $handle, $vite_handle ], true ) ) {
-						return '<script type="module" src="' . esc_url( $src ) . '"></script>';
+						$tag = str_replace( ' src=', ' type="module" src=', $tag );
 					}
 					return $tag;
 				},

@@ -8,6 +8,8 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
+Source Code: https://github.com/bijit027/pollquest
+
 Create surveys, polls, and feedback forms for WordPress.
 
 == Description ==
