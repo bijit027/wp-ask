@@ -1,4 +1,4 @@
-=== PollQuest – Surveys & Feedback Forms for WordPress ===
+=== PollQuest – Surveys & Feedback Forms ===
 Contributors: bijit027
 Tags: survey, poll, feedback form, ratings, forms
 Requires at least: 6.0

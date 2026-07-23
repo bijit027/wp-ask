@@ -4,11 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /* translators: %s: survey title */
-echo sprintf(
+printf(
+	/* translators: %s: survey title */
 	esc_html__( 'New Response to %s', 'pollquest' ),
-	esc_html( $survey_title )
+	'<strong>' . esc_html( $survey_title ) . '</strong>'
 );
-
 
 echo "\n\n";
 
@@ -16,9 +16,10 @@ $notification_config_url = admin_url( 'admin.php?page=pollquest#/surveys/edit/' 
 
 /* translators: %1$s: blog name, %2$s: settings URL */
 echo sprintf(
+	/* translators: 1: site name, 2: settings link */
 	esc_html__( 'You are receiving this PollQuest survey notification from %1$s. Adjust your settings here: %2$s.', 'pollquest' ),
 	esc_html( get_bloginfo( 'name' ) ),
-	esc_url_raw( $notification_config_url )
+	'<a href="' . esc_url( $notification_config_url ) . '">' . esc_html__( 'here', 'pollquest' ) . '</a>'
 );
 
 echo "\n\n";
@@ -34,7 +35,8 @@ foreach ( $answers as $answer ) {
 echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 
 /* translators: %s: site URL */
-echo sprintf(
+printf(
+	/* translators: %s: site URL */
 	esc_html__( 'Sent from %s', 'pollquest' ),
-	esc_url_raw( get_site_url() )
+	'<a href="' . esc_url( get_site_url() ) . '">' . esc_html( get_bloginfo( 'name' ) ) . '</a>'
 );

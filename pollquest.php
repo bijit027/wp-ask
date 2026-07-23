@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: PollQuest – Surveys & Feedback Forms for WordPress
+ * Plugin Name: PollQuest – Surveys & Feedback Forms
  * Description: Create surveys, polls, and feedback forms for WordPress.
  * Version: 1.0.0
  * Requires at least: 6.0

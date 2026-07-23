@@ -241,9 +241,10 @@ class ResponseNotification {
 		$args['survey_id']     = $this->survey->id;
 		$args['survey_title']  = $this->survey->title;
 		/* translators: %s: survey title (HTML tags are allowed) */
-		$args['title']         = sprintf(
-			esc_html__( 'New Response to <b>%s</b>', 'pollquest' ),
-			$this->survey->title
+		$args['title'] = sprintf(
+			/* translators: %s: survey title */
+			esc_html__( 'New Response to %s', 'pollquest' ),
+			esc_html( $this->survey->title )
 		);
 
 		$survey_id               = $this->survey->id;
@@ -251,11 +252,12 @@ class ResponseNotification {
 
 		/* translators: %1$s: blog name, %2$s: settings URL (HTML tags are allowed) */
 		$args['description'] =
-			sprintf(
-				esc_html__( 'You are receiving this PollQuest survey notification from <b>%1$s</b>. <a href="%2$s">Adjust your settings here</a>.', 'pollquest' ),
-				get_bloginfo( 'name' ),
-				$notification_config_url
-			);
+		sprintf(
+			/* translators: 1: site name, 2: settings URL */
+			esc_html__( 'You are receiving this PollQuest survey notification from %1$s. Adjust your settings here: %2$s', 'pollquest' ),
+			'<strong>' . esc_html( get_bloginfo( 'name' ) ) . '</strong>',
+			'<a href="' . esc_url( $notification_config_url ) . '">' . esc_html__( 'Adjust your settings here', 'pollquest' ) . '</a>'
+		);
 
 		$args['answers']          = $this->get_answers();
 		$args['settings_tab_url'] = $notification_config_url;
@@ -318,8 +320,9 @@ class ResponseNotification {
 
 		$found_answer = $this->get_question_answer( $q_id );
 
-		/* translators: %1$s: opening HTML tag, %2$s: closing HTML tag */
+		/* translators: %1$s: opening HTML tag, %2$s: closing HTML tag (HTML tags are allowed) */
 		$skipped_content = sprintf(
+			/* translators: 1: opening HTML tags, 2: closing HTML tags */
 			__( '%1$sSkipped%2$s', 'pollquest' ),
 			'<small><i>',
 			'</i></small>'
