@@ -2,7 +2,7 @@
 /**
  * Role capability manager.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest;

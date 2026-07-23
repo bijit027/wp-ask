@@ -2,7 +2,7 @@
 /**
  * Meta Repository
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Repositories;
@@ -21,7 +21,7 @@ class MetaRepository {
 
 	public function __construct() {
 		global $wpdb;
-		$this->table = $wpdb->prefix . 'ipulse_meta';
+		$this->table = $wpdb->prefix . 'pollquest_meta';
 	}
 
 	/**

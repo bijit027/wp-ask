@@ -1,7 +1,7 @@
 # PollQuest Plugin — Build State Tracker
 
 > **📌 Notice to AI models / developers picking this up:**
-> Read this entire file before touching any code. It defines the architecture, what is fully functional, what still needs building, and critical implementation rules. The plugin's namespace is `InsightPulse` (for historical reasons — do not rename).
+> Read this entire file before touching any code. It defines the architecture, what is fully functional, what still needs building, and critical implementation rules. The plugin's namespace is `PollQuest` (for historical reasons — do not rename).
 
 ---
 
@@ -23,9 +23,9 @@
 | Frontend Widget | `src/frontend/` | Vanilla JS floating survey widget (Shadow DOM) |
 | Built Assets | `assets/` | Compiled output from `npm run build` |
 
-**Namespace:** `InsightPulse\` → maps to `includes/` (PSR-4)
+**Namespace:** `PollQuest\` → maps to `includes/` (PSR-4)
 
-**REST API Base:** `insightpulse/v1` (e.g. `GET /wp-json/insightpulse/v1/surveys`)
+**REST API Base:** `pollquest/v1` (e.g. `GET /wp-json/pollquest/v1/surveys`)
 
 **Vue Admin Config:** Passed via `window.PollQuestAdminConfig = { api_url, nonce }` (injected by `AdminMenuHandler.php`)
 
@@ -52,13 +52,13 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - [x] PSR-4 Autoloader in `pollquest.php`
 - [x] Plugin singleton `Plugin.php` wiring all handlers
 - [x] Database migrations (dbDelta via `Migrator.php`)
-  - `ipulse_surveys` — id, title, status, type, questions, settings, targeting, notifications, impressions, **publish_at**, created_at
-  - `ipulse_responses` — id, survey_id, session_id, answers (JSON), ip, status, created_at
-  - `ipulse_sessions` — cookie-based session tracking
-  - `ipulse_meta` — key-value store for aggregated answer stats
-  - `ipulse_post_ratings` — per-post star ratings
-  - `ipulse_email_surveys` — email-sent tracking
-  - `ipulse_heatmaps` — heatmap click data
+  - `pollquest_surveys` — id, title, status, type, questions, settings, targeting, notifications, impressions, **publish_at**, created_at
+  - `pollquest_responses` — id, survey_id, session_id, answers (JSON), ip, status, created_at
+  - `pollquest_sessions` — cookie-based session tracking
+  - `pollquest_meta` — key-value store for aggregated answer stats
+  - `pollquest_post_ratings` — per-post star ratings
+  - `pollquest_email_surveys` — email-sent tracking
+  - `pollquest_heatmaps` — heatmap click data
 
 ### REST API Endpoints
 
@@ -115,7 +115,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 - [x] **ReviewNoticeHandler** — Dismissible WP admin notice after 14 days, prompts for 5-star review
 - [x] **ActivationHandler** — Redirects to onboarding on first activation
 - [x] **AdminMenuHandler** — Registers `pollquest` admin page, injects `PollQuestAdminConfig`
-- [x] **Email Notifications** — HTML email on new response, triggered via `insightpulse_response_saved` action
+- [x] **Email Notifications** — HTML email on new response, triggered via `pollquest_response_saved` action
 - [x] **WP Dashboard Widget** — "Recent Activity" mount point widget
 
 ### Design System
@@ -163,8 +163,8 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 ### Priority 4 — Polish & Monetisation
 - [x] **Addons.vue** — Hook up real addon data (at minimum show 2–3 "Pro" addon cards with lock icons and a Stripe/pricing link)
 - [x] **Survey Templates** — `TemplateController` exists but templates aren't selectable in the "New Survey" flow. Add a template picker modal to `SurveysList.vue` / onboarding.
-- [x] **Post Ratings Widget** — `ipulse_post_ratings` table exists. Build a "thumbs up/down" or "star" per-post rating widget that can be embedded via shortcode `[pollquest_rating]`
-- [x] **Heatmap module** — `ipulse_heatmaps` table exists. This is a larger feature — defer to last.
+- [x] **Post Ratings Widget** — `pollquest_post_ratings` table exists. Build a "thumbs up/down" or "star" per-post rating widget that can be embedded via shortcode `[pollquest_rating]`
+- [x] **Heatmap module** — `pollquest_heatmaps` table exists. This is a larger feature — defer to last.
 
 ---
 
@@ -192,7 +192,7 @@ Always reference `/wp-content/plugins/userfeedback-lite-master/` for design insp
 | `includes/Controllers/ResultsController.php` | Per-survey results + global `/results-summary` |
 | `includes/Controllers/LogicController.php` | `/logic-type` for dynamic targeting dropdowns |
 | `includes/Services/TargetingService.php` | Display rule engine |
-| `includes/Services/AnalyticsService.php` | Aggregated answer stats from `ipulse_meta` |
+| `includes/Services/AnalyticsService.php` | Aggregated answer stats from `pollquest_meta` |
 | `src/admin/views/SurveyBuilder.vue` | Full survey builder UI |
 | `src/admin/views/SurveysList.vue` | Survey list management |
 | `src/admin/views/SurveyResults.vue` | Analytics dashboard (needs live API wiring) |

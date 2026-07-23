@@ -2,7 +2,7 @@
 /**
  * Add-on registry.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Addons;

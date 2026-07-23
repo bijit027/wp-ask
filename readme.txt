@@ -76,7 +76,7 @@ Yes, PollQuest works with all page builders including Elementor, Divi, and Guten
 
 = Is this plugin GDPR compliant? =
 
-Yes, PollQuest stores all data in your WordPress database and doesn't send data to third-party services.
+PollQuest is designed with privacy in mind. All survey and response data is stored locally in your WordPress database. Optionally, if the site owner enables the Gravatar/avatar setting, respondent email hashes are sent to Gravatar.com to display profile photos — this feature is disabled by default and must be explicitly enabled. No other data is sent to third-party services. GDPR compliance also depends on your own site's data retention and consent practices.
 
 == Screenshots ==
 
@@ -89,7 +89,7 @@ Yes, PollQuest stores all data in your WordPress database and doesn't send data 
 
 == Changelog ==
 
-= 1.0.0: January 31, 2026 =
+= 1.0.0: July 23, 2026 =
 * New: Initial release
 * Multiple question types (rating, NPS, text, email, number, radio, checkbox, dropdown, date, yes/no, file upload)
 * Advanced targeting rules (page, referrer, time on page, scroll depth, device, exit intent)
@@ -116,4 +116,4 @@ This plugin is released under the GPLv2 or later license.
 
 == Privacy Policy ==
 
-This plugin stores all data in your WordPress database. No data is sent to external services. You can delete all survey data at any time from the plugin settings.
+This plugin stores all survey and response data in your WordPress database. No data is sent to external services by default. If the site owner enables the optional Gravatar avatar setting, a hash of respondent email addresses is sent to gravatar.com to load profile photos — this is off by default and opt-in only. You can delete all survey data at any time from the plugin settings.

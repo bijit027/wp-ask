@@ -101,7 +101,7 @@ class ResultsController {
 		}
 
 		global $wpdb;
-		$responses_table = $wpdb->prefix . 'ipulse_responses';
+		$responses_table = $wpdb->prefix . 'pollquest_responses';
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$total_responses = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM {$responses_table} WHERE survey_id = %d AND status = 'publish'", $survey_id ) );
@@ -124,8 +124,8 @@ class ResultsController {
 	 */
 	public function get_summary( $request ) {
 		global $wpdb;
-		$surveys_table = $wpdb->prefix . 'ipulse_surveys';
-		$responses_table = $wpdb->prefix . 'ipulse_responses';
+		$surveys_table = $wpdb->prefix . 'pollquest_surveys';
+		$responses_table = $wpdb->prefix . 'pollquest_responses';
 
 		$total_impressions = (int) $wpdb->get_var( "SELECT SUM(impressions) FROM {$surveys_table} WHERE status != 'trash'" );
 		$total_responses = (int) $wpdb->get_var( "SELECT COUNT(id) FROM {$responses_table} WHERE status = 'publish'" );
@@ -154,7 +154,7 @@ class ResultsController {
 		}
 
 		global $wpdb;
-		$responses_table = $wpdb->prefix . 'ipulse_responses';
+		$responses_table = $wpdb->prefix . 'pollquest_responses';
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$responses = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$responses_table} WHERE survey_id = %d AND status = 'publish' ORDER BY created_at DESC", $survey_id ) );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Fix namespace inconsistencies from PollQuest to InsightPulse
+ * Fix namespace inconsistencies from PollQuest to PollQuest
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,11 +22,11 @@ foreach ($iterator as $file) {
         $content = file_get_contents($file->getPathname());
         $original = $content;
         
-        // Replace namespace PollQuest with namespace InsightPulse
-        $content = preg_replace('/^namespace PollQuest\b/m', 'namespace InsightPulse', $content);
+        // Replace namespace PollQuest with namespace PollQuest
+        $content = preg_replace('/^namespace PollQuest\b/m', 'namespace PollQuest', $content);
         
-        // Replace use PollQuest with use InsightPulse
-        $content = preg_replace('/^use PollQuest\\\\/m', 'use InsightPulse\\', $content);
+        // Replace use PollQuest with use PollQuest
+        $content = preg_replace('/^use PollQuest\\\\/m', 'use PollQuest\\', $content);
         
         if ($content !== $original) {
             file_put_contents($file->getPathname(), $content);

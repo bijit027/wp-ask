@@ -2,7 +2,7 @@
 /**
  * Create Post Ratings Table Migration.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Database\Migrations;
@@ -18,7 +18,7 @@ class CreatePostRatingsTable {
 	public function up(): void {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'ipulse_post_ratings';
+		$table_name      = $wpdb->prefix . 'pollquest_post_ratings';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table_name (

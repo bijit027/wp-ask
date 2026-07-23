@@ -2,7 +2,7 @@
 /**
  * Heatmap Recording Model
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Models;

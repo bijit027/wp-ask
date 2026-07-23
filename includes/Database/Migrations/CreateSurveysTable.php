@@ -2,7 +2,7 @@
 /**
  * Create Surveys Table Migration.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Database\Migrations;
@@ -18,7 +18,7 @@ class CreateSurveysTable {
 	public function up(): void {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'ipulse_surveys';
+		$table_name      = $wpdb->prefix . 'pollquest_surveys';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table_name (

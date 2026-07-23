@@ -2,7 +2,7 @@
 /**
  * Create Email Surveys Table Migration.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Database\Migrations;
@@ -18,7 +18,7 @@ class CreateEmailSurveysTable {
 	public function up(): void {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'ipulse_email_surveys';
+		$table_name      = $wpdb->prefix . 'pollquest_email_surveys';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table_name (
@@ -44,7 +44,7 @@ class CreateEmailSurveysTable {
 		dbDelta( $sql );
 
 		// Create the responses table for email surveys as well.
-		$table_name_responses = $wpdb->prefix . 'ipulse_email_survey_responses';
+		$table_name_responses = $wpdb->prefix . 'pollquest_email_survey_responses';
 
 		$sql_responses = "CREATE TABLE $table_name_responses (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,

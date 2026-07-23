@@ -2,7 +2,7 @@
 /**
  * Create Sessions Table Migration.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Database\Migrations;
@@ -18,7 +18,7 @@ class CreateSessionsTable {
 	public function up(): void {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'ipulse_sessions';
+		$table_name      = $wpdb->prefix . 'pollquest_sessions';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table_name (

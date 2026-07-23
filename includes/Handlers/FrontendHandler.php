@@ -54,7 +54,7 @@ class FrontendHandler {
 	 */
 	public function enqueue_assets(): void {
 		global $wpdb;
-		$table   = $wpdb->prefix . 'ipulse_surveys';
+		$table   = $wpdb->prefix . 'pollquest_surveys';
 		
 		$matched_survey = null;
 
@@ -157,7 +157,7 @@ class FrontendHandler {
 		if ( ! is_singular() ) {
 			return false;
 		}
-		$disabled = get_post_meta( get_queried_object_id(), '_ipulse_disable_surveys', true );
+		$disabled = get_post_meta( get_queried_object_id(), '_pollquest_disable_surveys', true );
 		return ! empty( $disabled );
 	}
 
@@ -170,7 +170,7 @@ class FrontendHandler {
 		if ( ! is_singular() ) {
 			return false;
 		}
-		$survey_id = get_post_meta( get_queried_object_id(), '_ipulse_show_specific_survey', true );
+		$survey_id = get_post_meta( get_queried_object_id(), '_pollquest_show_specific_survey', true );
 		return ! empty( $survey_id ) ? (int) $survey_id : false;
 	}
 }

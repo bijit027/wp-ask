@@ -59,7 +59,7 @@ class ShortcodeHandler {
 		}
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'ipulse_surveys';
+		$table = $wpdb->prefix . 'pollquest_surveys';
 		$now   = current_time( 'mysql', true );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared

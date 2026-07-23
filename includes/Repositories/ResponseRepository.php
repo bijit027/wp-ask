@@ -2,7 +2,7 @@
 /**
  * Response Repository
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Repositories;
@@ -21,7 +21,7 @@ class ResponseRepository {
 
 	public function __construct() {
 		global $wpdb;
-		$this->table = $wpdb->prefix . 'ipulse_responses';
+		$this->table = $wpdb->prefix . 'pollquest_responses';
 	}
 
 	/**

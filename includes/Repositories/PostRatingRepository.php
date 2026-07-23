@@ -2,7 +2,7 @@
 /**
  * Post Rating Repository
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Repositories;
@@ -21,7 +21,7 @@ class PostRatingRepository {
 
 	public function __construct() {
 		global $wpdb;
-		$this->table = $wpdb->prefix . 'ipulse_post_ratings';
+		$this->table = $wpdb->prefix . 'pollquest_post_ratings';
 	}
 
 	/**

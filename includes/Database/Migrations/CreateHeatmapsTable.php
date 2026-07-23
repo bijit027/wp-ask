@@ -2,7 +2,7 @@
 /**
  * Create Heatmaps Table Migration.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Database\Migrations;
@@ -18,7 +18,7 @@ class CreateHeatmapsTable {
 	public function up(): void {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'ipulse_heatmaps';
+		$table_name      = $wpdb->prefix . 'pollquest_heatmaps';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE $table_name (
@@ -32,7 +32,7 @@ class CreateHeatmapsTable {
 
 		dbDelta( $sql );
 
-		$table_name_recordings = $wpdb->prefix . 'ipulse_heatmap_recordings';
+		$table_name_recordings = $wpdb->prefix . 'pollquest_heatmap_recordings';
 
 		$sql_recordings = "CREATE TABLE $table_name_recordings (
 			id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,

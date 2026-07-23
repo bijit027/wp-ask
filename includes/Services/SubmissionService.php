@@ -2,7 +2,7 @@
 /**
  * Submission Service
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Services;

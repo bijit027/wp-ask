@@ -2,7 +2,7 @@
 /**
  * Survey Repository
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Repositories;
@@ -12,7 +12,7 @@ use PollQuest\Models\Survey;
 /**
  * Class SurveyRepository
  * 
- * Handles all database interactions for the ipulse_surveys table.
+ * Handles all database interactions for the pollquest_surveys table.
  */
 class SurveyRepository {
 
@@ -23,7 +23,7 @@ class SurveyRepository {
 
 	public function __construct() {
 		global $wpdb;
-		$this->table = $wpdb->prefix . 'ipulse_surveys';
+		$this->table = $wpdb->prefix . 'pollquest_surveys';
 	}
 
 	/**

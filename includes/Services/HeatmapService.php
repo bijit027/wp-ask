@@ -2,7 +2,7 @@
 /**
  * Heatmap Service
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Services;
@@ -152,10 +152,7 @@ class HeatmapService {
 	 * @return true|WP_Error
 	 */
 	public function record_clicks( int $heatmap_id, array $clicks ) {
-		$heatmap = $this->heatmaps->find( $heatmap_id );
-		if ( ! $heatmap || 'publish' !== $heatmap->status ) {
-			return new WP_Error( 'not_found', __( 'Heatmap not active.', 'pollquest' ), [ 'status' => 404 ] );
-		}
+		// Note: Heatmap existence and status validation is now handled by permission_callback
 
 		$sanitized = [];
 		foreach ( $clicks as $click ) {

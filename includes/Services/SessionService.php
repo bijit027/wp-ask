@@ -2,7 +2,7 @@
 /**
  * Session Service
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Services;
@@ -39,8 +39,8 @@ class SessionService {
 		$user_id = get_current_user_id();
 
 		// Check if there is a session cookie
-		if ( isset( $_COOKIE['_ipulse_sid'] ) ) {
-			$session_hash = sanitize_text_field( wp_unslash( $_COOKIE['_ipulse_sid'] ) );
+		if ( isset( $_COOKIE['_pollquest_sid'] ) ) {
+			$session_hash = sanitize_text_field( wp_unslash( $_COOKIE['_pollquest_sid'] ) );
 			$session      = $this->repository->find_by_uid( $session_hash );
 
 			if ( $session ) {
@@ -92,7 +92,7 @@ class SessionService {
 
 		// Set the cookie (90 days)
 		setcookie(
-			'_ipulse_sid',
+			'_pollquest_sid',
 			$uid,
 			time() + ( 86400 * 90 ),
 			COOKIEPATH,

@@ -631,7 +631,7 @@ class WPEmails {
 	 */
 	public static function get_theme_template_paths() {
 
-		$template_dir = 'insightpulse-email';
+		$template_dir = 'pollquest-email';
 
 		$file_paths = array(
 			1   => trailingslashit( get_stylesheet_directory() ) . $template_dir,

@@ -4,7 +4,7 @@ const path = require('path');
 const rootDir = path.resolve(__dirname, '..');
 const includesDir = path.join(rootDir, 'includes');
 
-console.log('🔧 Fixing insightpulse/v1 to pollquest/v1...');
+console.log('🔧 Fixing pollquest/v1 to pollquest/v1...');
 
 function fixApiRoutes(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -18,8 +18,8 @@ function fixApiRoutes(dir) {
       let content = fs.readFileSync(filePath, 'utf8');
       const original = content;
       
-      // Replace insightpulse/v1 with pollquest/v1
-      content = content.replace(/insightpulse\/v1/g, 'pollquest/v1');
+      // Replace pollquest/v1 with pollquest/v1
+      content = content.replace(/pollquest\/v1/g, 'pollquest/v1');
       
       if (content !== original) {
         fs.writeFileSync(filePath, content);

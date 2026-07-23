@@ -161,7 +161,7 @@ class SurveyController {
 	public function get_items( $request ) {
 		global $wpdb;
 
-		$table    = $wpdb->prefix . 'ipulse_surveys';
+		$table    = $wpdb->prefix . 'pollquest_surveys';
 		$status   = sanitize_text_field( $request->get_param( 'status' ) ?: 'all' );
 		$page     = (int) $request->get_param( 'page' ) ?: 1;
 		$per_page = (int) $request->get_param( 'per_page' ) ?: 50;
@@ -330,7 +330,7 @@ class SurveyController {
 		}
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'ipulse_surveys';
+		$table = $wpdb->prefix . 'pollquest_surveys';
 		
 		$deleted = $wpdb->delete( $table, [ 'id' => $id ], [ '%d' ] );
 
@@ -355,7 +355,7 @@ class SurveyController {
 		}
 
 		global $wpdb;
-		$table   = $wpdb->prefix . 'ipulse_surveys';
+		$table   = $wpdb->prefix . 'pollquest_surveys';
 		$updated = $wpdb->update( $table, [ 'status' => 'trash' ], [ 'id' => $id ], [ '%s' ], [ '%d' ] );
 
 		if ( false === $updated ) {
@@ -379,7 +379,7 @@ class SurveyController {
 		}
 
 		global $wpdb;
-		$table   = $wpdb->prefix . 'ipulse_surveys';
+		$table   = $wpdb->prefix . 'pollquest_surveys';
 		$updated = $wpdb->update( $table, [ 'status' => 'draft' ], [ 'id' => $id ], [ '%s' ], [ '%d' ] );
 
 		if ( false === $updated ) {
@@ -404,7 +404,7 @@ class SurveyController {
 		}
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'ipulse_surveys';
+		$table = $wpdb->prefix . 'pollquest_surveys';
 
 		$new_data = [
 			'title'         => 'Copy of ' . $survey->title,
@@ -438,7 +438,7 @@ class SurveyController {
 		$id = (int) $request['id'];
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'ipulse_surveys';
+		$table = $wpdb->prefix . 'pollquest_surveys';
 
 		$wpdb->query(
 			$wpdb->prepare(
@@ -469,7 +469,7 @@ class SurveyController {
 		}
 
 		global $wpdb;
-		$table       = $wpdb->prefix . 'ipulse_surveys';
+		$table       = $wpdb->prefix . 'pollquest_surveys';
 		$ids_escaped = implode( ',', $ids );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared

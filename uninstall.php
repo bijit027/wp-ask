@@ -2,7 +2,7 @@
 /**
  * Uninstall routine. Called when the plugin is deleted from WP admin.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 // Only run when WordPress calls this directly.
@@ -14,10 +14,10 @@ global $wpdb;
 
 // Remove all plugin options.
 $options = [
-	'insightpulse_db_version',
-	'insightpulse_settings',
-	'insightpulse_onboarding_complete',
-	'insightpulse_capabilities_added',
+	'pollquest_db_version',
+	'pollquest_settings',
+	'pollquest_onboarding_complete',
+	'pollquest_capabilities_added',
 ];
 
 foreach ( $options as $option ) {
@@ -28,24 +28,24 @@ foreach ( $options as $option ) {
 foreach ( wp_roles()->roles as $role_name => $role_info ) {
 	$role = get_role( $role_name );
 	if ( $role ) {
-		$role->remove_cap( 'insightpulse_create_edit_surveys' );
-		$role->remove_cap( 'insightpulse_delete_surveys' );
-		$role->remove_cap( 'insightpulse_view_results' );
-		$role->remove_cap( 'insightpulse_save_settings' );
+		$role->remove_cap( 'pollquest_create_edit_surveys' );
+		$role->remove_cap( 'pollquest_delete_surveys' );
+		$role->remove_cap( 'pollquest_view_results' );
+		$role->remove_cap( 'pollquest_save_settings' );
 	}
 }
 
 // Check if user selected "Delete all data on uninstall".
-$settings = get_option( 'insightpulse_settings', [] );
+$settings = get_option( 'pollquest_settings', [] );
 if ( ! empty( $settings['delete_data_on_uninstall'] ) ) {
 	$tables = [
-		$wpdb->prefix . 'ipulse_surveys',
-		$wpdb->prefix . 'ipulse_responses',
-		$wpdb->prefix . 'ipulse_sessions',
-		$wpdb->prefix . 'ipulse_meta',
-		$wpdb->prefix . 'ipulse_post_ratings',
-		$wpdb->prefix . 'ipulse_email_surveys',
-		$wpdb->prefix . 'ipulse_email_survey_responses',
+		$wpdb->prefix . 'pollquest_surveys',
+		$wpdb->prefix . 'pollquest_responses',
+		$wpdb->prefix . 'pollquest_sessions',
+		$wpdb->prefix . 'pollquest_meta',
+		$wpdb->prefix . 'pollquest_post_ratings',
+		$wpdb->prefix . 'pollquest_email_surveys',
+		$wpdb->prefix . 'pollquest_email_survey_responses',
 	];
 
 	foreach ( $tables as $table ) {

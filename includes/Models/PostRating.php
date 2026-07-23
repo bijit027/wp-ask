@@ -2,7 +2,7 @@
 /**
  * Post Rating Model
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Models;

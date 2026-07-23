@@ -2,22 +2,22 @@
 /**
  * Application Configuration.
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Config;
 
 return [
-	'slug'      => 'insightpulse',
+	'slug'      => 'pollquest',
 	'rest'      => [
 		'namespace' => 'pollquest/v1',
 	],
 	'admin'     => [
-		'menu_slug' => 'insightpulse',
+		'menu_slug' => 'pollquest',
 	],
 	'frontend'  => [
-		'script_handle' => 'insightpulse-frontend',
-		'style_handle'  => 'insightpulse-style',
+		'script_handle' => 'pollquest-frontend',
+		'style_handle'  => 'pollquest-style',
 	],
 	'meta_keys' => [
 		'answers_count'   => 'answers_count',

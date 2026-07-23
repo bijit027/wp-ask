@@ -2,7 +2,7 @@
 /**
  * Session Repository
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Repositories;
@@ -21,7 +21,7 @@ class SessionRepository {
 
 	public function __construct() {
 		global $wpdb;
-		$this->table = $wpdb->prefix . 'ipulse_sessions';
+		$this->table = $wpdb->prefix . 'pollquest_sessions';
 	}
 
 	/**

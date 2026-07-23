@@ -8,6 +8,7 @@
 namespace PollQuest\Controllers;
 
 use PollQuest\Services\HeatmapService;
+use PollQuest\Repositories\HeatmapRepository;
 use PollQuest\Utils\IpHelper;
 use WP_Error;
 use WP_REST_Request;
@@ -32,8 +33,14 @@ class HeatmapController {
 	 */
 	private $service;
 
+	/**
+	 * @var HeatmapRepository
+	 */
+	private $heatmap_repository;
+
 	public function __construct() {
 		$this->service = new HeatmapService();
+		$this->heatmap_repository = new HeatmapRepository();
 	}
 
 	/**
@@ -64,7 +71,14 @@ class HeatmapController {
 				[
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => [ $this, 'record_clicks' ],
-					'permission_callback' => '__return_true',
+					'permission_callback' => [ $this, 'can_record' ],
+					'args'                => [
+						'heatmap_id' => [
+							'type'              => 'integer',
+							'required'          => true,
+							'sanitize_callback' => 'absint',
+						],
+					],
 				],
 			]
 		);
@@ -99,6 +113,25 @@ class HeatmapController {
 	 */
 	public function admin_check(): bool {
 		return current_user_can( 'pollquest_view_results' );
+	}
+
+	/**
+	 * Permission callback for record endpoint.
+	 * Only allows recording to published heatmaps.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return bool
+	 */
+	public function can_record( WP_REST_Request $request ): bool {
+		$params = $request->get_json_params() ?: $request->get_body_params();
+		$heatmap_id = absint( $params['heatmap_id'] ?? 0 );
+
+		if ( ! $heatmap_id ) {
+			return false;
+		}
+
+		$heatmap = $this->heatmap_repository->find( $heatmap_id );
+		return $heatmap && $heatmap->status === 'publish';
 	}
 
 	/**
@@ -196,7 +229,7 @@ class HeatmapController {
 		$heatmap_id = (int) ( $params['heatmap_id'] ?? 0 );
 		$clicks     = $params['clicks'] ?? [];
 
-		if ( ! $heatmap_id || ! is_array( $clicks ) ) {
+		if ( ! is_array( $clicks ) ) {
 			return new WP_Error( 'invalid_payload', __( 'Invalid click payload.', 'pollquest' ), [ 'status' => 400 ] );
 		}
 

@@ -2,7 +2,7 @@
 /**
  * Heatmap Repository
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Repositories;
@@ -21,7 +21,7 @@ class HeatmapRepository {
 
 	public function __construct() {
 		global $wpdb;
-		$this->table = $wpdb->prefix . 'ipulse_heatmaps';
+		$this->table = $wpdb->prefix . 'pollquest_heatmaps';
 	}
 
 	/**

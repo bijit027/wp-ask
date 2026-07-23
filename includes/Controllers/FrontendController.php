@@ -8,6 +8,7 @@
 namespace PollQuest\Controllers;
 
 use PollQuest\Services\SubmissionService;
+use PollQuest\Repositories\SurveyRepository;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
@@ -29,8 +30,14 @@ class FrontendController {
 	 */
 	private $submission_service;
 
+	/**
+	 * @var SurveyRepository
+	 */
+	private $survey_repository;
+
 	public function __construct() {
 		$this->submission_service = new SubmissionService();
+		$this->survey_repository = new SurveyRepository();
 	}
 
 	/**
@@ -44,10 +51,36 @@ class FrontendController {
 				[
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => [ $this, 'submit_survey' ],
-					'permission_callback' => '__return_true', // Public
+					'permission_callback' => [ $this, 'can_submit' ],
+					'args'                => [
+						'survey_id' => [
+							'type'              => 'integer',
+							'required'          => true,
+							'sanitize_callback' => 'absint',
+						],
+					],
 				],
 			]
 		);
+	}
+
+	/**
+	 * Permission callback for submit endpoint.
+	 * Only allows submissions to published surveys.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return bool
+	 */
+	public function can_submit( WP_REST_Request $request ): bool {
+		$params = $request->get_json_params() ?: $request->get_body_params();
+		$survey_id = absint( $params['survey_id'] ?? 0 );
+
+		if ( ! $survey_id ) {
+			return false;
+		}
+
+		$survey = $this->survey_repository->find( $survey_id );
+		return $survey && $survey->status === 'publish';
 	}
 
 	/**
@@ -59,10 +92,6 @@ class FrontendController {
 	public function submit_survey( $request ) {
 		$params    = $request->get_json_params() ?: $request->get_body_params();
 		$survey_id = (int) ( $params['survey_id'] ?? 0 );
-
-		if ( ! $survey_id ) {
-			return new WP_Error( 'missing_survey_id', 'Survey ID is required.', [ 'status' => 400 ] );
-		}
 
 		// Security: Check for a valid WP Nonce if desired, though we allow public submissions.
 		// A nonce check `wp_verify_nonce( $request->get_header('X-WP-Nonce'), 'wp_rest' )` could go here if strict.

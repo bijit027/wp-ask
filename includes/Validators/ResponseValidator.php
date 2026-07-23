@@ -2,7 +2,7 @@
 /**
  * Response Validator
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Validators;

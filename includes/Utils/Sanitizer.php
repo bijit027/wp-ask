@@ -2,7 +2,7 @@
 /**
  * Sanitizer Helper
  *
- * @package InsightPulse
+ * @package PollQuest
  */
 
 namespace PollQuest\Utils;

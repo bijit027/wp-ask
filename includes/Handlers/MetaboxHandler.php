@@ -28,7 +28,7 @@ class MetaboxHandler {
 		// Field to assign a specific survey to a post
 		register_post_meta(
 			'', // Apply to all post types that support custom fields
-			'_ipulse_show_specific_survey',
+			'_pollquest_show_specific_survey',
 			[
 				'auth_callback' => '__return_true', // In a real scenario, check edit_post capability
 				'default'       => 0,
@@ -41,7 +41,7 @@ class MetaboxHandler {
 		// Field to disable all surveys on a post
 		register_post_meta(
 			'', 
-			'_ipulse_disable_surveys',
+			'_pollquest_disable_surveys',
 			[
 				'auth_callback' => '__return_true',
 				'default'       => false,

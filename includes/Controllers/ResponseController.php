@@ -113,7 +113,7 @@ class ResponseController {
 		global $wpdb;
 
 		$survey_id = (int) $request['survey_id'];
-		$table     = $wpdb->prefix . 'ipulse_responses';
+		$table     = $wpdb->prefix . 'pollquest_responses';
 		$status    = sanitize_text_field( $request->get_param( 'status' ) ?: 'publish' );
 		$page      = (int) $request->get_param( 'page' ) ?: 1;
 		$per_page  = (int) $request->get_param( 'per_page' ) ?: 50;
@@ -182,7 +182,7 @@ class ResponseController {
 	public function trash_item( $request ) {
 		global $wpdb;
 		$id    = (int) $request['id'];
-		$table = $wpdb->prefix . 'ipulse_responses';
+		$table = $wpdb->prefix . 'pollquest_responses';
 
 		$updated = $wpdb->update( $table, [ 'status' => 'trash' ], [ 'id' => $id ], [ '%s' ], [ '%d' ] );
 
@@ -202,7 +202,7 @@ class ResponseController {
 	public function restore_item( $request ) {
 		global $wpdb;
 		$id    = (int) $request['id'];
-		$table = $wpdb->prefix . 'ipulse_responses';
+		$table = $wpdb->prefix . 'pollquest_responses';
 
 		$updated = $wpdb->update( $table, [ 'status' => 'publish' ], [ 'id' => $id ], [ '%s' ], [ '%d' ] );
 
@@ -222,7 +222,7 @@ class ResponseController {
 	public function delete_item( $request ) {
 		global $wpdb;
 		$id    = (int) $request['id'];
-		$table = $wpdb->prefix . 'ipulse_responses';
+		$table = $wpdb->prefix . 'pollquest_responses';
 
 		$deleted = $wpdb->delete( $table, [ 'id' => $id ], [ '%d' ] );
 
