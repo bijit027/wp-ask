@@ -12,6 +12,16 @@ Source Code: https://github.com/bijit027/pollquest
 
 Create surveys, polls, and feedback forms for WordPress.
 
+== Development ==
+
+The JavaScript and CSS assets are built using Vite. Source code is available in the `src/` directory.
+
+To build the assets:
+1. Install Node.js dependencies: `npm install`
+2. Build for production: `npm run build`
+
+The built assets are output to the `assets/` directory.
+
 == Description ==
 
 Create surveys, polls, and feedback forms for WordPress with multiple question types, advanced targeting, conditional logic, and real-time analytics.

@@ -59,7 +59,7 @@ class HeatmapController {
 				[
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => [ $this, 'create_item' ],
-					'permission_callback' => [ $this, 'admin_check' ],
+					'permission_callback' => [ $this, 'admin_write_check' ],
 				],
 			]
 		);
@@ -95,24 +95,33 @@ class HeatmapController {
 				[
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => [ $this, 'update_item' ],
-					'permission_callback' => [ $this, 'admin_check' ],
+					'permission_callback' => [ $this, 'admin_write_check' ],
 				],
 				[
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => [ $this, 'delete_item' ],
-					'permission_callback' => [ $this, 'admin_check' ],
+					'permission_callback' => [ $this, 'admin_write_check' ],
 				],
 			]
 		);
 	}
 
 	/**
-	 * Admin permission check.
+	 * Admin permission check for read operations.
 	 *
 	 * @return bool
 	 */
 	public function admin_check(): bool {
 		return current_user_can( 'pollquest_view_results' );
+	}
+
+	/**
+	 * Admin permission check for write operations (create, update, delete).
+	 *
+	 * @return bool
+	 */
+	public function admin_write_check(): bool {
+		return current_user_can( 'pollquest_create_edit_surveys' );
 	}
 
 	/**
